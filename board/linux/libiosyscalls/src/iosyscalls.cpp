@@ -22,7 +22,7 @@ namespace
 {
     constexpr auto ENV_NAME       = "IOSYSCALLS_REDIRECT_TO_IMAGE";
     constexpr auto FIRST_FILEDESC = 64'566'756;
-    constexpr auto SYSROOT        = "sysroot";
+    constexpr auto SYSROOT        = "rut";
     bool g_evaluated              = false;
     bool g_redirect               = false;
 

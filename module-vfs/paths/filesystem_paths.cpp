@@ -5,7 +5,7 @@
 
 namespace
 {
-    constexpr inline auto PATH_SYS      = "/sys";
+    constexpr inline auto PATH_SYS      = "rut/sys";
     constexpr inline auto PATH_CONF     = "/mfgconf";
     constexpr inline auto PATH_USER     = "user";
     constexpr inline auto PATH_CURRENT  = "current";

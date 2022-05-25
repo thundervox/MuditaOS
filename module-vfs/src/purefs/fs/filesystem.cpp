@@ -87,10 +87,12 @@ namespace purefs::fs
                            const void *data) -> int
     {
         // Sanity check input data
+#if zwalony_fs
         if (target.size() <= 1 || target[0] != '/') {
             LOG_ERROR("VFS: Invalid target mountpoint path");
             return -EINVAL;
         }
+#endif
         if (flags & ~(mount_flags::remount | mount_flags::read_only)) {
             LOG_ERROR("VFS: passed mount flags is not supported");
             return -ENOTSUP;
