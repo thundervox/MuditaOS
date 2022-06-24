@@ -403,7 +403,7 @@ namespace app
     sys::MessagePointer ApplicationCommon::handleKBDKeyEvent(sys::Message *msgl)
     {
         if (this->getState() != app::ApplicationCommon::State::ACTIVE_FORGROUND) {
-            LOG_FATAL("!!! Terrible terrible damage! application with no focus grabbed key!");
+            LOG_FATAL("Application with no focus grabbed key!");
         }
         sevm::KbdMessage *msg = static_cast<sevm::KbdMessage *>(msgl);
         gui::InputEvent iev   = keyTranslator->translate(msg->key);
