@@ -10,6 +10,12 @@ target_include_directories(application-bell-common
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 
+if(${CONFIG_ENABLE_TEMP})
+    set(CONFIG_ENABLE_TEMP_BOOL 1)
+else()
+    set(CONFIG_ENABLE_TEMP_BOOL 1)
+endif()
+
 target_sources(application-bell-common
     PRIVATE
         src/BellPowerOffPresenter.cpp
@@ -52,6 +58,11 @@ target_sources(application-bell-common
         src/options/BellOptionsNavigation.cpp
 
         src/layouts/HomeScreenLayouts.cpp
+        src/layouts/HomeScreenLayoutsBase.cpp
+
+        $<IF:${CONFIG_ENABLE_TEMP_BOOL},
+        src/layouts/HomeScreenLayouts.cpp,
+        src/layouts/HomeScreenLayoutsTemp.cpp>
         src/layouts/HomeScreenLayoutClassic.cpp
         src/layouts/HomeScreenLayoutClassicWithAmPm.cpp
         src/layouts/HomeScreenLayoutClassicWithBattery.cpp
