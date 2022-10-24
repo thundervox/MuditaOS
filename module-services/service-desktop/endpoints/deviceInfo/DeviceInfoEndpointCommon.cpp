@@ -171,4 +171,15 @@ namespace sdesktop::endpoints
 
         return {totalDeviceSpaceMiB, reservedSystemSpaceMiB, usedUserSpaceMiB + purefs::userSpaceOffset};
     }
+
+    auto DeviceInfoEndpointCommon::getSerialNumber() -> std::string
+    {
+        auto ownerService = dynamic_cast<ServiceDesktop *>(ownerServicePtr);
+        if (ownerService == nullptr) {
+            LOG_ERROR("Failed to cast owner service to ServiceDesktop");
+            return std::string();
+        }
+
+        return ownerService->getSerialNumber();
+    }
 } // namespace sdesktop::endpoints

@@ -30,6 +30,7 @@ namespace sdesktop::endpoints
         auto requestLogsFlush() const -> void;
         auto getStorageStats(const std::string &path) -> std::tuple<long, long>;
         auto getStorageInfo() -> std::tuple<long, long, long>;
+        auto getSerialNumber() -> std::string;
 
         explicit DeviceInfoEndpointCommon(sys::Service *ownerServicePtr) : Endpoint(ownerServicePtr)
         {

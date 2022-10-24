@@ -19,12 +19,6 @@
 
 namespace sdesktop::endpoints
 {
-
-    auto DeviceInfoEndpoint::getSerialNumber() -> std::string
-    {
-        return dynamic_cast<ServiceDesktop *>(ownerServicePtr)->getSerialNumber();
-    }
-
     auto DeviceInfoEndpoint::getCaseColour() -> std::string
     {
         return static_cast<ServiceDesktop *>(ownerServicePtr)->getCaseColour();

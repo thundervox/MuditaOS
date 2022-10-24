@@ -19,7 +19,6 @@
 
 namespace sdesktop::endpoints
 {
-
     auto DeviceInfoEndpoint::getDeviceInfo(Context &context) -> http::Code
     {
         auto [totalDeviceSpaceMiB, reservedSystemSpaceMiB, usedUserSpaceMiB] = getStorageInfo();
@@ -33,9 +32,9 @@ namespace sdesktop::endpoints
                                   {json::gitRevision, (std::string)(GIT_REV)},
                                   {json::gitBranch, (std::string)GIT_BRANCH},
                                   {json::currentRTCTime, std::to_string(static_cast<uint32_t>(std::time(nullptr)))},
-                                  {json::version, std::string(VERSION)}}));
+                                  {json::version, std::string(VERSION)},
+                                  {json::serialNumber, getSerialNumber()}}));
 
         return http::Code::OK;
     }
-
 } // namespace sdesktop::endpoints

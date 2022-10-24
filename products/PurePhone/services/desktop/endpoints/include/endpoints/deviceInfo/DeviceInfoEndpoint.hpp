@@ -19,7 +19,6 @@ namespace sdesktop::endpoints
         explicit DeviceInfoEndpoint(sys::Service *ownerServicePtr) : DeviceInfoEndpointCommon(ownerServicePtr)
         {}
 
-        auto getSerialNumber() -> std::string;
         auto getCaseColour() -> std::string;
         auto getDeviceToken() -> std::string;
 
