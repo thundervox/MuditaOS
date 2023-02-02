@@ -29,6 +29,7 @@ namespace bsp::devices::power
     CW2015::CW2015(drivers::DriverI2C &i2c, units::SOC soc) : i2c{i2c}, alert_threshold{soc}
     {
         status = init_chip();
+        LOG_INFO("Init chip status %d", static_cast<int>(status));
     }
     CW2015::~CW2015()
     {
@@ -101,15 +102,18 @@ namespace bsp::devices::power
     CW2015::RetCodes CW2015::init_chip()
     {
         if (const auto result = wake_up(); result != RetCodes::Ok) {
+            LOG_INFO("Init wakeup %d", static_cast<int>(result));
             return result;
         }
 
         /// Clear any pending interrupts(soc alarm)
         if (const auto result = clear_irq(); result != RetCodes::Ok) {
+            LOG_INFO("Init clear irq %d", static_cast<int>(result));
             return result;
         }
 
         if (const auto result = set_soc_threshold(alert_threshold); result != RetCodes::Ok) {
+            LOG_INFO("Init threshold %d", static_cast<int>(result));
             return result;
         }
 
@@ -117,6 +121,7 @@ namespace bsp::devices::power
             if (*update) {
                 LOG_INFO("Loading battery profile...");
                 if (const auto res = load_profile(); res != RetCodes::Ok) {
+                    LOG_INFO("Init profile %d", static_cast<int>(res));
                     return res;
                 }
             }
@@ -131,24 +136,29 @@ namespace bsp::devices::power
     void CW2015::reinit()
     {
         status = init_chip();
+        LOG_INFO("ReInit chip %d", static_cast<int>(status));
     }
 
     CW2015::RetCodes CW2015::load_profile()
     {
         if (const auto result = write_profile(); result != RetCodes::Ok) {
+            LOG_INFO("Init write profile %d", static_cast<int>(result));
             return result;
         }
 
         if (const auto result = verify_profile(); result != RetCodes::Ok) {
+            LOG_INFO("Init verify profile %d", static_cast<int>(result));
             return result;
         }
 
         if (const auto result = set_update_flag(); result != RetCodes::Ok) {
+            LOG_INFO("Init update profile %d", static_cast<int>(result));
             return result;
         }
         /// Invoking reset procedure seems crucial for the chip to correctly load the new profile and show correct SOC
         /// at startup
         if (const auto result = reset_chip(); result != RetCodes::Ok) {
+            LOG_INFO("Reset chip %d", static_cast<int>(result));
             return result;
         }
 
@@ -330,6 +340,8 @@ namespace bsp::devices::power
                     return ret_val;
                 }
                 i2c.ReInit();
+                reset_chip();
+                reinit();
                 LOG_INFO("Trying to get I2C data: %d", i);
                 vTaskDelay(pdMS_TO_TICKS(i * 10));
             }

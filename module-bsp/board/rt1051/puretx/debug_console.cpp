@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <board/debug_console.hpp>
@@ -8,6 +8,8 @@ extern "C"
 {
 #include "fsl_common.h"
 #include "fsl_clock.h"
+
+#define LOG_LUART_ENABLED 1
 #if LOG_LUART_ENABLED
 #include "fsl_lpuart.h"
 #endif

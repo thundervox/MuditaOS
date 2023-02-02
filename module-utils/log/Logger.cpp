@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "Logger.hpp"
@@ -218,7 +218,7 @@ namespace Log
     {
         buffer.nextBuffer();
         worker->notify(LoggerWorker::Signal::DumpDiagnostic);
-        writeLogsTimer.restart(writeLogsToFileInterval);
+        // writeLogsTimer.restart(writeLogsToFileInterval);
         return 1;
     }
 
@@ -226,7 +226,7 @@ namespace Log
     {
         LOG_INFO("Shutdown dump logs");
         worker->kill();
-        writeLogsTimer.stop();
+        // writeLogsTimer.stop();
         buffer.nextBuffer();
         return dumpToFile(purefs::dir::getLogsPath() / LOG_FILE_NAME);
     }
@@ -238,7 +238,7 @@ namespace Log
         if (size >= buffer.getCircularBufferSize()) {
             worker->notify(LoggerWorker::Signal::DumpFilledBuffer);
             buffer.nextBuffer();
-            writeLogsTimer.restart(writeLogsToFileInterval);
+            // writeLogsTimer.restart(writeLogsToFileInterval);
         }
     }
 

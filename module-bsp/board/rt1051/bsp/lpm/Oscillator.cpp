@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "Oscillator.hpp"
@@ -19,6 +19,11 @@ namespace bsp
     {
         if (!IsExternalOscillatorEnabled()) {
             CLOCK_InitExternalClk(0);
+
+            for (uint32_t i = 0; i < 5 * 1000; i++) {
+                asm("nop");
+            }
+
             /// Switch DCDC to use DCDC external OSC
             DCDC_SetClockSource(DCDC, kDCDC_ClockExternalOsc);
             /// Switch clock source to external OSC.

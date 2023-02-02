@@ -1,8 +1,10 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RT1051DriverPLL2.hpp"
 #include "board/rt1051/bsp/lpm/ClockState.hpp"
+
+#include "bsp/pwr/lpm.h"
 
 namespace drivers
 {
@@ -14,13 +16,18 @@ namespace drivers
     RT1051DriverPLL2::RT1051DriverPLL2() noexcept
     {
         if (!IsPLL2Enabled()) {
-            // Turn on regular band gap and wait for stable
+            /* Restore bandgap */
+            /* Turn on regular bandgap and wait for stable */
             CCM_ANALOG->MISC0_CLR = CCM_ANALOG_MISC0_REFTOP_PWD_MASK;
-            // It is recommended to wait for stabilization (documentation Low Power AN12085)
             while ((CCM_ANALOG->MISC0 & CCM_ANALOG_MISC0_REFTOP_VBGUP_MASK) == 0) {}
-            // Low power band gap disable
+            /* Low power band gap disable */
             XTALOSC24M->LOWPWR_CTRL_CLR = XTALOSC24M_LOWPWR_CTRL_LPBG_SEL_MASK;
-            PMU->MISC0_CLR              = constants::REFTOP_LOWPOWER_FLAG;
+            PMU->MISC0_CLR              = 0x00000004;
+
+            /* Wait CCM operation finishes */
+            CLOCK_CCM_HANDSHAKE_WAIT();
+            /* Take some delay */
+            LPM_DELAY(40);
 
             clkPLL2setup(CLK_ENABLE);
         }
@@ -33,12 +40,17 @@ namespace drivers
             !bsp::IsClockEnabled(kCLOCK_Lpspi4) && !bsp::IsClockEnabled(kCLOCK_Usdhc1) &&
             !bsp::IsClockEnabled(kCLOCK_Usdhc2)) {
 
-            clkPLL2setup(CLK_DISABLE);
+            clkPLL2setup(CLK_DISABLE); //    <---- ???
 
-            // disable regular band gap and enable low power band gap
-            PMU->MISC0_SET              = constants::REFTOP_LOWPOWER_FLAG;
+            /* Switch bandgap */
+            PMU->MISC0_SET              = 0x00000004;
             XTALOSC24M->LOWPWR_CTRL_SET = XTALOSC24M_LOWPWR_CTRL_LPBG_SEL_MASK;
             PMU->MISC0_SET              = CCM_ANALOG_MISC0_REFTOP_PWD_MASK;
+
+            /* Wait CCM operation finishes */
+            CLOCK_CCM_HANDSHAKE_WAIT();
+            /* Take some delay */
+            LPM_DELAY(40);
         }
     }
 

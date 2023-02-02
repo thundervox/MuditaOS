@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 /*
@@ -137,7 +137,7 @@ extern "C"
      * BELL EINK FRONTLIGHT PWM
      */
 
-#define PINMUX_EINK_FORNTLIGHT_PWM IOMUXC_GPIO_B1_15_FLEXPWM4_PWMA03
+#define PINMUX_EINK_FORNTLIGHT_PWM IOMUXC_GPIO_B1_15_GPIO2_IO31
     void PINMUX_InitEinkFrontlight(void);
 
 /**

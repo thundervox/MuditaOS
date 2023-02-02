@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <platform/rt1051/RT1051Platform.hpp>
@@ -21,8 +21,8 @@ RT1051Platform::RT1051Platform()
 
 void RT1051Platform::init()
 {
-    initFilesystem();
-    ::platform::Platform::initCommonUserFolders();
+    // initFilesystem();
+    //::platform::Platform::initCommonUserFolders();
 }
 
 void RT1051Platform::initFilesystem()

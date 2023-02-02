@@ -105,6 +105,7 @@ namespace bsp
         if (currentFrequency == freq) {
             return;
         }
+        LOG_INFO("IN CPU frequency changed to %d", static_cast<int>(freq));
         Change change = currentFrequency < freq ? Change::Up : Change::Down;
         if (Change::Up == change) {
             freq = onChangeUp(currentFrequency, freq);
@@ -136,7 +137,7 @@ namespace bsp
         if (Change::Down == change) {
             onChangeDown(freq);
         }
-        LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
+        LOG_INFO("OUT CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
         currentFrequency = freq;
     }
 

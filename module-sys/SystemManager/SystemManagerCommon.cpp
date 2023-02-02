@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <SystemManager/SystemManagerCommon.hpp>
@@ -118,7 +118,7 @@ namespace sys
                 CloseSystemHandler(CloseReason::LowBattery);
             });
 
-        Log::Logger::get().createTimer(this);
+        // Log::Logger::get().createTimer(this);
     }
 
     SystemManagerCommon::~SystemManagerCommon()
@@ -251,10 +251,10 @@ namespace sys
 
     void SystemManagerCommon::StartSystem(InitFunction sysInit, InitFunction appSpaceInit, DeinitFunction sysDeinit)
     {
-        cpuStatistics = std::make_unique<CpuStatistics>();
+        cpuStatistics  = std::make_unique<CpuStatistics>();
         taskStatistics = std::make_unique<TaskStatistics>();
         powerManager   = std::make_unique<PowerManager>(*cpuStatistics, *taskStatistics);
-        deviceManager = std::make_unique<DeviceManager>();
+        deviceManager  = std::make_unique<DeviceManager>();
 
         systemInit   = std::move(sysInit);
         userInit     = std::move(appSpaceInit);
