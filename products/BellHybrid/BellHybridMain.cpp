@@ -51,6 +51,7 @@
 
 #include "fsl_gpio.h"
 #include "fsl_rtwdog.h"
+#include "fsl_common.h"
 #include "bsp/pwr/lpm.h"
 
 #include <memory>
@@ -104,13 +105,15 @@ int main()
     // Level_6 = 528
 
     bsp::RT1051LPM cpu;
-    bsp::CpuFrequencyMHz freq = bsp::CpuFrequencyMHz::Level_6;
+    bsp::CpuFrequencyMHz freq = bsp::CpuFrequencyMHz::Level_0;
+    // constexpr std::uint32_t MHz = 1'000'000;
+    // constexpr std::uint32_t MaxCpuSpeed = 528'000'000;
     GPIO_PinInit(GPIO2, 31U, &gpio_config);
     RTWDOG_Deinit(RTWDOG);
 
-    std::uint8_t state = 0;
-    // const uint16_t tab[] = {4, 12, 24, 66, 132, 264, 528};
-    int tab2[] = {12, 24};
+    std::uint8_t state   = 0;
+    const uint16_t tab[] = {4, 12, 24, 66, 132, 264, 528};
+    // int tab2[] = {12, 24};
 
 #define LOCAL_UART 0
 
@@ -122,8 +125,10 @@ int main()
 
     while (1) {
         // int f = std::rand() % 7;
-        i++;
-        freq = static_cast<bsp::CpuFrequencyMHz>(tab2[i % 2]);
+        int f = i++ % 7;
+        // i++;
+        // freq = static_cast<bsp::CpuFrequencyMHz>(tab2[i % 2]);
+        freq = static_cast<bsp::CpuFrequencyMHz>(tab[f]);
 
 #if LOCAL_UART
         while (!(LPUART3->STAT & LPUART_STAT_TDRE_MASK)) {}
@@ -132,8 +137,9 @@ int main()
 
         cpu.SetCpuFrequency(freq);
 
-        for (uint8_t i = 0; i < 10; ++i) {
-            // LPM_DELAY(1'000'000);
+        for (uint8_t idx = 0; idx < 2 * f; ++idx) {
+            // const std::uint32_t cpuSpeed = CLOCK_GetCpuClkFreq();
+            // SDK_DelayAtLeastUs(200, cpuSpeed);
             GPIO_PinWrite(GPIO2, 31U, state);
             state = !state;
         }

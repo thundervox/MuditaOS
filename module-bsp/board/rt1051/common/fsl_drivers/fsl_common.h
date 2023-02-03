@@ -570,7 +570,17 @@ _Pragma("diag_suppress=Pm120")
      *
      * @param ptr The memory to be release.
      */ 
-    void SDK_Free(void *ptr);    
+    void SDK_Free(void *ptr);   
+
+    /*!
+    * @brief Delay at least for some time.
+    *  Please note that, this API uses while loop for delay, different run-time environments make the time not precise,
+    *  if precise delay count was needed, please implement a new delay function with hardware timer.
+    *
+    * @param delayTime_us  Delay time in unit of microsecond.
+    * @param coreClock_Hz  Core clock frequency with Hz.
+    */
+    void SDK_DelayAtLeastUs(uint32_t delayTime_us, uint32_t coreClock_Hz); 
 
 #if defined(__cplusplus)
 }

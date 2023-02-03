@@ -4,6 +4,7 @@
 #include "Oscillator.hpp"
 #include "ClockState.hpp"
 #include <fsl_dcdc.h>
+#include <fsl_common.h>
 #include <cstdint>
 
 namespace bsp
@@ -19,11 +20,8 @@ namespace bsp
     {
         if (!IsExternalOscillatorEnabled()) {
             CLOCK_InitExternalClk(0);
-
-            for (uint32_t i = 0; i < 5 * 1000; i++) {
-                asm("nop");
-            }
-
+            const std::uint32_t cpuSpeed = CLOCK_GetCpuClkFreq();
+            SDK_DelayAtLeastUs(200, cpuSpeed);
             /// Switch DCDC to use DCDC external OSC
             DCDC_SetClockSource(DCDC, kDCDC_ClockExternalOsc);
             /// Switch clock source to external OSC.
