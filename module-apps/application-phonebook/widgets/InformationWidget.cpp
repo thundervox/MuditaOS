@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "InformationWidget.hpp"
@@ -15,6 +15,8 @@ namespace gui
 {
     InformationWidget::InformationWidget(app::ApplicationCommon *app)
     {
+        LOG_WARN("-------------InformationWidget::InformationWidget( app::ApplicationCommon *app = %s)",
+                 app->GetName().c_str());
         setMargins(gui::Margins(style::widgets::leftMargin, style::margins::huge, 0, 0));
 
         setMinimumSize(phonebookStyle::informationWidget::w,
@@ -33,11 +35,14 @@ namespace gui
         titleLabel->activeItem = false;
 
         onLoadCallback = [=](std::shared_ptr<ContactRecord> contact) {
+            LOG_WARN("-------------InformationWidget::InformationWidget(...)   [=]onLoadCallback");
             auto createBox = [=](const utils::PhoneNumber::View &number, const UTF8 &font) {
+                LOG_WARN("-------------InformationWidget::InformationWidget(...)   [=]onLoadCallback -> [=]createBox");
                 auto numberHBox = new TextWithIconsWidget(vBox);
                 ActiveIconFactory factory(app);
                 numberHBox->addText(number.getFormatted(), font);
                 numberHBox->addIcon(factory.makeCallIcon(number));
+                // TODO: add flag to makeSMSIcon()
                 numberHBox->addIcon(factory.makeSMSIcon(number));
                 return numberHBox;
             };

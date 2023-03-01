@@ -14,6 +14,26 @@
 #include <string>
 #include <utility>
 
+class MemoOfSenderApp
+{ // TODO: move to separate file
+    std::optional<app::ApplicationName> nameOfSenderApp;
+
+  public:
+    MemoOfSenderApp(std::optional<app::ApplicationName> nameOfSenderApp = std::nullopt)
+        : nameOfSenderApp(nameOfSenderApp)
+    {}
+
+    [[nodiscard]] auto getNameOfSenderApp() const -> std::optional<app::ApplicationName>
+    {
+        return nameOfSenderApp;
+    }
+
+    auto setNameOfSenderApp(std::optional<app::ApplicationName> nameOfSender) -> void
+    {
+        nameOfSenderApp = nameOfSender;
+    }
+};
+
 class SMSThreadData : public gui::SwitchData
 {
   public:
@@ -42,7 +62,7 @@ class SMSSwitchData : public gui::SwitchData
     };
 };
 
-class SMSRequest : public gui::SwitchData
+class SMSRequest : public gui::SwitchData, public MemoOfSenderApp
 {
   protected:
     utils::PhoneNumber::View phoneNumber;
@@ -72,10 +92,8 @@ class SMSSendRequest : public SMSRequest
 class SMSSendTemplateRequest : public SMSRequest
 {
   public:
-    explicit SMSSendTemplateRequest(const utils::PhoneNumber::View &phoneNumber,
-                                    bool preventAutoLock                                = false,
-                                    std::optional<app::ApplicationName> nameOfSenderApp = std::nullopt)
-        : SMSRequest(phoneNumber), preventAutoLock(preventAutoLock), nameOfSenderApp(nameOfSenderApp)
+    explicit SMSSendTemplateRequest(const utils::PhoneNumber::View &phoneNumber, bool preventAutoLock = false)
+        : SMSRequest(phoneNumber), preventAutoLock(preventAutoLock)
     {}
     ~SMSSendTemplateRequest() override = default;
 
@@ -84,14 +102,8 @@ class SMSSendTemplateRequest : public SMSRequest
         return preventAutoLock;
     }
 
-    [[nodiscard]] auto getNameOfSenderApp() const -> std::optional<app::ApplicationName>
-    {
-        return nameOfSenderApp;
-    }
-
   private:
     bool preventAutoLock;
-    std::optional<app::ApplicationName> nameOfSenderApp;
 };
 
 class SMSTemplateSent : public gui::SwitchData

@@ -93,6 +93,8 @@ namespace gui
 
     bool SMSThreadViewWindow::onInput(const InputEvent &inputEvent)
     {
+        LOG_WARN("-------------------SMSThreadViewWindow::onInput(...)");
+        // TODO:  get nameOfSenderApp and handle it like in SMSTemplatesWindow.cpp [MOS-359]
         if (inputEvent.isShortRelease(KeyCode::KEY_ENTER) &&
             navBar->getText(nav_bar::Side::Center) !=
                 utils::translate(utils::translate(style::strings::common::send))) {

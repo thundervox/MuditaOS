@@ -434,7 +434,9 @@ namespace app
 
     ActionResult ApplicationMessages::handleCreateSmsAction(std::unique_ptr<gui::SwitchData> data)
     {
+        LOG_WARN("-------------------ApplicationMessages::handleCreateSmsAction(...)");
         if (auto sendRequest = dynamic_cast<SMSSendRequest *>(data.get()); sendRequest != nullptr) {
+            LOG_WARN("-------------------  sendRequest=%s", sendRequest->getNameOfSenderApp().value().c_str());
             const auto phoneNumber = sendRequest->getPhoneNumber();
             auto query             = std::make_unique<db::query::ThreadGetByNumber>(phoneNumber);
             auto task              = app::AsyncQuery::createFromQuery(std::move(query), db::Interface::Name::SMSThread);

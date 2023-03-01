@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "ContactDetailsModel.hpp"
@@ -62,6 +62,7 @@ void ContactDetailsModel::createData(bool showInformationWidget, bool showAddres
 
 void ContactDetailsModel::loadData(std::shared_ptr<ContactRecord> contactRecord)
 {
+    LOG_WARN("-------ContactDetailsModel::loadData(...)");
     clearData();
 
     auto isInformationDataExist = [&]() -> bool {

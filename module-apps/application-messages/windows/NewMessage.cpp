@@ -59,6 +59,8 @@ namespace gui
 
     bool NewMessageWindow::onInput(const InputEvent &inputEvent)
     {
+        LOG_WARN("-------------NewMessageWindow::onInput(...)");
+        // TODO:  get nameOfSenderApp and handle it like in SMSTemplatesWindow.cpp [MOS-359]
         return AppWindow::onInput(inputEvent);
     }
 
