@@ -20,48 +20,52 @@ namespace tags::fetcher
 
         std::optional<Tags> fetchTagsInternal(const std::string &filePath)
         {
-            const TagLib::ConstFileRef tagReader(filePath.c_str());
-            const auto tags = tagReader.tag();
-            if (!tagReader.isNull() && (tags != nullptr)) {
-                const auto properties = tagReader.audioProperties();
+            try {
+                const TagLib::ConstFileRef tagReader(filePath.c_str());
+                const auto tags = tagReader.tag();
+                if (!tagReader.isNull() && (tags != nullptr)) {
+                    const auto properties = tagReader.audioProperties();
 
-                constexpr bool unicode = true;
+                    constexpr bool unicode = true;
 
-                const auto artist  = tags->artist().to8Bit(unicode);
-                const auto album   = tags->album().to8Bit(unicode);
-                const auto genre   = tags->genre().to8Bit(unicode);
-                const auto year    = tags->year();
-                const auto comment = tags->comment().to8Bit(unicode);
-                const auto track   = tags->track();
+                    const auto artist  = tags->artist().to8Bit(unicode);
+                    const auto album   = tags->album().to8Bit(unicode);
+                    const auto genre   = tags->genre().to8Bit(unicode);
+                    const auto year    = tags->year();
+                    const auto comment = tags->comment().to8Bit(unicode);
+                    const auto track   = tags->track();
 
-                auto title = tags->title().to8Bit(unicode);
-                if (title.empty()) {
-                    title = getTitleFromFilePath(filePath);
+                    auto title = tags->title().to8Bit(unicode);
+                    if (title.empty()) {
+                        title = getTitleFromFilePath(filePath);
+                    }
+
+                    const uint32_t total_duration_s = properties->length();
+                    const uint32_t duration_min     = total_duration_s / utils::secondsInMinute;
+                    const uint32_t duration_hour    = duration_min / utils::secondsInMinute;
+                    const uint32_t duration_sec     = total_duration_s % utils::secondsInMinute;
+                    const uint32_t sample_rate      = properties->sampleRate();
+                    const uint32_t num_channel      = properties->channels();
+                    const uint32_t bitrate          = properties->bitrate();
+
+                    return Tags{total_duration_s,
+                                duration_hour,
+                                duration_min,
+                                duration_sec,
+                                sample_rate,
+                                num_channel,
+                                bitrate,
+                                artist,
+                                genre,
+                                title,
+                                album,
+                                year,
+                                filePath,
+                                comment,
+                                track};
                 }
-
-                const uint32_t total_duration_s = properties->length();
-                const uint32_t duration_min     = total_duration_s / utils::secondsInMinute;
-                const uint32_t duration_hour    = duration_min / utils::secondsInMinute;
-                const uint32_t duration_sec     = total_duration_s % utils::secondsInMinute;
-                const uint32_t sample_rate      = properties->sampleRate();
-                const uint32_t num_channel      = properties->channels();
-                const uint32_t bitrate          = properties->bitrate();
-
-                return Tags{total_duration_s,
-                            duration_hour,
-                            duration_min,
-                            duration_sec,
-                            sample_rate,
-                            num_channel,
-                            bitrate,
-                            artist,
-                            genre,
-                            title,
-                            album,
-                            year,
-                            filePath,
-                            comment,
-                            track};
+            }
+            catch (...) {
             }
 
             return {};

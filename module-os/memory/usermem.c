@@ -285,19 +285,19 @@ void *usermalloc(size_t xWantedSize)
 		}
 		( void ) xTaskResumeAll();
 
-		#if( configUSE_MALLOC_FAILED_HOOK == 1 )
-		{
-			if( pvReturn == NULL )
-			{
-				extern void vApplicationMallocFailedHook( void );
-				vApplicationMallocFailedHook();
-			}
-			else
-			{
-				mtCOVERAGE_TEST_MARKER();
-			}
-		}
-		#endif
+		// #if( configUSE_MALLOC_FAILED_HOOK == 1 )
+		// {
+		// 	if( pvReturn == NULL )
+		// 	{
+		// 		extern void vApplicationMallocFailedHook( void );
+		// 		vApplicationMallocFailedHook();
+		// 	}
+		// 	else
+		// 	{
+		// 		mtCOVERAGE_TEST_MARKER();
+		// 	}
+		// }
+		// #endif
 
 		configASSERT( ( ( ( size_t ) pvReturn ) & ( size_t ) usermemBYTE_ALIGNMENT_MASK ) == 0 );
 		return pvReturn;
