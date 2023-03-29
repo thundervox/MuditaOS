@@ -756,6 +756,7 @@ namespace sys
 
         auto ret = powerManager->UpdateCpuFrequency();
         cpuStatistics->TrackChange(ret);
+        powerManager->EnterWfiIfReady();
     }
 
     void SystemManagerCommon::UpdateResourcesAfterCpuFrequencyChange(bsp::CpuFrequencyMHz newFrequency)

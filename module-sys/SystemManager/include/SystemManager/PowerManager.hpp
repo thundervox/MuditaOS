@@ -68,7 +68,7 @@ namespace sys
         bool IsCpuPermanentFrequency();
         void SetPermanentFrequency(bsp::CpuFrequencyMHz freq);
         void ResetPermanentFrequency();
-
+        void EnterWfiIfReady();
         void LogPowerManagerStatistics();
 
       private:

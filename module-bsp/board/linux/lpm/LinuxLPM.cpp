@@ -33,4 +33,8 @@ namespace bsp
 
     void LinuxLPM::DisableDcdcPowerSaveMode()
     {}
+
+    void LinuxLPM::EnterWfiMode()
+    {}
+
 } // namespace bsp
