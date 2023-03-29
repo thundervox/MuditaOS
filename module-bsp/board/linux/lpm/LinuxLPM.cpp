@@ -45,4 +45,7 @@ namespace bsp
     void LinuxLPM::SwitchToLowPowerModeLDO()
     {}
 
+    void LinuxLPM::EnterWfiMode()
+    {}
+
 } // namespace bsp

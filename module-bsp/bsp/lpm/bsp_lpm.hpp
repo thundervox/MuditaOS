@@ -53,6 +53,8 @@ namespace bsp
         virtual void SwitchToRegularModeLDO()  = 0;
         virtual void SwitchToLowPowerModeLDO() = 0;
 
+        virtual void EnterWfiMode() = 0;
+
       protected:
         CpuFrequencyMHz currentFrequency = CpuFrequencyMHz::Level_6;
     };

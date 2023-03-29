@@ -14,6 +14,8 @@ namespace bsp
 
         void SwitchToRegularModeLDO() final;
         void SwitchToLowPowerModeLDO() final;
+
+        void EnterWfiMode() final;
     };
 
 } // namespace bsp

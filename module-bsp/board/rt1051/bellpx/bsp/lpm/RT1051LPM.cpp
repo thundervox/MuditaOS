@@ -2,6 +2,7 @@
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RT1051LPM.hpp"
+#include "WfiController.hpp"
 #include <board.h>
 #include <board/BoardDefinitions.hpp>
 
@@ -24,5 +25,10 @@ namespace bsp
     {
         DisableIRQ(ANATOP_EVENT0_IRQn);
         RT1051LPMCommon::LowPowerLDOMode();
+    }
+
+    void RT1051LPM::EnterWfiMode()
+    {
+        enterWfiMode();
     }
 } // namespace bsp

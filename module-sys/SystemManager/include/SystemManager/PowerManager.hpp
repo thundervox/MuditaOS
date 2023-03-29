@@ -68,7 +68,7 @@ namespace sys
         bool IsCpuPernamentFrequency();
         void SetPernamentFrequency(bsp::CpuFrequencyMHz freq);
         void ResetPernamentFrequency();
-
+        void EnterWfiIfReady();
         void LogPowerManagerStatistics();
 
       private:

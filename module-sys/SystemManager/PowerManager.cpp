@@ -199,6 +199,13 @@ namespace sys
         lastCpuFrequencyChangeTimestamp = ticks;
     }
 
+    void PowerManager::EnterWfiIfReady()
+    {
+        if (lowPowerControl->GetCurrentFrequencyLevel() == bsp::getPowerProfile().minimalFrequency) {
+            lowPowerControl->EnterWfiMode();
+        }
+    }
+
     void PowerManager::LogPowerManagerStatistics()
     {
         const TickType_t tickCount          = xTaskGetTickCount();
