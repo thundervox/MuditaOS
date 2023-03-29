@@ -18,5 +18,7 @@ namespace bsp
 
         void EnableDcdcPowerSaveMode() final;
         void DisableDcdcPowerSaveMode() final;
+
+        void EnterWfiMode() final;
     };
 } // namespace bsp
