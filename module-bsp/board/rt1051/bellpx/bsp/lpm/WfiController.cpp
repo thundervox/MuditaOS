@@ -9,6 +9,8 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
+#include <log/log.hpp>
+
 namespace bsp
 {
     static inline std::uint32_t HighFrequencyTimerTicksToMs(std::uint32_t ticks)
@@ -19,6 +21,7 @@ namespace bsp
     void enterWfiMode()
     {
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
+        LOG_INFO("*** WFI IN ***");
         __DSB();
         __WFI();
         __ISB();
@@ -26,5 +29,6 @@ namespace bsp
         const auto sleepTimeMs =
             HighFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
         xTaskCatchUpTicks(sleepTimeMs);
+        LOG_INFO("*** WFI OUT sleep time: %ld ***", sleepTimeMs);
     }
 } // namespace bsp
