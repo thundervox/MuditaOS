@@ -4,6 +4,7 @@
 #include <SystemManager/CpuSentinel.hpp>
 #include "system/messages/RequestCpuFrequencyMessage.hpp"
 #include "system/messages/HoldCpuFrequency.hpp"
+#include "system/messages/BlockWfiMode.hpp"
 #include "system/Constants.hpp"
 #include <Timers/TimerFactory.hpp>
 #include <memory>
@@ -48,6 +49,16 @@ namespace sys
             owner->bus.sendUnicast(std::move(msg), service::name::system_manager);
             currentFrequencyToHold = bsp::CpuFrequencyMHz::Level_0;
             currentReason          = std::string("down: ") + owner->getCurrentProcessing();
+        }
+    }
+
+    void CpuSentinel::BlockWfiMode(bool block)
+    {
+        if (blockWfiMode != block) {
+            auto msg = std::make_shared<sys::BlockWfiModeMessage>(GetName(), block, xTaskGetCurrentTaskHandle());
+            owner->bus.sendUnicast(std::move(msg), service::name::system_manager);
+            blockWfiMode = block;
+            // ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100));
         }
     }
 

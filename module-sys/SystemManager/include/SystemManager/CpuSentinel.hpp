@@ -29,6 +29,8 @@ namespace sys
         virtual void HoldMinimumFrequency(bsp::CpuFrequencyMHz frequencyToHold);
         virtual void ReleaseMinimumFrequency();
 
+        void BlockWfiMode(bool block);
+
         [[nodiscard]] auto GetFrequency() const noexcept -> bsp::CpuFrequencyMHz;
 
         void CpuFrequencyHasChanged(bsp::CpuFrequencyMHz newFrequency);
@@ -47,6 +49,7 @@ namespace sys
         std::atomic<bsp::CpuFrequencyMHz> currentFrequency{bsp::CpuFrequencyMHz::Level_0};
         sys::Service *owner{nullptr};
         TickType_t holdTicks;
+        bool blockWfiMode{false};
 
         /// function called from the PowerManager context
         /// to update resources immediately

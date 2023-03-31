@@ -24,6 +24,7 @@
 #include <system/messages/SentinelRegistrationMessage.hpp>
 #include <system/messages/RequestCpuFrequencyMessage.hpp>
 #include <system/messages/HoldCpuFrequency.hpp>
+#include <system/messages/BlockWfiMode.hpp>
 #include <time/ScopedTime.hpp>
 #include "Timers/TimerFactory.hpp"
 #include <service-appmgr/StartupType.hpp>
@@ -651,6 +652,15 @@ namespace sys
         connect(typeid(sys::ReleaseCpuFrequencyMessage), [this](sys::Message *message) -> sys::MessagePointer {
             auto msg = static_cast<sys::ReleaseCpuFrequencyMessage *>(message);
             powerManager->ResetCpuFrequencyRequest(msg->getName());
+            return sys::MessageNone{};
+        });
+
+        connect(typeid(sys::BlockWfiModeMessage), [this](sys::Message *message) -> sys::MessagePointer {
+            auto msg = static_cast<sys::BlockWfiModeMessage *>(message);
+            powerManager->BlockWfiMode(msg->getName(), msg->getRequest());
+            // if (msg->getHandle() != nullptr) {
+            //     xTaskNotifyGive(msg->getHandle());
+            // }
             return sys::MessageNone{};
         });
 
