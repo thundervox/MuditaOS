@@ -65,6 +65,7 @@ namespace sys
         void RemoveSentinel(std::string sentinelName) const;
         void SetCpuFrequencyRequest(const std::string &sentinelName, bsp::CpuFrequencyMHz request);
         void ResetCpuFrequencyRequest(const std::string &sentinelName);
+        void BlockWfiMode(const std::string &sentinelName, bool block);
         bool IsCpuPernamentFrequency();
         void SetPernamentFrequency(bsp::CpuFrequencyMHz freq);
         void ResetPernamentFrequency();

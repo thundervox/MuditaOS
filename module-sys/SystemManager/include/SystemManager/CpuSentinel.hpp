@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -29,6 +29,8 @@ namespace sys
         virtual void HoldMinimumFrequency(bsp::CpuFrequencyMHz frequencyToHold);
         virtual void ReleaseMinimumFrequency();
 
+        void BlockWfiMode(bool block);
+
         [[nodiscard]] auto GetFrequency() const noexcept -> bsp::CpuFrequencyMHz;
 
         void CpuFrequencyHasChanged(bsp::CpuFrequencyMHz newFrequency);
@@ -43,6 +45,7 @@ namespace sys
         bsp::CpuFrequencyMHz currentFrequencyToHold{bsp::CpuFrequencyMHz::Level_0};
         std::atomic<bsp::CpuFrequencyMHz> currentFrequency{bsp::CpuFrequencyMHz::Level_0};
         sys::Service *owner{nullptr};
+        bool blockWfiMode{false};
 
         /// function called from the PowerManager context
         /// to update resources immediately

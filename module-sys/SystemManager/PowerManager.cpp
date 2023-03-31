@@ -153,6 +153,11 @@ namespace sys
         cpuStatistics.TrackChange(ret);
     }
 
+    void PowerManager::BlockWfiMode(const std::string &sentinelName, bool block)
+    {
+        cpuGovernor->BlockWfiMode(sentinelName, block);
+    }
+
     bool PowerManager::IsCpuPernamentFrequency()
     {
         return cpuAlgorithms->get(sys::cpu::AlgoID::FrequencyHold) != nullptr;

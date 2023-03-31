@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -20,10 +20,13 @@ namespace sys
         [[nodiscard]] auto GetSentinel() const noexcept -> SentinelPointer;
         [[nodiscard]] auto GetRequestedFrequency() const noexcept -> bsp::CpuFrequencyMHz;
         void SetRequestedFrequency(bsp::CpuFrequencyMHz newFrequency);
+        void BlockWfiMode(bool request);
+        [[nodiscard]] auto IsWfiBlocked() const noexcept -> bool;
 
       private:
         SentinelPointer sentinelPtr;
         bsp::CpuFrequencyMHz requestedFrequency;
+        bool wfiBlocked{false};
     };
 
     using GovernorSentinelPointer = std::unique_ptr<GovernorSentinel>;
@@ -42,8 +45,10 @@ namespace sys
 
         void SetCpuFrequencyRequest(const std::string &sentinelName, bsp::CpuFrequencyMHz request);
         void ResetCpuFrequencyRequest(const std::string &sentinelName);
+        void BlockWfiMode(const std::string &sentinelName, bool request);
 
         [[nodiscard]] auto GetMinimumFrequencyRequested() noexcept -> sentinel::View;
+        [[nodiscard]] auto IsWfiBlocked() noexcept -> bool;
         void InformSentinelsAboutCpuFrequencyChange(bsp::CpuFrequencyMHz newFrequency) noexcept;
 
       private:
