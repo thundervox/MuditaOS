@@ -83,6 +83,8 @@ namespace bsp
             if (driverSEMC) {
                 driverSEMC->SwitchToPeripheralClockSource();
             }
+            // Allow entering WFI mode
+            AllowEnteringWfiMode();
         }
     }
 

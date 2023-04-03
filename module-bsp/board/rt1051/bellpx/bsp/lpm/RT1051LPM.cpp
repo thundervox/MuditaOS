@@ -12,8 +12,18 @@ namespace bsp
     void RT1051LPM::DisableDcdcPowerSaveMode()
     {}
 
-    void RT1051LPM::EnterWfiMode()
+    void RT1051LPM::AllowEnteringWfiMode()
     {
-        enterWfiMode();
+        allowEnteringWfiMode();
+    }
+
+    void RT1051LPM::BlockEnteringWfiMode()
+    {
+        blockEnteringWfiMode();
+    }
+
+    void RT1051LPM::EnterWfiModeIfAllowed()
+    {
+        enterWfiModeIfAllowed();
     }
 } // namespace bsp
