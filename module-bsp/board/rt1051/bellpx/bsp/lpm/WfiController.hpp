@@ -5,5 +5,8 @@
 
 namespace bsp
 {
-    void enterWfiMode();
+    void allowEnteringWfiMode();
+    void blockEnteringWfiMode();
+    bool isWfiModeAllowed();
+    void enterWfiModeIfAllowed();
 } // namespace bsp
