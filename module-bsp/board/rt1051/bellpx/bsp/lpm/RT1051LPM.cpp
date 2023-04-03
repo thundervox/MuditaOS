@@ -4,7 +4,6 @@
 #include "RT1051LPM.hpp"
 #include "WfiController.hpp"
 #include <board.h>
-#include <board/BoardDefinitions.hpp>
 
 namespace bsp
 {
@@ -27,8 +26,18 @@ namespace bsp
         RT1051LPMCommon::LowPowerLDOMode();
     }
 
-    void RT1051LPM::EnterWfiMode()
+    void RT1051LPM::AllowEnteringWfiMode()
     {
-        enterWfiMode();
+        allowEnteringWfiMode();
+    }
+
+    void RT1051LPM::BlockEnteringWfiMode()
+    {
+        blockEnteringWfiMode();
+    }
+
+    void RT1051LPM::EnterWfiModeIfAllowed()
+    {
+        enterWfiModeIfAllowed();
     }
 } // namespace bsp

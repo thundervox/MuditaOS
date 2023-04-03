@@ -53,7 +53,13 @@ namespace bsp
         RT1051LPMCommon::LowPowerLDOMode();
     }
 
-    void RT1051LPM::EnterWfiMode()
+    void RT1051LPM::AllowEnteringWfiMode()
+    {}
+
+    void RT1051LPM::BlockEnteringWfiMode()
+    {}
+
+    void RT1051LPM::EnterWfiModeIfAllowed()
     {}
 
 } // namespace bsp

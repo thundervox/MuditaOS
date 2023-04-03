@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <SystemManager/CpuSentinel.hpp>
@@ -18,7 +18,7 @@ namespace sys
     CpuSentinel::CpuSentinel(std::string name,
                              sys::Service *service,
                              std::function<void(bsp::CpuFrequencyMHz)> callback)
-        : name(name), owner(service), callback(callback)
+        : name(std::move(name)), owner(service), callback(std::move(callback))
     {}
 
     [[nodiscard]] auto CpuSentinel::GetName() const noexcept -> std::string
@@ -34,7 +34,7 @@ namespace sys
             owner->bus.sendUnicast(std::move(msg), service::name::system_manager);
             currentFrequencyToHold = frequencyToHold;
             currentReason          = std::string("up: ") + owner->getCurrentProcessing() + std::string(" req: ") +
-                            std::to_string(int(frequencyToHold));
+                            std::to_string(static_cast<int>(frequencyToHold));
             ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100));
         }
     }
@@ -68,10 +68,11 @@ namespace sys
     }
 
     TimedCpuSentinel::TimedCpuSentinel(std::string name, sys::Service *service)
-        : CpuSentinel(name, service), timerHandle{sys::TimerFactory::createSingleShotTimer(
-                                          owner, "holdFrequencyTimer", defaultHoldFrequencyTime, [this](sys::Timer &) {
-                                              ReleaseMinimumFrequency();
-                                          })}
+        : CpuSentinel(std::move(name), service), timerHandle{sys::TimerFactory::createSingleShotTimer(
+                                                     owner,
+                                                     "holdFrequencyTimer",
+                                                     defaultHoldFrequencyTime,
+                                                     [this](sys::Timer &) { ReleaseMinimumFrequency(); })}
     {}
 
     TimedCpuSentinel::~TimedCpuSentinel()

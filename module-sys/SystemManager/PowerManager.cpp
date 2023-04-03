@@ -104,7 +104,7 @@ namespace sys
 
     [[nodiscard]] cpu::UpdateResult PowerManager::UpdateCpuFrequency()
     {
-        uint32_t cpuLoad = cpuStatistics.GetPercentageCpuLoad();
+        const std::uint32_t cpuLoad = cpuStatistics.GetPercentageCpuLoad();
         cpu::UpdateResult retval;
         cpu::AlgorithmData data{
             cpuLoad, lowPowerControl->GetCurrentFrequencyLevel(), cpuGovernor->GetMinimumFrequencyRequested()};
@@ -136,7 +136,7 @@ namespace sys
 
     void PowerManager::RemoveSentinel(std::string sentinelName) const
     {
-        cpuGovernor->RemoveSentinel(sentinelName);
+        cpuGovernor->RemoveSentinel(std::move(sentinelName));
     }
 
     void PowerManager::SetCpuFrequencyRequest(const std::string &sentinelName, bsp::CpuFrequencyMHz request)
@@ -201,8 +201,16 @@ namespace sys
 
     void PowerManager::EnterWfiIfReady()
     {
+        constexpr auto maxTimeToNextEvent = 2000;
         if (lowPowerControl->GetCurrentFrequencyLevel() == bsp::getPowerProfile().minimalFrequency) {
-            lowPowerControl->EnterWfiMode();
+            const std::int32_t timeToNextEvent = (std::int32_t)tst_xNextExpireTime - (std::int32_t)xTaskGetTickCount();
+            // LOG_ERROR("*** timeToNextEvent: %ld ms ***", timeToNextEvent);
+            if (timeToNextEvent > maxTimeToNextEvent) {
+                LOG_ERROR("*** timeToNextEvent: %" PRId32 " ms ***", timeToNextEvent);
+                // LOG_ERROR("*** WFI blocked: %s timeToNextEvent: %ld ***", cpuGovernor->IsWfiBlocked() ? "true" :
+                // "false", timeToNextEvent);
+                lowPowerControl->EnterWfiModeIfAllowed();
+            }
         }
     }
 

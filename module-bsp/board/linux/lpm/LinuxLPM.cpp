@@ -45,7 +45,13 @@ namespace bsp
     void LinuxLPM::SwitchToLowPowerModeLDO()
     {}
 
-    void LinuxLPM::EnterWfiMode()
+    void LinuxLPM::AllowEnteringWfiMode()
+    {}
+
+    void LinuxLPM::BlockEnteringWfiMode()
+    {}
+
+    void LinuxLPM::EnterWfiModeIfAllowed()
     {}
 
 } // namespace bsp

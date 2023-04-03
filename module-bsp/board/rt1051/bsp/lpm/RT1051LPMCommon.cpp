@@ -92,6 +92,8 @@ namespace bsp
             }
             // Switch DCDC to DCM mode to reduce current consumption
             DCDC_BootIntoDCM(DCDC);
+            // Allow entering WFI mode
+            AllowEnteringWfiMode();
         }
     }
 
