@@ -221,17 +221,7 @@ namespace sys
 
     void PowerManager::EnterWfiIfReady()
     {
-        constexpr auto maxTimeToNextEvent = 2000;
-        if (lowPowerControl->GetCurrentFrequencyLevel() == bsp::getPowerProfile().minimalFrequency) {
-            const std::int32_t timeToNextEvent = (std::int32_t)tst_xNextExpireTime - (std::int32_t)xTaskGetTickCount();
-            // LOG_ERROR("*** timeToNextEvent: %ld ms ***", timeToNextEvent);
-            if (timeToNextEvent > maxTimeToNextEvent) {
-                LOG_ERROR("*** timeToNextEvent: %" PRId32 " ms ***", timeToNextEvent);
-                // LOG_ERROR("*** WFI blocked: %s timeToNextEvent: %ld ***", cpuGovernor->IsWfiBlocked() ? "true" :
-                // "false", timeToNextEvent);
-                lowPowerControl->EnterWfiModeIfAllowed();
-            }
-        }
+        lowPowerControl->EnterWfiModeIfAllowed();
     }
 
     void PowerManager::LogPowerManagerStatistics()
