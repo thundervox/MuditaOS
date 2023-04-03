@@ -43,7 +43,13 @@ namespace bsp
         gpio_2->WritePin(static_cast<std::uint32_t>(BoardDefinitions::DCDC_INVERTER_MODE_PIN), 1);
     }
 
-    void RT1051LPM::EnterWfiMode()
+    void RT1051LPM::AllowEnteringWfiMode()
+    {}
+
+    void RT1051LPM::BlockEnteringWfiMode()
+    {}
+
+    void RT1051LPM::EnterWfiModeIfAllowed()
     {}
 
 } // namespace bsp
