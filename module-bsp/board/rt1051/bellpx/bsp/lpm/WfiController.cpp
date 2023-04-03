@@ -7,6 +7,8 @@
 #include <time/time_constants.hpp>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <ticks.hpp>
+#include <timers.h>
 
 #include <log/log.hpp>
 
@@ -14,11 +16,25 @@ namespace bsp
 {
     namespace
     {
+        constexpr auto timersInactivityTime{60 * utils::time::milisecondsInSecond};
         bool wfiModeAllowed = false;
 
         inline constexpr std::uint32_t highFrequencyTimerTicksToMs(std::uint32_t ticks)
         {
             return ticks / (configRUN_TIME_STATS_CLOCK_HZ / utils::time::milisecondsInSecond);
+        }
+
+        bool isTimerTaskScheduledSoon()
+        {
+            const auto currentTick          = cpp_freertos::Ticks::GetTicks();
+            const auto timersNextWakeUpTick = xTimerGetNextWakeUpTime();
+
+            if (timersNextWakeUpTick > currentTick) {
+                return (cpp_freertos::Ticks::TicksToMs(timersNextWakeUpTick - currentTick) < timersInactivityTime)
+                           ? true
+                           : false;
+            }
+            return true;
         }
     } // namespace
 
@@ -42,6 +58,9 @@ namespace bsp
     void enterWfiModeIfAllowed()
     {
         if (!isWfiModeAllowed()) {
+            return;
+        }
+        if (isTimerTaskScheduledSoon()) {
             return;
         }
 
