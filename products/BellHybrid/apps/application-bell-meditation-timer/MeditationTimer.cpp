@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "MeditationTimer.hpp"
@@ -23,6 +23,8 @@
 #include <common/windows/BellFinishedWindow.hpp>
 #include <common/windows/SessionPausedWindow.hpp>
 
+#include <system/messages/SentinelRegistrationMessage.hpp>
+
 namespace app
 {
     MeditationTimer::MeditationTimer(std::string name,
@@ -41,6 +43,11 @@ namespace app
         if (ret != sys::ReturnCodes::Success) {
             return ret;
         }
+
+        cpuSentinel                  = std::make_shared<sys::CpuSentinel>(defaultName, this);
+        auto sentinelRegistrationMsg = std::make_shared<sys::SentinelRegistrationMessage>(cpuSentinel);
+        bus.sendUnicast(sentinelRegistrationMsg, service::name::system_manager);
+        cpuSentinel->BlockWfiMode(true);
 
         audioModel         = std::make_unique<AudioModel>(this);
         chimeIntervalModel = std::make_unique<meditation::models::ChimeInterval>(this);
@@ -118,5 +125,8 @@ namespace app
 
         return handleAsyncResponse(resp);
     }
-    MeditationTimer::~MeditationTimer() = default;
+    MeditationTimer::~MeditationTimer()
+    {
+        cpuSentinel->BlockWfiMode(false);
+    }
 } // namespace app

@@ -636,9 +636,9 @@ namespace sys
         connect(typeid(sys::BlockWfiModeMessage), [this](sys::Message *message) -> sys::MessagePointer {
             auto msg = static_cast<sys::BlockWfiModeMessage *>(message);
             powerManager->BlockWfiMode(msg->getName(), msg->getRequest());
-            // if (msg->getHandle() != nullptr) {
-            //     xTaskNotifyGive(msg->getHandle());
-            // }
+            if (msg->getHandle() != nullptr) {
+                xTaskNotifyGive(msg->getHandle());
+            }
             return sys::MessageNone{};
         });
 

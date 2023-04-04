@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -27,6 +27,7 @@ namespace app
       private:
         std::unique_ptr<AbstractAudioModel> audioModel;
         std::unique_ptr<app::bell_settings::AbstractFrontlightModel> frontLightModel;
+        std::shared_ptr<sys::CpuSentinel> cpuSentinel;
         void onStop() override;
 
       public:

@@ -205,20 +205,12 @@ namespace sys
 
     [[nodiscard]] auto CpuGovernor::IsWfiBlocked() noexcept -> bool
     {
-        bool isWfiBlocked = false;
         for (auto &sentinel : sentinels) {
             if (sentinel->IsWfiBlocked()) {
-                // return true;
-                isWfiBlocked             = true;
-                auto sentinelWeakPointer = sentinel->GetSentinel();
-                if (!sentinelWeakPointer.expired()) {
-                    std::shared_ptr<CpuSentinel> sharedResource = sentinelWeakPointer.lock();
-                    LOG_ERROR("*** WFI blocked: %s ***", sharedResource->GetName().c_str());
-                }
+                return true;
             }
         }
-        // return false;
-        return isWfiBlocked;
+        return false;
     }
 
     void CpuGovernor::InformSentinelsAboutCpuFrequencyChange(bsp::CpuFrequencyMHz newFrequency) noexcept
