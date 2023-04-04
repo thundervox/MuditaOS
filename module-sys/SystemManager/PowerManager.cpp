@@ -226,7 +226,9 @@ namespace sys
 
     void PowerManager::EnterWfiIfReady()
     {
-        lowPowerControl->EnterWfiModeIfAllowed();
+        if (!cpuGovernor->IsWfiBlocked()) {
+            lowPowerControl->EnterWfiModeIfAllowed();
+        }
     }
 
     void PowerManager::LogPowerManagerStatistics()
