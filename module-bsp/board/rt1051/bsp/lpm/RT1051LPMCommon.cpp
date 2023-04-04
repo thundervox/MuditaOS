@@ -63,6 +63,9 @@ namespace bsp
     void RT1051LPMCommon::onChangeUp(CpuFrequencyMHz freq, CpuFrequencyMHz newFrequency)
     {
         if ((freq <= CpuFrequencyMHz::Level_1) && (newFrequency > CpuFrequencyMHz::Level_1)) {
+            /* Block entering WFI mode */
+            BlockEnteringWfiMode();
+
             /* Switch to external crystal oscillator */
             SwitchOscillatorSource(LowPowerMode::OscillatorSource::External);
 
@@ -83,7 +86,7 @@ namespace bsp
             if (driverSEMC) {
                 driverSEMC->SwitchToPeripheralClockSource();
             }
-            // Allow entering WFI mode
+            /* Allow entering WFI mode */
             AllowEnteringWfiMode();
         }
     }
