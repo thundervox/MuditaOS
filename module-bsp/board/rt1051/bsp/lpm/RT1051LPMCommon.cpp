@@ -65,6 +65,8 @@ namespace bsp
     CpuFrequencyMHz RT1051LPMCommon::onChangeUp(CpuFrequencyMHz freq, bsp::CpuFrequencyMHz newFrequency)
     {
         if ((freq <= CpuFrequencyMHz::Level_1) && (newFrequency > CpuFrequencyMHz::Level_1)) {
+            // Block entering WFI mode
+            BlockEnteringWfiMode();
             // Switch DCDC to CCM mode to improve stability
             DCDC_BootIntoCCM(DCDC);
             // Switch external RAM clock source to PLL2
