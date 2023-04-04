@@ -28,10 +28,8 @@ namespace sys
         explicit CpuFrequencyMonitor(const std::string &name);
 
         [[nodiscard]] auto GetName() const noexcept -> std::string;
-        [[nodiscard]] auto GetPeriodRuntimePercentage(const TickType_t periodTicksIncrease) const noexcept
-            -> std::uint32_t;
-        [[nodiscard]] auto GetTotalRuntimePercentage(const TickType_t totalTicksIncrease) const noexcept
-            -> std::uint32_t;
+        [[nodiscard]] auto GetPeriodRuntimePercentage(TickType_t periodTicksIncrease) const noexcept -> std::uint32_t;
+        [[nodiscard]] auto GetTotalRuntimePercentage(TickType_t totalTicksIncrease) const noexcept -> std::uint32_t;
         void IncreaseTicks(TickType_t ticks);
         void SavePeriodTicks();
 
@@ -44,7 +42,7 @@ namespace sys
     class PowerManager
     {
       public:
-        explicit PowerManager(CpuStatistics &cpuStats, TaskStatistics &taskStats);
+        PowerManager(CpuStatistics &cpuStats, TaskStatistics &taskStats);
         ~PowerManager();
 
         int32_t PowerOff();
@@ -74,7 +72,6 @@ namespace sys
 
       private:
         void SetCpuFrequency(bsp::CpuFrequencyMHz freq);
-
         void UpdateCpuFrequencyMonitor(bsp::CpuFrequencyMHz currentFreq);
 
         TickType_t lastCpuFrequencyChangeTimestamp{0};

@@ -16,8 +16,11 @@ namespace bsp
 {
     namespace
     {
-        constexpr auto timersInactivityTime{60 * utils::time::milisecondsInSecond};
         bool wfiModeAllowed = false;
+
+        /* RTC wakes up CPU every minute, so go to sleep only if next timer will
+         * trigger after more than minute - this way no event will ever be missed */
+        constexpr auto timersInactivityTimeMs{60 * utils::time::milisecondsInSecond};
 
         inline constexpr std::uint32_t highFrequencyTimerTicksToMs(std::uint32_t ticks)
         {
@@ -30,9 +33,7 @@ namespace bsp
             const auto timersNextWakeUpTick = xTimerGetNextWakeUpTime();
 
             if (timersNextWakeUpTick > currentTick) {
-                return (cpp_freertos::Ticks::TicksToMs(timersNextWakeUpTick - currentTick) < timersInactivityTime)
-                           ? true
-                           : false;
+                return (cpp_freertos::Ticks::TicksToMs(timersNextWakeUpTick - currentTick) < timersInactivityTimeMs);
             }
             return true;
         }
@@ -71,14 +72,14 @@ namespace bsp
         __WFI();
         __ISB(); // See https://stackoverflow.com/questions/47022456/why-is-an-isb-needed-after-wfi-in-cortex-m-freertos
 
-        /* Block WFI mode so that CPU wakes up fully and goes to sleep
-         * only after frequency has dropped back to the lowest one */
+        /* Block WFI mode so that OS wakes up fully and goes to sleep only after
+         * frequency has dropped back to the lowest level */
         blockEnteringWfiMode();
 
         const auto exitWfiTimerTicks = ulHighFrequencyTimerTicks();
         const auto sleepTimeMs =
             highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
-        xTaskCatchUpTicks(pdMS_TO_TICKS(sleepTimeMs));
+        xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(sleepTimeMs));
         LOG_INFO("*** WFI OUT sleep time: %ld ***", sleepTimeMs);
     }
 } // namespace bsp
