@@ -659,18 +659,18 @@ namespace sys
             return sys::MessageNone{};
         });
 
-        connect(typeid(sys::IsCpuPernament), [this](sys::Message *message) -> sys::MessagePointer {
-            return std::make_shared<sys::IsCpuPernamentResponse>(powerManager->IsCpuPernamentFrequency());
+        connect(typeid(sys::IsCpuPermanent), [this](sys::Message *message) -> sys::MessagePointer {
+            return std::make_shared<sys::IsCpuPermanentResponse>(powerManager->IsCpuPermanentFrequency());
         });
 
         connect(typeid(sys::HoldCpuFrequencyPermanentlyMessage), [this](sys::Message *message) -> sys::MessagePointer {
             auto msg = static_cast<sys::HoldCpuFrequencyPermanentlyMessage *>(message);
-            powerManager->SetPernamentFrequency(msg->request);
+            powerManager->SetPermanentFrequency(msg->request);
             return std::make_shared<sys::HoldCpuFrequencyPermanentlyResponse>();
         });
 
         connect(typeid(sys::ReleaseCpuPermanentFrequencyMessage), [this](sys::Message *message) -> sys::MessagePointer {
-            powerManager->ResetPernamentFrequency();
+            powerManager->ResetPermanentFrequency();
             return std::make_shared<sys::HoldCpuFrequencyPermanentlyResponse>();
         });
 
