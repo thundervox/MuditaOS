@@ -28,6 +28,7 @@
 #include <common/models/BatteryModel.hpp>
 #include <common/models/AudioModel.hpp>
 #include <audio/AudioMessage.hpp>
+#include <system/messages/SentinelRegistrationMessage.hpp>
 
 #include <log/log.hpp>
 
@@ -43,7 +44,10 @@ namespace app
     {
         bus.channels.push_back(sys::BusChannel::ServiceAudioNotifications);
     }
-    ApplicationBellRelaxation::~ApplicationBellRelaxation() = default;
+    ApplicationBellRelaxation::~ApplicationBellRelaxation()
+    {
+        cpuSentinel->BlockWfiMode(false);
+    }
 
     sys::ReturnCodes ApplicationBellRelaxation::InitHandler()
     {
@@ -51,6 +55,11 @@ namespace app
         if (ret != sys::ReturnCodes::Success) {
             return ret;
         }
+
+        cpuSentinel                  = std::make_shared<sys::CpuSentinel>(applicationBellRelaxationName, this);
+        auto sentinelRegistrationMsg = std::make_shared<sys::SentinelRegistrationMessage>(cpuSentinel);
+        bus.sendUnicast(sentinelRegistrationMsg, service::name::system_manager);
+        cpuSentinel->BlockWfiMode(true);
 
         batteryModel = std::make_unique<app::BatteryModel>(this);
         player       = std::make_unique<relaxation::RelaxationPlayer>(*audioModel);

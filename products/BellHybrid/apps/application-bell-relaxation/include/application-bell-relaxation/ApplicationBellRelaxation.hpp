@@ -33,6 +33,7 @@ namespace app
         std::unique_ptr<AbstractAudioModel> audioModel;
         std::unique_ptr<AbstractBatteryModel> batteryModel;
         std::unique_ptr<relaxation::RelaxationPlayer> player;
+        std::shared_ptr<sys::CpuSentinel> cpuSentinel;
 
         void onStop() override;
         sys::MessagePointer handleSwitchWindow(sys::Message *msgl) override;
