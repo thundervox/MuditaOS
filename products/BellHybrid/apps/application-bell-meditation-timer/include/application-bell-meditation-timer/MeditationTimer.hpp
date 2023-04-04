@@ -47,6 +47,7 @@ namespace app
         std::unique_ptr<app::meditation::models::StartDelay> startDelayModel;
         std::unique_ptr<AbstractAudioModel> audioModel;
         std::unique_ptr<app::meditation::models::Statistics> statisticsModel;
+        std::shared_ptr<sys::CpuSentinel> cpuSentinel;
     };
 
     template <>
