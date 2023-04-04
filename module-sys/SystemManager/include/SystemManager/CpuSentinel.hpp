@@ -29,6 +29,8 @@ namespace sys
         virtual void HoldMinimumFrequency(bsp::CpuFrequencyMHz frequencyToHold);
         virtual void ReleaseMinimumFrequency();
 
+        /// @brief function used to block entering WFI mode (CPU stop)
+        /// @param block - boolean flag with blocking command
         void BlockWfiMode(bool block);
 
         [[nodiscard]] auto GetFrequency() const noexcept -> bsp::CpuFrequencyMHz;

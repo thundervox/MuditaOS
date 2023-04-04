@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "ApplicationBellPowerNap.hpp"
@@ -11,6 +11,7 @@
 #include <common/models/TimeModel.hpp>
 #include <Paths.hpp>
 #include <common/windows/SessionPausedWindow.hpp>
+#include <system/messages/SentinelRegistrationMessage.hpp>
 
 namespace app
 {
@@ -26,13 +27,23 @@ namespace app
         bus.channels.push_back(sys::BusChannel::ServiceAudioNotifications);
     }
 
-    ApplicationBellPowerNap::~ApplicationBellPowerNap() = default;
+    ApplicationBellPowerNap::~ApplicationBellPowerNap()
+    {
+        cpuSentinel->BlockWfiMode(false);
+    }
+
     sys::ReturnCodes ApplicationBellPowerNap::InitHandler()
     {
         auto ret = Application::InitHandler();
         if (ret != sys::ReturnCodes::Success) {
             return ret;
         }
+
+        cpuSentinel                  = std::make_shared<sys::CpuSentinel>(applicationBellPowerNapName, this);
+        auto sentinelRegistrationMsg = std::make_shared<sys::SentinelRegistrationMessage>(cpuSentinel);
+        bus.sendUnicast(sentinelRegistrationMsg, service::name::system_manager);
+        cpuSentinel->BlockWfiMode(true);
+
         createUserInterface();
 
         return sys::ReturnCodes::Success;

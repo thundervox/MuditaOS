@@ -56,7 +56,7 @@ namespace sys
             auto msg = std::make_shared<sys::BlockWfiModeMessage>(GetName(), block, xTaskGetCurrentTaskHandle());
             owner->bus.sendUnicast(std::move(msg), service::name::system_manager);
             blockWfiMode = block;
-            // ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100));
+            ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100));
         }
     }
 
