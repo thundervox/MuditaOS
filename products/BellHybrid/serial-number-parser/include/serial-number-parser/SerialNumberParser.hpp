@@ -4,7 +4,7 @@
 #pragma once
 #include <string>
 
-namespace serial_number_reader
+namespace serial_number_parser
 {
-    const std::string &readSerialNumber();
-} // namespace serial_number_reader
+    std::pair<std::string, std::string> getOrUpdateDeviceMetadata();
+} // namespace serial_number_parser

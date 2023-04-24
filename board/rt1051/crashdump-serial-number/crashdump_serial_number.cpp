@@ -7,6 +7,7 @@ namespace
 {
     std::string serial_number = "0000000000000";
 }
+
 namespace crashdump
 {
     void setSerialNumber(const std::string &sn)

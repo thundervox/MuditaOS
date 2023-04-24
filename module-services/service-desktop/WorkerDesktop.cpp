@@ -19,8 +19,6 @@
 #include <filesystem>
 #include "system/messages/SentinelRegistrationMessage.hpp"
 
-inline constexpr auto uploadFailedMessage = "file upload terminated before all data transferred";
-
 WorkerDesktop::WorkerDesktop(sys::Service *ownerServicePtr,
                              std::function<void()> messageProcessedCallback,
                              const sdesktop::USBSecurityModel &securityModel,
