@@ -173,7 +173,73 @@ namespace serial_number_parser
             const auto colourLength = frame.length() - serialNumberLength - checksumLength;
             return frame.substr(colourOffset, colourLength);
         }
+
+        bool isLineZeros(char *line, size_t length)
+        {
+            for (size_t i = 0; i < length; ++i) {
+                if (line[i] != 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        void logFrame(char *block)
+        {
+            char buf[serialNumberLength];
+
+            size_t length;
+            for (size_t i = 0; i < blockSize; i += length) {
+                const auto bytesLeft = blockSize - i;
+                length               = std::min(static_cast<unsigned>(serialNumberLength), bytesLeft);
+                if (isLineZeros(&block[i], length)) {
+                    memset(buf, '0', length);
+                }
+                else {
+                    memcpy(buf, &block[i], length);
+                }
+                printf("%03u: %.*s", i, length, buf);
+            }
+        }
     } // namespace
+
+    bool removeUpdatedFrame()
+    {
+        char block[blockSize];
+
+        auto status = readMetadataBlock(block);
+        if (!status) {
+            LOG_ERROR("Error reading metadata block!");
+            return false;
+        }
+
+        if (!isChecksumValid(block)) {
+            printf("\nInvalid frame checksum, probably device not patched yet.\n"
+                   "To make sure, check the metadata block layout displayed below.\n"
+                   "For the unpatched device, first line should contain serial number,\n"
+                   "others should be all zeros.\n"
+                   "Last line should contain only 5 characters.");
+            logFrame(block);
+            printf("\n");
+            return false;
+        }
+
+        LOG_INFO("Detected valid frame, erasing...");
+        memset(&block[serialNumberLength], 0, blockSize - serialNumberLength);
+        status = writeMetadataBlock(block);
+        if (!status) {
+            printf("Error writing updated metadata block!");
+            return false;
+        }
+
+        printf("\nDone! Check current metadata block layout displayed below.\n"
+               "First line should contain valid SN, others should be all zeros.\n"
+               "Last line should contain only 5 characters.");
+        logFrame(block);
+        printf("\n");
+
+        return true;
+    }
 
     std::pair<std::string, std::string> getOrUpdateDeviceMetadata()
     {

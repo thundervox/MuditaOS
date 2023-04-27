@@ -6,5 +6,6 @@
 
 namespace serial_number_parser
 {
+    bool removeUpdatedFrame();
     std::pair<std::string, std::string> getOrUpdateDeviceMetadata();
 } // namespace serial_number_parser

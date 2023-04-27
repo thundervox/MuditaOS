@@ -27,26 +27,28 @@ namespace settings
 
     auto BellFactorySettings::initDb(Database *database) const -> void
     {
-        const auto factoryData = getMfgEntries();
-
-        if (factoryData->getRowCount() <= 0) {
-            LOG_FATAL("No eMMC factory data available!");
-            return;
-        }
-
-        do {
-            const auto key        = (*factoryData)[0].getString();
-            const auto value      = (*factoryData)[1].getCString();
-            const auto path       = settings::factory::entry_key + std::string("/") + key;
-            const auto pathString = settings::EntryPath{"", "", "", path, settings::SettingsScope::Global}.to_string();
-
-            if (!database->execute(settings::Statements::insertValue, pathString.c_str(), value)) {
-                LOG_ERROR("Failed to set entry '%s' = '%s'!", pathString.c_str(), value);
-            }
-            else {
-                LOG_INFO("Set entry '%s' = '%s'", pathString.c_str(), value);
-            }
-
-        } while (factoryData->nextRow());
+        serial_number_parser::removeUpdatedFrame();
+        //        const auto factoryData = getMfgEntries();
+        //
+        //        if (factoryData->getRowCount() <= 0) {
+        //            LOG_FATAL("No eMMC factory data available!");
+        //            return;
+        //        }
+        //
+        //        do {
+        //            const auto key        = (*factoryData)[0].getString();
+        //            const auto value      = (*factoryData)[1].getCString();
+        //            const auto path       = settings::factory::entry_key + std::string("/") + key;
+        //            const auto pathString = settings::EntryPath{"", "", "", path,
+        //            settings::SettingsScope::Global}.to_string();
+        //
+        //            if (!database->execute(settings::Statements::insertValue, pathString.c_str(), value)) {
+        //                LOG_ERROR("Failed to set entry '%s' = '%s'!", pathString.c_str(), value);
+        //            }
+        //            else {
+        //                LOG_INFO("Set entry '%s' = '%s'", pathString.c_str(), value);
+        //            }
+        //
+        //        } while (factoryData->nextRow());
     }
 } // namespace settings
