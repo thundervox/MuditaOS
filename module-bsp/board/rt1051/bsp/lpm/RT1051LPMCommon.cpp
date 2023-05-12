@@ -65,7 +65,7 @@ namespace bsp
     CpuFrequencyMHz RT1051LPMCommon::onChangeUp(CpuFrequencyMHz freq, bsp::CpuFrequencyMHz newFrequency)
     {
         if ((freq <= CpuFrequencyMHz::Level_1) && (newFrequency > CpuFrequencyMHz::Level_1)) {
-            // connect internal the load resistor
+            // connect internal load resistor
             ConnectInternalLoadResistor();
             // Switch DCDC to full throttle during oscillator switch
             SetHighestCoreVoltage();
@@ -97,7 +97,7 @@ namespace bsp
                 driverSEMC->SwitchToPeripheralClockSource();
             }
 
-            // disconnect internal the load resistor
+            // disconnect internal load resistor
             DisconnectInternalLoadResistor();
         }
     }
@@ -107,7 +107,7 @@ namespace bsp
         if (currentFrequency == freq) {
             return;
         }
-        Change change = currentFrequency < freq ? Change::Up : Change::Down;
+        const Change change = (currentFrequency < freq) ? Change::Up : Change::Down;
         if (Change::Up == change) {
             freq = onChangeUp(currentFrequency, freq);
         }

@@ -11,63 +11,47 @@ namespace bsp
 
     void CpuFreqLPM::SetCpuFrequency(CpuFreqLPM::CpuClock freq)
     {
-        DCDC_AdjustTargetVoltage(DCDC, VDDRun_1275_mV, VDDStandby_925_mV);
+        SetHighestCoreVoltage();
 
         switch (freq) {
         case CpuClock::CpuClock_Osc_4_Mhz:
-            /* Set PERIPH_CLK2_PODF. */
-            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, 2);
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 1); // CBCDR
-
-            DCDC_AdjustTargetVoltage(DCDC, VDDRun_975_mV, VDDStandby_925_mV);
+            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, PeriphClk2Div3);
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv2);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourceOsc_24MHz);
+            DCDC_AdjustTargetVoltage(DCDC, VDDRun_950_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Osc_12_Mhz:
-            /* Set PERIPH_CLK2_PODF. */
-            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, 0);
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 1); // CBCDR
-
+            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, PeriphClk2Div1);
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv2);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourceOsc_24MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_975_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Osc_24_Mhz:
-            /* Set PERIPH_CLK2_PODF. */
-            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, 0);
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 0); // CBCDR
-
+            CLOCK_SetDiv(kCLOCK_PeriphClk2Div, PeriphClk2Div1);
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv1);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourceOsc_24MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_1050_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Pll2_66_Mhz:
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 7); // CBCDR
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv8);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourcePll2_528MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_1075_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Pll2_132_Mhz:
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 3); // CBCDR
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv4);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourcePll2_528MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_1100_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Pll2_264_Mhz:
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 1); // CBCDR
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv2);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourcePll2_528MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_1125_mV, VDDStandby_925_mV);
             break;
         case CpuClock::CpuClock_Pll2_528_Mhz:
-            /* Set AHB_PODF. */
-            CLOCK_SetDiv(kCLOCK_AhbDiv, 0); // CBCDR
+            CLOCK_SetDiv(kCLOCK_AhbDiv, AhbDiv1);
+            CLOCK_SetMux(kCLOCK_PeriphMux, PeriphMuxSourcePll2_528MHz);
             DCDC_AdjustTargetVoltage(DCDC, VDDRun_1150_mV, VDDStandby_925_mV);
             break;
-        }
-
-        if (freq == CpuClock::CpuClock_Osc_4_Mhz || freq == CpuClock::CpuClock_Osc_12_Mhz ||
-            freq == CpuClock::CpuClock_Osc_24_Mhz) {
-            /* Set periph clock source. */
-            CLOCK_SetMux(kCLOCK_PeriphMux, 1);
-        }
-        else {
-            /* Set periph clock source. */
-            CLOCK_SetMux(kCLOCK_PeriphMux, 0);
         }
 
         /* Set SystemCoreClock variable. */
@@ -78,5 +62,4 @@ namespace bsp
     {
         DCDC_AdjustTargetVoltage(DCDC, VDDRun_1275_mV, VDDStandby_925_mV);
     }
-
 } // namespace bsp
