@@ -1,8 +1,10 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RT1051DriverPLL2.hpp"
 #include "board/rt1051/bsp/lpm/ClockState.hpp"
+
+#include "log/log.hpp"
 
 namespace drivers
 {
@@ -24,6 +26,9 @@ namespace drivers
 
             clkPLL2setup(CLK_ENABLE);
         }
+        else {
+            LOG_ERROR("Error IsPLL2Enabled()");
+        }
     }
 
     RT1051DriverPLL2::~RT1051DriverPLL2()
@@ -39,6 +44,17 @@ namespace drivers
             PMU->MISC0_SET              = constants::REFTOP_LOWPOWER_FLAG;
             XTALOSC24M->LOWPWR_CTRL_SET = XTALOSC24M_LOWPWR_CTRL_LPBG_SEL_MASK;
             PMU->MISC0_SET              = CCM_ANALOG_MISC0_REFTOP_PWD_MASK;
+        }
+        else {
+            LOG_ERROR("Error ~RT1051DriverPLL2");
+            LOG_ERROR("CLOCK_GetMux(kCLOCK_SemcMux): %s",
+                      CLOCK_GetMux(kCLOCK_SemcMux) == SemcMuxPeripheralClock ? "on" : "off");
+            LOG_ERROR("kCLOCK_Lpspi1: %s", bsp::IsClockEnabled(kCLOCK_Lpspi1) ? "on" : "off");
+            LOG_ERROR("kCLOCK_Lpspi2: %s", bsp::IsClockEnabled(kCLOCK_Lpspi2) ? "on" : "off");
+            LOG_ERROR("kCLOCK_Lpspi3: %s", bsp::IsClockEnabled(kCLOCK_Lpspi3) ? "on" : "off");
+            LOG_ERROR("kCLOCK_Lpspi4: %s", bsp::IsClockEnabled(kCLOCK_Lpspi4) ? "on" : "off");
+            LOG_ERROR("kCLOCK_Usdhc1: %s", bsp::IsClockEnabled(kCLOCK_Usdhc1) ? "on" : "off");
+            LOG_ERROR("kCLOCK_Usdhc2: %s", bsp::IsClockEnabled(kCLOCK_Usdhc2) ? "on" : "off");
         }
     }
 
