@@ -77,10 +77,10 @@ namespace bsp
             if (driverSEMC) {
                 driverSEMC->SwitchToPLL2ClockSource();
             }
-            // Add intermediate step in frequency
-            if (newFrequency > CpuFrequencyMHz::Level_4) {
-                return CpuFrequencyMHz::Level_4;
-            }
+            // // Add intermediate step in frequency
+            // if (newFrequency > CpuFrequencyMHz::Level_4) {
+            //     return CpuFrequencyMHz::Level_4;
+            // }
         }
         return newFrequency;
     }

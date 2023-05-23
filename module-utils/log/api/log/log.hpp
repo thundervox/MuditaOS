@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 /*
@@ -105,7 +105,7 @@ extern "C"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 static const size_t LOGGER_BUFFER_SIZE = 8192;
 static const char *LOG_FILE_NAME       = "MuditaOS.log";
-static const int MAX_LOG_FILES_COUNT   = 3;
+static const int MAX_LOG_FILES_COUNT   = 15;
 static const size_t MAX_LOG_FILE_SIZE  = 1024 * 1024 * 15; // 15 MB
 #pragma GCC diagnostic pop
 

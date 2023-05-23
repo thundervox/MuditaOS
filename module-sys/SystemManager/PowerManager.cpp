@@ -119,9 +119,19 @@ namespace sys
 
         auto result    = cpuAlgorithms->calculate(algorithms, data, &retval.id);
         retval.changed = result.change;
-        if (result.change == cpu::algorithm::Change::NoChange or result.change == cpu::algorithm::Change::Hold) {
+        if (result.change == cpu::algorithm::Change::Hold) {
             return retval;
         }
+
+        if (xTaskGetTickCount() > 20'000) {
+            if (lowPowerControl->GetCurrentFrequencyLevel() == bsp::CpuFrequencyMHz::Level_0) {
+                result.value = bsp::CpuFrequencyMHz::Level_6;
+            }
+            else {
+                result.value = bsp::CpuFrequencyMHz::Level_0;
+            }
+        }
+
         SetCpuFrequency(result.value);
         cpuAlgorithms->reset(algorithms);
         return retval;
