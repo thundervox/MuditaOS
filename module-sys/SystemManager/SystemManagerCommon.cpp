@@ -252,7 +252,7 @@ namespace sys
         // Start System manager
         StartService();
 
-        freqTimer = sys::TimerFactory::createPeriodicTimer(
+        freqTimer = sys::TimerFactory::createSingleShotTimer(
             this, "cpuTick", constants::timerInitInterval, [this](sys::Timer &) { FreqUpdateTick(); });
         freqTimer.start();
 
@@ -773,6 +773,7 @@ namespace sys
 
         auto ret = powerManager->UpdateCpuFrequency();
         cpuStatistics->TrackChange(ret);
+        freqTimer.restart(std::chrono::milliseconds(1));
     }
 
     void SystemManagerCommon::UpdateResourcesAfterCpuFrequencyChange(bsp::CpuFrequencyMHz newFrequency)
