@@ -225,7 +225,7 @@ namespace Log
     {
         buffer.nextBuffer();
         worker->notify(LoggerWorker::Signal::DumpDiagnostic);
-        writeLogsTimer.restart(writeLogsToFileInterval);
+        // writeLogsTimer.restart(writeLogsToFileInterval);
         return 1;
     }
 
@@ -233,7 +233,7 @@ namespace Log
     {
         LOG_INFO("Shutdown dump logs");
         worker->close();
-        writeLogsTimer.stop();
+        // writeLogsTimer.stop();
         buffer.nextBuffer();
         return dumpToFile(purefs::dir::getLogsPath() / LOG_FILE_NAME, false);
     }
@@ -245,7 +245,7 @@ namespace Log
         if (size >= buffer.getCircularBufferSize()) {
             worker->notify(LoggerWorker::Signal::DumpFilledBuffer);
             buffer.nextBuffer();
-            writeLogsTimer.restart(writeLogsToFileInterval);
+            // writeLogsTimer.restart(writeLogsToFileInterval);
         }
     }
 

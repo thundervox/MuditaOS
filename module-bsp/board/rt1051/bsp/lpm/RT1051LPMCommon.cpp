@@ -77,10 +77,10 @@ namespace bsp
             if (driverSEMC) {
                 driverSEMC->SwitchToPLL2ClockSource();
             }
-            // Add intermediate step in frequency
-            if (newFrequency > CpuFrequencyMHz::Level_4) {
-                return CpuFrequencyMHz::Level_4;
-            }
+            // // Add intermediate step in frequency
+            // if (newFrequency > CpuFrequencyMHz::Level_4) {
+            //     return CpuFrequencyMHz::Level_4;
+            // }
         }
         return newFrequency;
     }
@@ -138,7 +138,7 @@ namespace bsp
         if (Change::Down == change) {
             onChangeDown(freq);
         }
-        LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
+        // LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
         currentFrequency = freq;
     }
 

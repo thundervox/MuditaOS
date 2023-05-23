@@ -116,7 +116,7 @@ namespace sys
                 CloseSystemHandler(CloseReason::LowBattery);
             });
 
-        Log::Logger::get().createTimer(this);
+        // Log::Logger::get().createTimer(this);
     }
 
     SystemManagerCommon::~SystemManagerCommon()

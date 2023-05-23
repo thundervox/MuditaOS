@@ -46,6 +46,10 @@
 #include <memory>
 #include <vector>
 
+#include <bsp/lpm/RT1051LPMCommon.hpp>
+#include <bsp/lpm/RT1051LPM.hpp>
+#include <fsl_rtwdog.h>
+
 #if SYSTEM_VIEW_ENABLED
 #include <SEGGER/SEGGER_SYSVIEW.h>
 #endif
@@ -69,6 +73,60 @@ int main()
 
     auto platformFactory = bellhybrid::PlatformFactory();
     auto platform        = platformFactory.makePlatform();
+
+    gpio_pin_config_t gpio_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
+
+    // Level_0 = 4,
+    // Level_1 = 12,
+    // Level_2 = 24,
+    // Level_3 = 66,
+    // Level_4 = 132,
+    // Level_5 = 264,
+    // Level_6 = 528
+
+    bsp::RT1051LPM cpu;
+    bsp::CpuFrequencyMHz freq = bsp::CpuFrequencyMHz::Level_0;
+    // constexpr std::uint32_t MHz = 1'000'000;
+    // constexpr std::uint32_t MaxCpuSpeed = 528'000'000;
+    GPIO_PinInit(GPIO2, 31U, &gpio_config);
+    RTWDOG_Deinit(RTWDOG);
+
+    // std::uint8_t state   = 0;
+    // const uint16_t tab[] = {4, 12, 24, 66, 132, 264, 528};
+    int tab2[] = {4, 528};
+
+#define LOCAL_UART 0
+
+#if LOCAL_UART
+    bsp::board::initDebugConsole();
+#endif
+
+    int i = 0;
+
+    while (1) {
+        // int f = std::rand() % 7;
+        // int f = i++ % 7;
+        i++;
+        freq = static_cast<bsp::CpuFrequencyMHz>(tab2[i % 2]);
+        // freq = static_cast<bsp::CpuFrequencyMHz>(tab[f]);
+
+#if LOCAL_UART
+        while (!(LPUART3->STAT & LPUART_STAT_TDRE_MASK)) {}
+        LPUART3->DATA = '0' + f;
+#endif
+
+        cpu.SetCpuFrequency(freq);
+
+        // for (uint8_t idx = 0; idx < 2 * f; ++idx) {
+        //     const std::uint32_t cpuSpeed = CLOCK_GetCpuClkFreq();
+        //     SDK_DelayAtLeastUs(200, cpuSpeed);
+        //     GPIO_PinWrite(GPIO2, 31U, state);
+        //     state = !state;
+        // }
+#if LOCAL_UART
+        LPUART3->DATA = '\n';
+#endif
+    }
 
     if (!sys::SystemWatchdog::getInstance().init()) {
         LOG_ERROR("System watchdog failed to initialize");
