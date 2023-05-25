@@ -130,7 +130,7 @@ namespace bsp
         if (Change::Down == change) {
             onChangeDown(freq);
         }
-        LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
+        // LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
         currentFrequency = freq;
     }
 
