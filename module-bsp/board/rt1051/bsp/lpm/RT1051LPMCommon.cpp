@@ -5,6 +5,7 @@
 
 #include <log/log.hpp>
 #include <fsl_clock.h>
+#include <fsl_dcdc.h>
 #include <bsp/bsp.hpp>
 #include "Oscillator.hpp"
 #include "critical.hpp"
@@ -64,6 +65,8 @@ namespace bsp
     CpuFrequencyMHz RT1051LPMCommon::onChangeUp(CpuFrequencyMHz freq, bsp::CpuFrequencyMHz newFrequency)
     {
         if ((freq <= CpuFrequencyMHz::Level_1) && (newFrequency > CpuFrequencyMHz::Level_1)) {
+            // Switch DCDC to CCM mode to improve stability
+            DCDC_BootIntoCCM(DCDC);
             // Switch external RAM clock source to PLL2
             if (driverSEMC) {
                 driverSEMC->SwitchToPLL2ClockSource();
@@ -72,10 +75,6 @@ namespace bsp
             SwitchToRegularModeLDO();
             // Switch to external crystal oscillator
             SwitchOscillatorSource(LowPowerMode::OscillatorSource::External);
-            // Add intermediate step in frequency
-            //            if (newFrequency > CpuFrequencyMHz::Level_4) {
-            //                return CpuFrequencyMHz::Level_4;
-            //            }
         }
         return newFrequency;
     }
@@ -91,6 +90,8 @@ namespace bsp
             if (driverSEMC) {
                 driverSEMC->SwitchToPeripheralClockSource();
             }
+            // Switch DCDC to DCM mode to reduce current consumption
+            DCDC_BootIntoDCM(DCDC);
         }
     }
 
