@@ -37,6 +37,27 @@ namespace bsp
             }
             return true;
         }
+
+        auto f = [](bool value) { return !value ? "true" : "false"; };
+
+        void printClocksInfo()
+        {
+            LOG_PRINTF("PLL_ARM locked? %s", f(CCM_ANALOG->PLL_ARM & CCM_ANALOG_PLL_ARM_LOCK_SHIFT));
+            LOG_PRINTF("PLL_USB1 locked? %s", f(CCM_ANALOG->PLL_USB1 & CCM_ANALOG_PLL_USB1_LOCK_SHIFT));
+            LOG_PRINTF(" - Pll3Pfd0Clk enabled? %s", f(CCM_ANALOG->PFD_480 & CCM_ANALOG_PFD_480_PFD1_CLKGATE_MASK));
+            LOG_PRINTF(" - Pll3Pfd1Clk enabled? %s", f(CCM_ANALOG->PFD_480 & CCM_ANALOG_PFD_480_PFD1_CLKGATE_MASK));
+            LOG_PRINTF(" - Pll3Pfd2Clk enabled? %s", f(CCM_ANALOG->PFD_480 & CCM_ANALOG_PFD_480_PFD2_CLKGATE_MASK));
+            LOG_PRINTF(" - Pll3Pfd3Clk enabled? %s", f(CCM_ANALOG->PFD_480 & CCM_ANALOG_PFD_480_PFD3_CLKGATE_MASK));
+            LOG_PRINTF("PLL_USB2 locked? %s", f(CCM_ANALOG->PLL_USB2 & CCM_ANALOG_PLL_USB2_LOCK_SHIFT));
+            LOG_PRINTF("PLL_SYS locked? %s", f(CCM_ANALOG->PLL_SYS & CCM_ANALOG_PLL_SYS_LOCK_SHIFT));
+            LOG_PRINTF(" - SysPllPfd0Clk enabled? %s", f(CCM_ANALOG->PFD_528 & CCM_ANALOG_PFD_528_PFD0_CLKGATE_MASK));
+            LOG_PRINTF(" - SysPllPfd1Clk enabled? %s", f(CCM_ANALOG->PFD_528 & CCM_ANALOG_PFD_528_PFD1_CLKGATE_MASK));
+            LOG_PRINTF(" - SysPllPfd2Clk enabled? %s", f(CCM_ANALOG->PFD_528 & CCM_ANALOG_PFD_528_PFD2_CLKGATE_MASK));
+            LOG_PRINTF(" - SysPllPfd3Clk enabled? %s", f(CCM_ANALOG->PFD_528 & CCM_ANALOG_PFD_528_PFD3_CLKGATE_MASK));
+            LOG_PRINTF("PLL_AUDIO locked? %s", f(CCM_ANALOG->PLL_AUDIO & CCM_ANALOG_PLL_AUDIO_LOCK_SHIFT));
+            LOG_PRINTF("PLL_VIDEO locked? %s", f(CCM_ANALOG->PLL_VIDEO & CCM_ANALOG_PLL_VIDEO_LOCK_SHIFT));
+            LOG_PRINTF("PLL_ENET locked? %s", f(CCM_ANALOG->PLL_ENET & CCM_ANALOG_PLL_ENET_LOCK_SHIFT));
+        }
     } // namespace
 
     void allowEnteringWfiMode()
@@ -65,6 +86,9 @@ namespace bsp
             return;
         }
 
+        LOG_ERROR("Before WFI!");
+        printClocksInfo();
+
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
         LOG_INFO("*** WFI IN ***");
 
@@ -81,5 +105,8 @@ namespace bsp
             highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
         xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(sleepTimeMs));
         LOG_INFO("*** WFI OUT sleep time: %ld ***", sleepTimeMs);
+
+        LOG_ERROR("After WFI!");
+        printClocksInfo();
     }
 } // namespace bsp
