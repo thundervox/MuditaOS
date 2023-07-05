@@ -35,6 +35,7 @@ void CallMulticast::notifyCallStarted(const utils::PhoneNumber &number, const Ca
 
 void CallMulticast::notifyCallEnded()
 {
+    // C2 sending notify
     owner->bus.sendMulticast(std::make_shared<cellular::CallEndedNotification>(),
                              sys::BusChannel::ServiceCellularNotifications);
 }

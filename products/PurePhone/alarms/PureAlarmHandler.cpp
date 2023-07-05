@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "PureAlarmHandler.hpp"
@@ -36,6 +36,7 @@ namespace alarms
 
     auto PureAlarmClockHandler::getActions(sys::Service *service) -> Actions
     {
+        // A5 - from here the Alarm play Music tones and request for Alarm popup
         Actions actions;
         actions.emplace_back(std::make_unique<AlarmRecordAction>(*service));
         actions.emplace_back(std::make_unique<PlayToneAction>(*service));

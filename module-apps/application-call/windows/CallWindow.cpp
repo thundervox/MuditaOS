@@ -207,6 +207,7 @@ namespace gui
             LOG_DEBUG("Delayed exit timer callback");
             presenter.handleDelayedViewClose();
             application->popCurrentWindow();
+            // C5 - the place where we can catch moment when end of call window is closing automatically
             app::manager::Controller::switchBack(application);
             return true;
         };
@@ -292,6 +293,7 @@ namespace gui
         iconsBox->resizeItems();
 
         setFocusItem(nullptr);
+        // C5 - set timer for end of call window
         if (delayedClose) {
             connectTimerOnExit();
         }

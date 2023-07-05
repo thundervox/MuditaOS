@@ -278,6 +278,7 @@ namespace alarms
 
     void AlarmOperationsCommon::processEvents(TimePoint now)
     {
+        // A3 - here starts main Alarm's logic/magic
         const auto isHandlingInProgress = !ongoingSingleEvents.empty();
         if (!nextSingleEvents.empty()) {
             processNextEventsQueue(now);
@@ -288,6 +289,7 @@ namespace alarms
         }
 
         if (!isHandlingInProgress) {
+            // A3.1 --> A4
             processOngoingEvents();
         }
     }
@@ -295,6 +297,7 @@ namespace alarms
     void AlarmOperationsCommon::processOngoingEvents()
     {
         if (!ongoingSingleEvents.empty()) {
+            // A4 - If Pure is during phone call Alarm are snooze
             if (onCheckIfPhoneCallIsOngoingCallback && onCheckIfPhoneCallIsOngoingCallback()) {
                 if (!ongoingSingleEvents.front()->wasHandledDuringPhoneCall && onAlarmDuringPhoneCallCallback) {
                     onAlarmDuringPhoneCallCallback();

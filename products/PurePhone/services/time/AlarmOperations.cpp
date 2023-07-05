@@ -25,6 +25,7 @@ namespace alarms
         : AlarmOperationsCommon{std::move(alarmEventsRepo), std::move(getCurrentTimeCallback)}
     {}
 
+    // A2 - Forwarded --> A3
     void AlarmOperations::minuteUpdated(TimePoint now)
     {
         return AlarmOperationsCommon::minuteUpdated(now);

@@ -67,6 +67,7 @@ namespace app::call
             break;
         }
         case app::call::CallState::Ended: {
+            // C4 - to create end of call window (with sum up) --> C5
             view->updateDuration(utils::translate(callAppStyle::strings::callended));
             view->setCallEndedLayout();
             break;

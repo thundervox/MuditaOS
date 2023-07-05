@@ -182,6 +182,7 @@ namespace app
         });
 
         connect(typeid(cellular::CallEndedNotification), [&](sys::Message *request) {
+            // C3 - receive notify --> C4
             callModel->setState(app::call::CallState::Ended);
             switchWindow(app::window::name_call);
             return sys::MessageNone{};

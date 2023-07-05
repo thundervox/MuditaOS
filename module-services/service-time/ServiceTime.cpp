@@ -88,6 +88,7 @@ namespace stm
             }
         }
         if (msgl->messageType == MessageType::EVMMinuteUpdated) {
+            // A1 - It's call in every minute and here Alarms precessing begin --> A2
             alarmMessageHandler->handleMinuteUpdated();
             return std::make_shared<sys::ResponseMessage>();
         }

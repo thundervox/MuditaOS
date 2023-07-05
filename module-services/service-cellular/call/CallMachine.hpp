@@ -270,6 +270,7 @@ namespace call
             call.record.duration = di.timer->duration();
             call.record.isRead   = true;
             di.db->endCall(call.record);
+            // C1 - Notify on end of phone call  -->C2
             di.multicast->notifyCallEnded();
             di.timer->stop();
             di.modem->hangupCall();
