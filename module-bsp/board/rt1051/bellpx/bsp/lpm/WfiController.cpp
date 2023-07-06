@@ -17,6 +17,7 @@ namespace bsp
     namespace
     {
         bool wfiModeAllowed = false;
+        std::uint32_t savedPrimask;
 
         /* RTC wakes up CPU every minute, so go to sleep only if next timer will
          * trigger after more than minute - this way no event will ever be missed */
@@ -66,11 +67,19 @@ namespace bsp
         }
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
-        LOG_INFO("*** WFI IN ***");
 
-        __DSB(); // Mandatory before entering WFI, see ARM AN321, p.13, "Sleep"
+        savedPrimask = DisableGlobalIRQ();
+        __DSB();
+        __ISB();
+
+        /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
+        SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
+
         __WFI();
-        __ISB(); // See https://stackoverflow.com/questions/47022456/why-is-an-isb-needed-after-wfi-in-cortex-m-freertos
+
+        EnableGlobalIRQ(savedPrimask);
+        __DSB();
+        __ISB();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
