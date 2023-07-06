@@ -19,6 +19,9 @@ namespace bsp
         [[nodiscard]] std::uint32_t GetCpuFrequency() const noexcept final;
         void SwitchOscillatorSource(OscillatorSource source) final;
 
+        void SetRunModeConfig();
+        void SetWaitModeConfig();
+
       private:
         void onChangeUp(CpuFrequencyMHz freq, CpuFrequencyMHz newFrequency);
         void onChangeDown(CpuFrequencyMHz freq);
