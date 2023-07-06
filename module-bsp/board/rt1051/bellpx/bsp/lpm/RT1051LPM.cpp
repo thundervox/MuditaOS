@@ -24,6 +24,8 @@ namespace bsp
 
     void RT1051LPM::EnterWfiModeIfAllowed()
     {
+        RT1051LPMCommon::SetWaitModeConfig();
         enterWfiModeIfAllowed();
+        RT1051LPMCommon::SetRunModeConfig();
     }
 } // namespace bsp
