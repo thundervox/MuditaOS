@@ -40,74 +40,6 @@ namespace bsp
             return true;
         }
 
-        bool isGpr7Ready()
-        {
-            constexpr std::uint32_t gpr7AckMask =
-                IOMUXC_GPR_GPR7_LPI2C1_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPI2C2_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPI2C3_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPI2C4_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPSPI1_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPSPI2_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPSPI3_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPSPI4_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPUART1_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPUART2_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPUART3_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPUART4_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPUART5_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPUART6_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR7_LPUART7_STOP_ACK_MASK | IOMUXC_GPR_GPR7_LPUART8_STOP_ACK_MASK;
-
-            constexpr std::uint32_t gpr7ReqMask =
-                IOMUXC_GPR_GPR7_LPI2C1_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPI2C2_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPI2C3_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPI2C4_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPSPI1_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPSPI2_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPSPI3_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPSPI4_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPUART1_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPUART2_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPUART3_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPUART4_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPUART5_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPUART6_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR7_LPUART7_STOP_REQ_MASK | IOMUXC_GPR_GPR7_LPUART8_STOP_REQ_MASK;
-
-            IOMUXC_GPR->GPR7 = gpr7ReqMask;
-
-            constexpr auto timeoutMs    = utils::time::milisecondsInSecond;
-            constexpr auto retryDelayMs = 10;
-            const auto initialTicks     = cpp_freertos::Ticks::GetTicks();
-
-            while ((IOMUXC_GPR->GPR7 & gpr7AckMask) != gpr7AckMask) {
-                if ((cpp_freertos::Ticks::GetTicks() - initialTicks) > cpp_freertos::Ticks::MsToTicks(timeoutMs)) {
-                    LOG_ERROR("GPR7 is not ready (0x%08lx)", IOMUXC_GPR->GPR7);
-                    return false;
-                }
-                vTaskDelay(retryDelayMs);
-            }
-            return true;
-        }
-
-        bool isGpr4Ready()
-        {
-            constexpr std::uint32_t gpr4AckMask =
-                IOMUXC_GPR_GPR4_ENET_STOP_ACK_MASK | IOMUXC_GPR_GPR4_SAI1_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR4_SAI2_STOP_ACK_MASK | IOMUXC_GPR_GPR4_SAI3_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR4_SEMC_STOP_ACK_MASK | IOMUXC_GPR_GPR4_PIT_STOP_ACK_MASK |
-                IOMUXC_GPR_GPR4_FLEXIO1_STOP_ACK_MASK | IOMUXC_GPR_GPR4_FLEXIO2_STOP_ACK_MASK;
-
-            constexpr std::uint32_t gpr4ReqMask =
-                IOMUXC_GPR_GPR4_ENET_STOP_REQ_MASK | IOMUXC_GPR_GPR4_SAI1_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR4_SAI2_STOP_REQ_MASK | IOMUXC_GPR_GPR4_SAI3_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR4_SEMC_STOP_REQ_MASK | IOMUXC_GPR_GPR4_PIT_STOP_REQ_MASK |
-                IOMUXC_GPR_GPR4_FLEXIO1_STOP_REQ_MASK | IOMUXC_GPR_GPR4_FLEXIO2_STOP_REQ_MASK;
-
-            IOMUXC_GPR->GPR4 = gpr4ReqMask;
-
-            constexpr auto timeoutMs    = utils::time::milisecondsInSecond;
-            constexpr auto retryDelayMs = 10;
-            const auto initialTicks     = cpp_freertos::Ticks::GetTicks();
-
-            while ((IOMUXC_GPR->GPR4 & gpr4AckMask) != gpr4AckMask) {
-                if ((cpp_freertos::Ticks::GetTicks() - initialTicks) > cpp_freertos::Ticks::MsToTicks(timeoutMs)) {
-                    LOG_ERROR("GPR4 is not ready (0x%08lx)", IOMUXC_GPR->GPR4);
-                    return false;
-                }
-                vTaskDelay(retryDelayMs);
-            }
-            return true;
-        }
-
         void peripheralExitDozeMode()
         {
             IOMUXC_GPR->GPR8  = 0x00000000;
@@ -149,12 +81,6 @@ namespace bsp
 
     void enterWfiModeIfAllowed()
     {
-        // if (!isGpr7Ready()) {
-        //     return;
-        // }
-        // if (!isGpr4Ready()) {
-        //     return;
-        // }
         if (!isWfiModeAllowed()) {
             return;
         }
@@ -173,7 +99,11 @@ namespace bsp
         /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
         SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
 
+        // We have similar issue
+        // https://community.nxp.com/t5/i-MX-Processors/Does-entering-WFI-mode-on-iMX6-invalidate-cache/m-p/364307
+        SCB_DisableICache();
         __WFI();
+        SCB_EnableICache();
 
         EnableGlobalIRQ(savedPrimask);
         __DSB();
