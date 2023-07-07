@@ -3,6 +3,7 @@
 
 #include "WfiController.hpp"
 #include <fsl_common.h>
+#include <fsl_pmu.h>
 #include <Utils.hpp>
 #include <time/time_constants.hpp>
 #include <FreeRTOS.h>
@@ -11,6 +12,7 @@
 #include <timers.h>
 #include <MIMXRT1051.h>
 
+#include <magic_enum.hpp>
 #include <log/log.hpp>
 
 namespace bsp
@@ -60,6 +62,23 @@ namespace bsp
             IOMUXC_GPR->GPR12 = IOMUXC_GPR_GPR12_FLEXIO1_IPG_DOZE_MASK | IOMUXC_GPR_GPR12_FLEXIO2_IPG_DOZE_MASK;
         }
 
+        void checkAndClearPendingIrq()
+        {
+            const auto start = static_cast<std::uint8_t>(DMA0_DMA16_IRQn);
+            const auto end   = static_cast<std::uint8_t>(NMI_WAKEUP_IRQn) + 1;
+            for (auto irq = start; irq < end; ++irq) {
+                const auto name = static_cast<IRQn_Type>(irq);
+                if (NVIC_GetPendingIRQ(name)) {
+                    LOG_INFO("Pending IRQ: %s", magic_enum::enum_name(name).data());
+                    if (name == ANATOP_EVENT0_IRQn) {
+                        const std::uint32_t status = PMU_GetStatusFlags(PMU);
+                        LOG_INFO("ANATOP_EVENT0_IRQn: 0x%lx", status);
+                        NVIC_ClearPendingIRQ(name);
+                    }
+                }
+            }
+        }
+
     } // namespace
 
     void allowEnteringWfiMode()
@@ -90,7 +109,24 @@ namespace bsp
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
+        checkAndClearPendingIrq();
         peripheralEnterDozeMode();
+
+        /*
+         * ERR006223: CCM: Failure to resuem from wait/stop mode with power gating
+         *   Configure REG_BYPASS_COUNTER to 2
+         *   Enable the RBC bypass counter here to hold off the interrupts. RBC counter
+         *  needs to be no less than 2.
+         */
+        CCM->CCR = (CCM->CCR & ~CCM_CCR_REG_BYPASS_COUNT_MASK) | CCM_CCR_REG_BYPASS_COUNT(2);
+        CCM->CCR |= (CCM_CCR_OSCNT(0xAF) | CCM_CCR_COSC_EN_MASK | CCM_CCR_RBC_EN_MASK);
+
+        /* Now delay for a short while (3usec) at this point
+         * so a short loop should be enough. This delay is required to ensure that
+         * the RBC counter can start counting in case an interrupt is already pending
+         * or in case an interrupt arrives just as ARM is about to assert DSM_request.
+         */
+        SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
         savedPrimask = DisableGlobalIRQ();
         __DSB();
