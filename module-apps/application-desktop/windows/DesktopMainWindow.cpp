@@ -205,13 +205,6 @@ namespace gui
         };
     }
 
-    app::ApplicationDesktop *DesktopMainWindow::getAppDesktop() const
-    {
-        auto *app = dynamic_cast<app::ApplicationDesktop *>(application);
-        assert(app);
-        return app;
-    }
-
     RefreshModes DesktopMainWindow::updateTime()
     {
         AppWindow::updateTime();

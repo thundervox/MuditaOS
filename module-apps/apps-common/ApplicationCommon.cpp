@@ -95,8 +95,8 @@ namespace app
                                             gui::status_bar::Indicator::PhoneMode});
 
         bus.channels.push_back(sys::BusChannel::ServiceCellularNotifications);
-
         bus.channels.push_back(sys::BusChannel::USBNotifications);
+        bus.channels.push_back(sys::BusChannel::ServiceEvtmgrNotifications);
 
         longPressTimer = sys::TimerFactory::createPeriodicTimer(this,
                                                                 "LongPress",
@@ -356,6 +356,9 @@ namespace app
         else if (msgl->messageType == MessageType::EVMMinuteUpdated) {
             return handleMinuteUpdated(msgl);
         }
+        else if (msgl->messageType == MessageType::EVMTimeUpdated) {
+            return handleMinuteUpdated(msgl); // Refresh window after time update
+        }
         else if (msgl->messageType == MessageType::AppAction) {
             return handleAction(msgl);
         }
@@ -465,9 +468,9 @@ namespace app
     sys::MessagePointer ApplicationCommon::handleMinuteUpdated(sys::Message *msgl)
     {
         if (state == State::ACTIVE_FORGROUND) {
-            if (auto reqestedRefreshMode = getCurrentWindow()->updateTime();
-                reqestedRefreshMode != gui::RefreshModes::GUI_REFRESH_NONE) {
-                refreshWindow(reqestedRefreshMode);
+            if (const auto requestedRefreshMode = getCurrentWindow()->updateTime();
+                requestedRefreshMode != gui::RefreshModes::GUI_REFRESH_NONE) {
+                refreshWindow(requestedRefreshMode);
             }
         }
         return sys::msgHandled();

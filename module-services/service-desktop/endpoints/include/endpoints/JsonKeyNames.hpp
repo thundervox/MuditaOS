@@ -16,27 +16,16 @@ namespace sdesktop::endpoints::json
     inline constexpr auto usedUserSpace       = "usedUserSpace";
     inline constexpr auto gitRevision         = "gitRevision";
     inline constexpr auto gitBranch           = "gitBranch";
-    inline constexpr auto gitTag              = "gitTag";
     inline constexpr auto currentRTCTime      = "currentRTCTime";
-    inline constexpr auto updateReady         = "updateReady";
-    inline constexpr auto updateFileList      = "updateFileList";
     inline constexpr auto factoryRequest      = "factoryRequest";
     inline constexpr auto networkStatus       = "networkStatus";
     inline constexpr auto networkOperatorName = "networkOperatorName";
     inline constexpr auto accessTechnology    = "accessTechnology";
 
     inline constexpr auto update                 = "update";
-    inline constexpr auto updateInfo             = "updateInfo";
-    inline constexpr auto updateError            = "updateError";
     inline constexpr auto errorCode              = "errorCode";
-    inline constexpr auto statusCode             = "statusCode";
-    inline constexpr auto updateHistory          = "updateHistory";
-    inline constexpr auto usbMscMode             = "usbMscMode";
-    inline constexpr auto versionString          = "string";
-    inline constexpr auto fileExists             = "fileExists";
     inline constexpr auto boot                   = "boot";
     inline constexpr auto version                = "version";
-    inline constexpr auto taskId                 = "id";
     inline constexpr auto state                  = "state";
     inline constexpr auto success                = "success";
     inline constexpr auto reboot                 = "reboot";
@@ -60,8 +49,7 @@ namespace sdesktop::endpoints::json
 
     namespace updateprocess
     {
-        inline constexpr auto command       = "command";
-        inline constexpr auto updateAborted = "updateAborted";
+        inline constexpr auto command = "command";
         namespace commands
         {
             inline constexpr auto abort = "abort";
@@ -81,8 +69,6 @@ namespace sdesktop::endpoints::json
         inline constexpr auto limit              = "limit";
         inline constexpr auto offset             = "offset";
         inline constexpr auto order              = "order";
-        inline constexpr auto totalCount         = "totalCount";
-        inline constexpr auto nextPage           = "nextPage";
         inline constexpr auto entries            = "entries";
         inline constexpr auto messageBody        = "messageBody";
         inline constexpr auto messageCount       = "messageCount";
@@ -98,8 +84,6 @@ namespace sdesktop::endpoints::json
         inline constexpr auto numberID           = "numberID";
         inline constexpr auto threadID           = "threadID";
         inline constexpr auto messageSnippet     = "messageSnippet";
-        inline constexpr auto unreadMessageCount = "unreadMessageCount";
-        inline constexpr auto messageTemplate    = "messageTemplate";
         inline constexpr auto templateBody       = "templateBody";
         inline constexpr auto templateID         = "templateID";
     } // namespace messages
@@ -125,4 +109,8 @@ namespace sdesktop::endpoints::json
         inline constexpr auto timeLeftToNextAttempt = "timeLeftToNextAttempt";
     } // namespace usb
 
+    namespace timeSync
+    {
+        inline constexpr auto timestamp = "timestamp";
+    }
 } // namespace sdesktop::endpoints::json

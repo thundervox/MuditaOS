@@ -2,7 +2,6 @@
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "ServiceTime.hpp"
-#include "service-evtmgr/Constants.hpp"
 #include "service-evtmgr/EVMessages.hpp"
 #include <service-time/internal/StaticData.hpp>
 #include <service-time/RTCCommand.hpp>
@@ -95,9 +94,7 @@ namespace stm
             alarmMessageHandler->handleTimeUpdate(TimePointNow());
             return std::make_shared<sys::ResponseMessage>();
         }
-        else {
-            return std::make_shared<sys::ResponseMessage>(sys::ReturnCodes::Unresolved);
-        }
+        return std::make_shared<sys::ResponseMessage>(sys::ReturnCodes::Unresolved);
     }
 
     void ServiceTime::registerMessageHandlers()
@@ -296,12 +293,12 @@ namespace stm
         stm::internal::StaticData::get().setAutomaticDateAndTime(
             utils::getNumericValue<bool>(settings->getValue(::settings::SystemProperties::automaticDateAndTimeIsOn)));
         auto dateFormat = magic_enum::enum_cast<utils::time::Locale::DateFormat>(
-            utils::getNumericValue<unsigned int>(settings->getValue(::settings::SystemProperties::dateFormat)));
+            utils::getNumericValue<int>(settings->getValue(::settings::SystemProperties::dateFormat)));
         if (dateFormat != std::nullopt) {
             stm::internal::StaticData::get().setDateFormat(dateFormat.value());
         }
         auto timeFormat = magic_enum::enum_cast<utils::time::Locale::TimeFormat>(
-            utils::getNumericValue<unsigned int>(settings->getValue(::settings::SystemProperties::timeFormat)));
+            utils::getNumericValue<int>(settings->getValue(::settings::SystemProperties::timeFormat)));
         if (timeFormat != std::nullopt) {
             stm::internal::StaticData::get().setTimeFormat(timeFormat.value());
         }
@@ -318,5 +315,4 @@ namespace stm
     {
         return std::make_shared<stm::message::GetAutomaticDateAndTimeResponse>(stm::api::isAutomaticDateAndTime());
     }
-
 } /* namespace stm */

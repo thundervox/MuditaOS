@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "EndpointFactoryPure.hpp"
@@ -17,13 +17,13 @@
 #include <endpoints/restore/RestoreEndpoint.hpp>
 #include <endpoints/security/SecurityEndpoint.hpp>
 #include <endpoints/update/UpdateEndpoint.hpp>
+#include <endpoints/timeSync/TimeSyncEndpoint.hpp>
 
 namespace sdesktop::endpoints
 {
-
     std::unique_ptr<Endpoint> EndpointFactoryPure::constructEndpoint(Context &context, sys::Service *ownerServicePtr)
     {
-        LOG_DEBUG("Creating endpoint: %d", static_cast<int>(context.getEndpoint()));
+        LOG_DEBUG("Creating endpoint: %s", magic_enum::enum_name(context.getEndpoint()).data());
         switch (context.getEndpoint()) {
         case EndpointType::update:
             return std::make_unique<UpdateEndpoint>(ownerServicePtr);
@@ -53,12 +53,14 @@ namespace sdesktop::endpoints
             return std::make_unique<SecurityEndpoint>(ownerServicePtr);
         case EndpointType::outbox:
             return std::make_unique<OutboxEndpoint>(ownerServicePtr);
+        case EndpointType::timeSync:
+            return std::make_unique<TimeSyncEndpoint>(ownerServicePtr);
         default:
             return std::make_unique<NullEndpoint>(ownerServicePtr);
         }
     }
 
-    EndpointFactoryPure::EndpointFactoryPure(EndpointSecurity security) : EndpointFactory{}, endpointSecurity{security}
+    EndpointFactoryPure::EndpointFactoryPure(EndpointSecurity security) : endpointSecurity{security}
     {}
 
     std::unique_ptr<Endpoint> EndpointFactoryPure::create(Context &context, sys::Service *ownerServicePtr)
@@ -80,5 +82,4 @@ namespace sdesktop::endpoints
     {
         return std::make_unique<EndpointFactoryPure>(security);
     }
-
 } // namespace sdesktop::endpoints

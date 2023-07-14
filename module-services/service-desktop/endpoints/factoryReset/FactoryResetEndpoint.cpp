@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <endpoints/factoryReset/FactoryResetEndpoint.hpp>
@@ -9,12 +9,10 @@
 #include <service-desktop/ServiceDesktop.hpp>
 
 #include <json11.hpp>
-
 #include <memory>
 
 namespace sdesktop::endpoints
 {
-
     auto FactoryResetEndpoint::handle(Context &context) -> void
     {
         if (context.getMethod() == http::Method::post) {
@@ -30,16 +28,10 @@ namespace sdesktop::endpoints
             }
 
             sender::putToSendQueue(context.createSimpleResponse());
-
-            return;
         }
         else {
             context.setResponseBody(json11::Json::object({{json::factoryRequest, false}}));
-
             sender::putToSendQueue(context.createSimpleResponse());
-
-            return;
         }
     }
-
 } // namespace sdesktop::endpoints
