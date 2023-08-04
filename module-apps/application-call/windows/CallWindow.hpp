@@ -20,7 +20,7 @@ namespace gui
       private:
         gui::KeyInputMappedTranslation translator;
         sys::TimerHandle delayedExitTimer;
-        static constexpr inline auto callDelayedStopTime = std::chrono::milliseconds{3000};
+        static constexpr inline auto callDelayedStopTime = std::chrono::milliseconds{61000}; // for debug TODO: sudo
 
         [[nodiscard]] auto getDelayedStopTime() const
         {

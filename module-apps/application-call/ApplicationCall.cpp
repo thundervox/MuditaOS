@@ -187,6 +187,13 @@ namespace app
             return sys::MessageNone{};
         });
 
+        connect(typeid(cellular::IsCallActive), [&](sys::Message *request) {
+            LOG_WARN("--AC-c-----  ApplicationCall -> connect(typeid(cellular::IsCallActive)"); // TODO: remove log
+            LOG_WARN("--AC-c-----  (callModel->getState() != app::call::CallState::None):%d",   // TODO: remove log
+                     static_cast<int>(callModel->getState() != app::call::CallState::None));    // TODO: remove log
+            return std::make_shared<cellular::IsCallActiveResponse>(callModel->getState() != call::CallState::None);
+        });
+
         connect(typeid(cellular::CallStartedNotification), [&](sys::Message *request) {
             auto message = static_cast<cellular::CallStartedNotification *>(request);
             callModel->setPhoneNumber(message->getNumber());
