@@ -6,6 +6,8 @@
 #include "board/rt1051/bsp/lpm/CpuFreqLPM.hpp"
 #include "fsl_dcdc.h"
 
+#include <log/log.hpp>
+
 namespace drivers
 {
     namespace constants
@@ -27,15 +29,15 @@ namespace drivers
             PMU->MISC0_CLR              = constants::REFTOP_LOWPOWER_FLAG;
 
             clkPLL2setup(CLK_ENABLE);
+            LOG_ERROR("RT1051DriverPLL2()");
         }
     }
 
     RT1051DriverPLL2::~RT1051DriverPLL2()
     {
-        if ((CLOCK_GetMux(kCLOCK_SemcMux) == SemcMuxPeripheralClock) && !bsp::IsClockEnabled(kCLOCK_Lpspi1) &&
-            !bsp::IsClockEnabled(kCLOCK_Lpspi2) && !bsp::IsClockEnabled(kCLOCK_Lpspi3) &&
-            !bsp::IsClockEnabled(kCLOCK_Lpspi4) && !bsp::IsClockEnabled(kCLOCK_Usdhc1) &&
-            !bsp::IsClockEnabled(kCLOCK_Usdhc2)) {
+        if ((!bsp::IsClockEnabled(kCLOCK_Lpspi1) && !bsp::IsClockEnabled(kCLOCK_Lpspi2) &&
+             !bsp::IsClockEnabled(kCLOCK_Lpspi3) && !bsp::IsClockEnabled(kCLOCK_Lpspi4) &&
+             !bsp::IsClockEnabled(kCLOCK_Usdhc1) && !bsp::IsClockEnabled(kCLOCK_Usdhc2))) {
 
             clkPLL2setup(CLK_DISABLE);
 
@@ -46,6 +48,7 @@ namespace drivers
 
             // After turning off PLL2 and with CPU @4MHZ VDD_SOC_IN can be set to 950mV
             DCDC_AdjustTargetVoltage(DCDC, bsp::VDDRun_950_mV, bsp::VDDStandby_925_mV);
+            LOG_ERROR("~RT1051DriverPLL2()");
         }
     }
 

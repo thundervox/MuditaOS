@@ -306,7 +306,7 @@ void BOARD_BootClockRUN(void)
 
     /* Set Pll3 sw clock source. */
     /* PLL3_main = 480 MHz */
-    CLOCK_SetMux(kCLOCK_Pll3SwMux, 0); // CCSR  (0) 0 - pll3_main_clk, 1 - pll3_bypass_clock
+    // CLOCK_SetMux(kCLOCK_Pll3SwMux, 0); // CCSR  (0) 0 - pll3_main_clk, 1 - pll3_bypass_clock
     /* Set lvds1 clock source. */
 
     CCM_ANALOG->MISC1 =
@@ -375,20 +375,20 @@ void BOARD_BootClockRUN(void)
      * ------------------------------------------------------------------
      */
 
-    /* Init Usb1 PLL. */
-    clkPLL3setup(CLK_DISABLE);
-    /* Init Usb1 pfd0. */
-    clkPLL3_PFD0setup(CLK_DISABLE);
-    /* Init Usb1 pfd1. */
-    clkPLL3_PFD1setup(CLK_DISABLE);
-    /* Init Usb1 pfd2. */
-    clkPLL3_PFD2setup(CLK_DISABLE);
-    /* Init Usb1 pfd3. */
-    clkPLL3_PFD3setup(CLK_DISABLE);
-    /* Disable Usb1 PLL output for USBPHY1. */
-    CCM_ANALOG->PLL_USB1 &= ~CCM_ANALOG_PLL_USB1_EN_USB_CLKS_MASK;
-    /* Bypass Usb1 PLL */
-    CLOCK_SetPllBypass(CCM_ANALOG, kCLOCK_PllUsb1, 1);
+    // /* Init Usb1 PLL. */
+    // clkPLL3setup(CLK_DISABLE);
+    // /* Init Usb1 pfd0. */
+    // clkPLL3_PFD0setup(CLK_DISABLE);
+    // /* Init Usb1 pfd1. */
+    // clkPLL3_PFD1setup(CLK_DISABLE);
+    // /* Init Usb1 pfd2. */
+    // clkPLL3_PFD2setup(CLK_DISABLE);
+    // /* Init Usb1 pfd3. */
+    // clkPLL3_PFD3setup(CLK_DISABLE);
+    // /* Disable Usb1 PLL output for USBPHY1. */
+    // CCM_ANALOG->PLL_USB1 &= ~CCM_ANALOG_PLL_USB1_EN_USB_CLKS_MASK;
+    // /* Bypass Usb1 PLL */
+    // CLOCK_SetPllBypass(CCM_ANALOG, kCLOCK_PllUsb1, 1);
 
     /*
      * ------------------------------------------------------------------
@@ -1453,7 +1453,14 @@ void LPM_EnterFullSpeed(void)
     CLOCK_SetMux(kCLOCK_PerclkMux, 1); // CSCMR1  (6) 0 - ipg_clk_root, 1 - osc_clk - PIT, GPT
 
     clkPLL2setup(CLK_ENABLE);
-    CLOCK_SetMux(kCLOCK_SemcMux, 1);
+    // CLOCK_SetMux(kCLOCK_SemcMux, 1);
+    // CLOCK_DisableClock(kCLOCK_Semc);
+    // /* Set SEMC_PODF. */
+    // CLOCK_SetDiv(kCLOCK_SemcDiv, 0);
+    // /* Set Semc alt clock source. */
+    // CLOCK_SetMux(kCLOCK_SemcAltMux, 1);
+    // /* Set Semc clock source. */
+    // CLOCK_SetMux(kCLOCK_SemcMux, 1);
 
     /* Set preperiph clock source. */
     /* PLL1/2 = 432MHz */
@@ -1522,6 +1529,6 @@ void LPM_EnterLowPowerIdle(void)
     DisableRegularLDO();
     BandgapOff();
 
-    CLOCK_SetMux(kCLOCK_SemcMux, 0);
+    // CLOCK_SetMux(kCLOCK_SemcMux, 0);
     clkPLL2setup(CLK_DISABLE);
 }

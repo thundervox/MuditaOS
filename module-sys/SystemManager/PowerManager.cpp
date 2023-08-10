@@ -57,7 +57,7 @@ namespace sys
     PowerManager::PowerManager(CpuStatistics &cpuStats, TaskStatistics &taskStats)
         : powerProfile{bsp::getPowerProfile()}, cpuStatistics(cpuStats), taskStatistics(taskStats)
     {
-        driverSEMC      = drivers::DriverSEMC::Create(drivers::name::ExternalRAM);
+        // driverSEMC      = drivers::DriverSEMC::Create(drivers::name::ExternalRAM);
         lowPowerControl = bsp::LowPowerMode::Create().value_or(nullptr);
         cpuGovernor     = std::make_unique<CpuGovernor>();
 

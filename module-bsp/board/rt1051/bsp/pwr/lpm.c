@@ -185,7 +185,7 @@ void LPM_SwitchFlexspiClock(lpm_power_mode_t power_mode)
     CCM->CCGR6 &= (~CCM_CCGR6_CG5_MASK);
 
     /* Periph_clk output will be used as SEMC clock root */
-    CLOCK_SET_MUX((uint32_t)kCLOCK_SemcMux, 0x0);
+    //CLOCK_SET_MUX((uint32_t)kCLOCK_SemcMux, 0x0);
     /* Set post divider for SEMC clock as 0. */
     CLOCK_SET_DIV(kCLOCK_SemcDiv, 0x0);
 

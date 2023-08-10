@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 /*
@@ -304,7 +304,7 @@ void PINMUX_InitBootPins(void)
     PINMUX_InitBluetoothPins();
     PINMUX_InitCellular();
     PINMUX_InitLEDDRIVER();
-    PINMUX_InitUSBC();
+    // PINMUX_InitUSBC();
     PINMUX_InitBatteryCharger();
     PINMUX_InitALS();
     PINMUX_InitPowerSW();

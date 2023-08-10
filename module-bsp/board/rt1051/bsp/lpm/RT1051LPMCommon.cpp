@@ -18,7 +18,7 @@ namespace bsp
 
     RT1051LPMCommon::RT1051LPMCommon()
     {
-        driverSEMC = drivers::DriverSEMC::Create(drivers::name::ExternalRAM);
+        // driverSEMC = drivers::DriverSEMC::Create(drivers::name::ExternalRAM);
         CpuFreq    = std::make_unique<CpuFreqLPM>();
     }
 
@@ -68,9 +68,9 @@ namespace bsp
             // Switch DCDC to CCM mode to improve stability
             DCDC_BootIntoCCM(DCDC);
             // Switch external RAM clock source to PLL2
-            if (driverSEMC) {
-                driverSEMC->SwitchToPLL2ClockSource();
-            }
+            // if (driverSEMC) {
+            //     driverSEMC->SwitchToPLL2ClockSource();
+            // }
             // Enable regular 2P5 and 1P1 LDO, turn off weak 2P5 and 1P1 LDO
             SwitchToRegularModeLDO();
             // Switch to external crystal oscillator
@@ -87,9 +87,9 @@ namespace bsp
             // Enable weak 2P5 and 1P1 LDO, turn off regular 2P5 and 1P1 LDO
             SwitchToLowPowerModeLDO();
             // Switch external RAM clock source to OSC
-            if (driverSEMC) {
-                driverSEMC->SwitchToPeripheralClockSource();
-            }
+            // if (driverSEMC) {
+            //     driverSEMC->SwitchToPeripheralClockSource();
+            // }
             // Switch DCDC to DCM mode to reduce current consumption
             DCDC_BootIntoDCM(DCDC);
         }
