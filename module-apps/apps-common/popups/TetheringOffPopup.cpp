@@ -34,7 +34,9 @@ namespace gui
         metadata.action = [this]() {
             application->bus.sendUnicast(std::make_shared<sys::TetheringStateRequest>(sys::phone_modes::Tethering::Off),
                                          service::name::system_manager);
-            app::manager::Controller::sendAction(application, app::manager::actions::Home);
+            //            app::manager::Controller::sendAction(application, app::manager::actions::Home); //TODO: remove
+            LOG_WARN("------------------ go Home deleted - GO TO PREVIOUS WINDOW instead"); // TODO: remove log
+            application->returnToPreviousWindow();
             return true;
         };
         metadata.title = utils::translate("tethering");

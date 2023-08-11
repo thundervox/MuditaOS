@@ -34,6 +34,7 @@ namespace gui
                 showInformationPopup(
                     [this]() {
                         app::manager::Controller::sendAction(application, app::manager::actions::Home);
+                        LOG_WARN("------------------ go Home (DesktopMainWindow.cpp) maybe unused?"); // TODO: remove
                         return true;
                     },
                     utils::translate("tethering_menu_access_decline"));
