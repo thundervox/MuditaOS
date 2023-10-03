@@ -4,6 +4,7 @@
 #include "RT1051DriverSEMC.hpp"
 #include "critical.hpp"
 #include "board/clock_config.h"
+#include <log/log.hpp>
 
 namespace drivers
 {
@@ -21,6 +22,7 @@ namespace drivers
 
     void RT1051DriverSEMC::SwitchToPLL2ClockSource()
     {
+        LOG_ERROR("Switching SEMC clock source to PLL2");
         cpp_freertos::CriticalSection::Enter();
         if (pll2Driver == nullptr) {
             pll2Driver = std::make_shared<RT1051DriverPLL2>();
@@ -31,6 +33,7 @@ namespace drivers
 
     void RT1051DriverSEMC::SwitchToPeripheralClockSource()
     {
+        LOG_ERROR("Switching SEMC clock source to peripheral");
         cpp_freertos::CriticalSection::Enter();
         CLOCK_SetMux(kCLOCK_SemcMux, SemcMuxPeripheralClock);
         pll2Driver.reset();
