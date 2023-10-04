@@ -7,7 +7,6 @@
 #include "board/rt1051/bsp/lpm/Bandgap.hpp"
 #include "board/rt1051/bsp/lpm/LDO.hpp"
 #include "board/rt1051/bsp/lpm/DCDC.hpp"
-#include <log/log.hpp>
 
 namespace
 {
@@ -41,16 +40,15 @@ namespace drivers
 
             /* Enable PLL2 */
             clkPLL2setup(CLK_ENABLE);
-            LOG_ERROR("PLL2 enable");
         }
     }
 
     RT1051DriverPLL2::~RT1051DriverPLL2() noexcept
     {
-        if (CLOCK_GetMux(kCLOCK_SemcMux) != SemcMuxPeripheralClock) {}
-        else if (!bsp::IsClockEnabled(kCLOCK_Lpspi1) && !bsp::IsClockEnabled(kCLOCK_Lpspi2) &&
-                 !bsp::IsClockEnabled(kCLOCK_Lpspi3) && !bsp::IsClockEnabled(kCLOCK_Lpspi4) &&
-                 !bsp::IsClockEnabled(kCLOCK_Usdhc1) && !bsp::IsClockEnabled(kCLOCK_Usdhc2)) {
+        if ((CLOCK_GetMux(kCLOCK_SemcMux) == SemcMuxPeripheralClock) && !bsp::IsClockEnabled(kCLOCK_Lpspi1) &&
+            !bsp::IsClockEnabled(kCLOCK_Lpspi2) && !bsp::IsClockEnabled(kCLOCK_Lpspi3) &&
+            !bsp::IsClockEnabled(kCLOCK_Lpspi4) && !bsp::IsClockEnabled(kCLOCK_Usdhc1) &&
+            !bsp::IsClockEnabled(kCLOCK_Usdhc2)) {
             /* Disable PLL2 */
             clkPLL2setup(CLK_DISABLE);
 
@@ -62,10 +60,6 @@ namespace drivers
 
             /* Switch to low power bandgap */
             bsp::bandgap::SwitchToLowPowerMode();
-            LOG_ERROR("PLL2 disable");
-        }
-        else {
-            LOG_ERROR("PLL2 disable fails because dependent clocks are in use");
         }
     }
 
