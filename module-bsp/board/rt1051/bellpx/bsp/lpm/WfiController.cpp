@@ -20,7 +20,6 @@ namespace bsp
     namespace
     {
         bool wfiModeAllowed = false;
-        std::uint32_t savedPrimask;
 
         /* RTC wakes up CPU every minute, so go to sleep only if next timer will
          * trigger after more than minute - this way no event will ever be missed */
@@ -128,22 +127,19 @@ namespace bsp
          */
         SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
-        savedPrimask = DisableGlobalIRQ();
+        __disable_irq();
         __DSB();
         __ISB();
 
         /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
         SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
 
-        // We have similar issue
-        // https://community.nxp.com/t5/i-MX-Processors/Does-entering-WFI-mode-on-iMX6-invalidate-cache/m-p/364307
-        SCB_DisableICache();
-        __WFI();
-        SCB_EnableICache();
-
-        EnableGlobalIRQ(savedPrimask);
         __DSB();
+        __WFI();
         __ISB();
+
+        __enable_irq();
+        __NOP();
 
         peripheralExitDozeMode();
 
