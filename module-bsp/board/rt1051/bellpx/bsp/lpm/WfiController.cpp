@@ -138,10 +138,10 @@ namespace bsp
         __WFI();
         __ISB();
 
+        peripheralExitDozeMode();
+
         __enable_irq();
         __NOP();
-
-        peripheralExitDozeMode();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
