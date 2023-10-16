@@ -69,11 +69,6 @@ namespace bsp
                 const auto name = static_cast<IRQn_Type>(irq);
                 if (NVIC_GetPendingIRQ(name)) {
                     LOG_INFO("Pending IRQ: %s", magic_enum::enum_name(name).data());
-                    if (name == ANATOP_EVENT0_IRQn) {
-                        const std::uint32_t status = PMU_GetStatusFlags(PMU);
-                        LOG_INFO("ANATOP_EVENT0_IRQn: 0x%lx", status);
-                        NVIC_ClearPendingIRQ(name);
-                    }
                 }
             }
         }
@@ -138,10 +133,14 @@ namespace bsp
         __WFI();
         __ISB();
 
+        __NOP();
+        __NOP();
+        __NOP();
+        __NOP();
+        peripheralExitDozeMode();
+
         __enable_irq();
         __NOP();
-
-        peripheralExitDozeMode();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
