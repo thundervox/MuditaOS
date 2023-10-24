@@ -18,6 +18,8 @@ namespace bsp::watchdog
             return false;
         }
 
+        CLOCK_EnableClock(kCLOCK_Wdog3);
+
         rtwdog_config_t config;
         RTWDOG_GetDefaultConfig(&config);
         config.enableRtwdog         = true;
@@ -35,6 +37,12 @@ namespace bsp::watchdog
         RTWDOG_Init(RTWDOG, &config);
 
         return true;
+    }
+
+    void deinit()
+    {
+        RTWDOG_Deinit(RTWDOG);
+        CLOCK_DisableClock(kCLOCK_Wdog3);
     }
 
     void refresh()

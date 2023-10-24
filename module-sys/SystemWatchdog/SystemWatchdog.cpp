@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <SystemWatchdog/SystemWatchdog.hpp>
@@ -27,6 +27,7 @@ namespace sys
     bool SystemWatchdog::init()
     {
 #ifdef DISABLE_WATCHDOG
+        bsp::watchdog::deinit();
         return true;
 #else
         if (!bsp::watchdog::init(watchdogTimeoutPeriod)) {

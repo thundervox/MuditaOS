@@ -80,11 +80,8 @@ namespace bsp
             }
         }
 
-        void setWaitModeConfig()
+        __attribute__((optimize("O0"))) void setWaitModeConfig()
         {
-            /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
-            SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
-
             /*
              * ERR007265: CCM: When improper low-power sequence is used,
              * the SoC enters low power mode before the ARM core executes WFI.
@@ -98,22 +95,32 @@ namespace bsp
              *      is set (set bits 0-1 of CCM_CLPCR).
              */
 
-            IOMUXC_GPR->GPR1 |= IOMUXC_GPR_GPR1_GINT_MASK; // TODO this can be done once
-            __DSB();
-
             GPC_EnableIRQ(GPC, GPR_IRQ_IRQn);
-
             const auto clpcr = CCM->CLPCR & (~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK));
             CCM->CLPCR       = clpcr | CCM_CLPCR_MASK_L2CC_IDLE_MASK | CCM_CLPCR_MASK_SCU_IDLE_MASK |
                          CCM_CLPCR_BYPASS_LPM_HS0_MASK | CCM_CLPCR_BYPASS_LPM_HS1_MASK | CCM_CLPCR_STBY_COUNT_MASK |
                          CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK | CCM_CLPCR_LPM(kCLOCK_ModeWait);
-
             GPC_DisableIRQ(GPC, GPR_IRQ_IRQn);
         }
 
-        void setRunModeConfig()
+        __attribute__((optimize("O0"))) void setRunModeConfig()
         {
             CCM->CLPCR &= ~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK);
+        }
+
+        __attribute__((optimize("O0"))) void enterSleepMode()
+        {
+            const auto savedPrimask = DisableGlobalIRQ();
+            __DSB();
+            __ISB();
+
+            SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
+
+            __WFI();
+
+            EnableGlobalIRQ(savedPrimask);
+            __DSB();
+            __ISB();
         }
 
         constexpr auto CCMGateRegsCount = 7;
@@ -189,38 +196,21 @@ namespace bsp
             return;
         }
 
-        checkAndClearPendingIrq();
-
-        CCM->CGPR |=
-            CCM_CGPR_INT_MEM_CLK_LPM_MASK; // See
-                                           // https://patchwork.kernel.org/project/linux-arm-kernel/patch/1471885400-9140-1-git-send-email-Anson.Huang@nxp.com/
-        __DSB();
-
-        setWaitModeConfig();
-        __DSB();
-
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
-        const volatile std::uint32_t savedPrimask = DisableGlobalIRQ();
-        __DSB();
-        __ISB();
+        checkAndClearPendingIrq();
 
         setLowPowerClockGate();
-        __DSB();
+
+        setWaitModeConfig();
         peripheralEnterDozeMode();
 
-        __DSB();
-        __WFI();
-        __ISB();
+        enterSleepMode();
 
         peripheralExitDozeMode();
-        restoreLowPowerClockGate();
         setRunModeConfig();
-        __DSB();
 
-        EnableGlobalIRQ(savedPrimask);
-        __DSB();
-        __NOP();
+        restoreLowPowerClockGate();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */

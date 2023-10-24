@@ -6,5 +6,6 @@
 namespace bsp::watchdog
 {
     bool init(unsigned timeoutMs);
+    void deinit();
     void refresh();
 }
