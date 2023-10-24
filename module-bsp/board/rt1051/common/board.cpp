@@ -21,6 +21,7 @@ extern "C"
 #include <board/debug_console.hpp>
 
 #include <log/log.hpp>
+#include <magic_enum.hpp>
 
 extern std::uint32_t __sdram_cached_start[];
 
@@ -186,6 +187,32 @@ namespace bsp
             LOG_INFO("Device seems to have been reset by RTWDOG! Last instruction address: 0x%08lX",
                      SNVS->LPGPR[1]);
             SNVS->LPGPR[1] = 0;
+        }
+
+        if (SNVS->LPGPR[3] != 0) {
+            const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[3]);
+            LOG_INFO("Saved register LPGPR[3]: %s", magic_enum::enum_name(name).data());
+            SNVS->LPGPR[3] = 0;
+        }
+        if (SNVS->LPGPR[4] != 0) {
+            const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[4]);
+            LOG_INFO("Saved register LPGPR[4]: %s", magic_enum::enum_name(name).data());
+            SNVS->LPGPR[4] = 0;
+        }
+        if (SNVS->LPGPR[5] != 0) {
+            const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[5]);
+            LOG_INFO("Saved register LPGPR[5]: %s", magic_enum::enum_name(name).data());
+            SNVS->LPGPR[5] = 0;
+        }
+        if (SNVS->LPGPR[6] != 0) {
+            const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[6]);
+            LOG_INFO("Saved register LPGPR[6]: %s", magic_enum::enum_name(name).data());
+            SNVS->LPGPR[6] = 0;
+        }
+        if (SNVS->LPGPR[7] != 0) {
+            const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[7]);
+            LOG_INFO("Saved register LPGPR[7]: %s", magic_enum::enum_name(name).data());
+            SNVS->LPGPR[7] = 0;
         }
     }
 
