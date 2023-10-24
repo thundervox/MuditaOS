@@ -61,7 +61,7 @@ namespace bsp
             IOMUXC_GPR->GPR12 = IOMUXC_GPR_GPR12_FLEXIO1_IPG_DOZE_MASK | IOMUXC_GPR_GPR12_FLEXIO2_IPG_DOZE_MASK;
         }
 
-        void checkAndClearPendingIrq()
+        void checkPendingIrq()
         {
             const auto start = static_cast<std::uint8_t>(DMA0_DMA16_IRQn);
             const auto end   = static_cast<std::uint8_t>(NMI_WAKEUP_IRQn) + 1;
@@ -69,6 +69,26 @@ namespace bsp
                 const auto name = static_cast<IRQn_Type>(irq);
                 if (NVIC_GetPendingIRQ(name)) {
                     LOG_INFO("Pending IRQ: %s", magic_enum::enum_name(name).data());
+                }
+            }
+        }
+
+        void savePendingIrq()
+        {
+            constexpr auto registerOffset{3};
+            constexpr auto registerMaxNumber{7};
+
+            const auto start     = static_cast<std::uint8_t>(DMA0_DMA16_IRQn);
+            const auto end       = static_cast<std::uint8_t>(NMI_WAKEUP_IRQn) + 1;
+            auto pendingIrqCount = 0;
+            for (auto irq = start; irq < end; ++irq) {
+                const auto irqNr = static_cast<IRQn_Type>(irq);
+                if (NVIC_GetPendingIRQ(irqNr)) {
+                    const auto reg = pendingIrqCount + registerOffset;
+                    if (reg <= registerMaxNumber) {
+                        SNVS->LPGPR[reg] = irqNr;
+                    }
+                    pendingIrqCount++;
                 }
             }
         }
@@ -103,7 +123,7 @@ namespace bsp
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
-        checkAndClearPendingIrq();
+        checkPendingIrq();
         peripheralEnterDozeMode();
 
         /*
@@ -137,6 +157,7 @@ namespace bsp
         __NOP();
         __NOP();
         __NOP();
+        savePendingIrq();
         peripheralExitDozeMode();
 
         __enable_irq();
