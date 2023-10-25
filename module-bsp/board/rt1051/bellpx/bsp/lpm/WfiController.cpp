@@ -93,6 +93,17 @@ namespace bsp
             }
         }
 
+        void logAndClearLastSavedPendingIrq()
+        {
+            for (auto reg = 3; reg < 8; ++reg) {
+                if (SNVS->LPGPR[reg] != 0) {
+                    const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[reg]);
+                    LOG_INFO("Saved register LPGPR[%d]: %s", reg, magic_enum::enum_name(name).data());
+                    SNVS->LPGPR[reg] = 0;
+                }
+            }
+        }
+
     } // namespace
 
     void allowEnteringWfiMode()
@@ -123,6 +134,7 @@ namespace bsp
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
+        logAndClearLastSavedPendingIrq();
         checkPendingIrq();
         peripheralEnterDozeMode();
 
