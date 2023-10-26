@@ -27,7 +27,6 @@ namespace sys
     bool SystemWatchdog::init()
     {
 #ifdef DISABLE_WATCHDOG
-        bsp::watchdog::deinit();
         return true;
 #else
         if (!bsp::watchdog::init(watchdogTimeoutPeriod)) {

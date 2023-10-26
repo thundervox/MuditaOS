@@ -96,8 +96,7 @@ add_compile_definitions(FSL_RTOS_FREE_RTOS
     __USE_CMSIS
     __NEWLIB__
     SKIP_SYSCLK_INIT
-    _GNU_SOURCE
-    DISABLE_WATCHDOG)
+    _GNU_SOURCE)
 
 add_compile_options(
     $<$<COMPILE_LANGUAGE:C>:-std=gnu11>

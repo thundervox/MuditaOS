@@ -73,8 +73,7 @@ int main()
     if (!sys::SystemWatchdog::getInstance().init()) {
         LOG_ERROR("System watchdog failed to initialize");
         // wait for the hardware watchdog (initialized in reset ISR) to reset the system
-        while (true)
-            ;
+        __asm__ __volatile__("b .\n");
     }
 
     std::vector<std::unique_ptr<sys::BaseServiceCreator>> systemServices;

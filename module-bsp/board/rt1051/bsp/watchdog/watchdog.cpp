@@ -6,6 +6,14 @@
 #include <limits>
 #include <cstdint>
 
+namespace
+{
+    bool isWatchdogConfigSuccessful()
+    {
+        return static_cast<bool>(RTWDOG->CS & RTWDOG_CS_RCS_MASK);
+    }
+} // namespace
+
 namespace bsp::watchdog
 {
     bool init(unsigned timeoutMs)
@@ -17,8 +25,6 @@ namespace bsp::watchdog
         if (timeoutValueTicks > std::numeric_limits<std::uint16_t>::max()) {
             return false;
         }
-
-        CLOCK_EnableClock(kCLOCK_Wdog3);
 
         rtwdog_config_t config;
         RTWDOG_GetDefaultConfig(&config);
@@ -34,15 +40,9 @@ namespace bsp::watchdog
         config.enableWindowMode     = false;
         config.windowValue          = 0;
         config.timeoutValue         = static_cast<std::uint16_t>(timeoutValueTicks);
+
         RTWDOG_Init(RTWDOG, &config);
-
-        return true;
-    }
-
-    void deinit()
-    {
-        RTWDOG_Deinit(RTWDOG);
-        CLOCK_DisableClock(kCLOCK_Wdog3);
+        return isWatchdogConfigSuccessful();
     }
 
     void refresh()

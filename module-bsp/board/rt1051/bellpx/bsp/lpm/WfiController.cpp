@@ -4,18 +4,17 @@
 #include "WfiController.hpp"
 #include <fsl_common.h>
 #include <fsl_pmu.h>
+#include <fsl_gpc.h>
 #include <Utils.hpp>
 #include <time/time_constants.hpp>
 #include <FreeRTOS.h>
 #include <task.h>
-#include <ticks.hpp>
 #include <timers.h>
-#include <MIMXRT1051.h>
+#include <ticks.hpp>
+#include <watchdog/watchdog.hpp>
 
 #include <magic_enum.hpp>
 #include <log/log.hpp>
-
-#include <fsl_gpc.h>
 
 namespace bsp
 {
@@ -123,50 +122,133 @@ namespace bsp
             __ISB();
         }
 
-        constexpr auto CCMGateRegsCount = 7;
-        volatile std::uint32_t clockGateValues[CCMGateRegsCount];
-
         void setLowPowerClockGate()
         {
-            /* Save of the clock gate registers */
-            clockGateValues[0] =
-                CCM->CCGR0; /* TODO all these additional clock disabling should be moved to clock_config.cpp */
-            clockGateValues[1] = CCM->CCGR1 & ~(CCM_CCGR1_CG5(3));                      // Disable enet
-            clockGateValues[2] = CCM->CCGR2 & ~(CCM_CCGR2_CG15(3) | CCM_CCGR2_CG14(3)); // Disable pxp and lcd
-            clockGateValues[3] = CCM->CCGR3 & ~(CCM_CCGR3_CG13(3) | CCM_CCGR3_CG12(3) | CCM_CCGR3_CG11(3) |
-                                                CCM_CCGR3_CG10(3)); // Disable acmps
-            clockGateValues[4] = CCM->CCGR4 & ~(CCM_CCGR4_CG15(3) | CCM_CCGR4_CG14(3) | CCM_CCGR4_CG13(3) |
-                                                CCM_CCGR4_CG12(3)); // Disable encs
-            clockGateValues[5] =
-                CCM->CCGR5 & ~(CCM_CCGR5_CG4(3)); // Disable kpp, TODO all wdogs have enabled clocks, is it needed?
-            clockGateValues[6] = CCM->CCGR6;
+            /* CCM->CCGR0 */
+            CLOCK_ControlGate(kCLOCK_Aips_tz1, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Aips_tz2, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Mqs, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_FlexSpiExsc, kCLOCK_ClockNeededRunWait); // reserved
+            CLOCK_ControlGate(kCLOCK_Sim_M_Main, kCLOCK_ClockNeededRun);      // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Dcp, kCLOCK_ClockNotNeeded);             // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Lpuart3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Can1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Can1S, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Can2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Can2S, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Trace, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpt2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpt2S, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpio2, kCLOCK_ClockNeededRunWait);
 
-            /* Set low power gate values */
-            CCM->CCGR0 = CCM_CCGR0_CG0(1) | CCM_CCGR0_CG1(1) | CCM_CCGR0_CG3(3) | CCM_CCGR0_CG11(1) | CCM_CCGR0_CG12(1);
-            CCM->CCGR1 = CCM_CCGR1_CG9(3) | CCM_CCGR1_CG10(3) /* was 1, GPT1 is used in wait mode as timebase */ |
-                         CCM_CCGR1_CG13(1) | CCM_CCGR1_CG14(1) | CCM_CCGR1_CG15(1);
-            CCM->CCGR2 = CCM_CCGR2_CG2(1) | CCM_CCGR2_CG8(1) | CCM_CCGR2_CG9(1) | CCM_CCGR2_CG10(1);
-            CCM->CCGR3 = CCM_CCGR3_CG2(3) /* was 1, but SEMC clock needs to be enabled */ | CCM_CCGR3_CG4(1) |
-                         CCM_CCGR3_CG9(1) | CCM_CCGR3_CG14(3) | CCM_CCGR3_CG15(1);
-            CCM->CCGR4 = CCM_CCGR4_CG1(1) | CCM_CCGR4_CG2(1) | CCM_CCGR4_CG4(1) | CCM_CCGR4_CG5(1) | CCM_CCGR4_CG6(1) |
-                         CCM_CCGR4_CG7(1);
-            CCM->CCGR5 = CCM_CCGR5_CG0(1) | CCM_CCGR5_CG1(1) | CCM_CCGR5_CG4(1) | CCM_CCGR5_CG6(1) | CCM_CCGR5_CG12(1) |
-                         CCM_CCGR5_CG14(3) /* was 1, but SNVS HP is needed for minute IRQ to work */ |
-                         CCM_CCGR5_CG15(1);
-            /* We can enable DCDC when need to config it and close it after configuration */
-            CCM->CCGR6 = CCM_CCGR6_CG3(1) | CCM_CCGR6_CG4(1) | CCM_CCGR6_CG5(1) | CCM_CCGR6_CG9(1) | CCM_CCGR6_CG10(1) |
-                         CCM_CCGR6_CG11(1) | CCM_CCGR4_CG15(3); // CG15 TMR3 added for encoder to wakeup
-        }
+            /* CCM->CCGR1 */
+            CLOCK_ControlGate(kCLOCK_Lpspi1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpspi2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpspi3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpspi4, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Adc2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Enet, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Pit, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Aoi2, kCLOCK_ClockNotNeeded); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Adc1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_SemcExsc, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Gpt1, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Gpt1S, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart4, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpio1, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Csu, kCLOCK_ClockNotNeeded); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Gpio5, kCLOCK_ClockNeededRunWait);
 
-        void restoreLowPowerClockGate()
-        {
-            CCM->CCGR0 = clockGateValues[0];
-            CCM->CCGR1 = clockGateValues[1];
-            CCM->CCGR2 = clockGateValues[2];
-            CCM->CCGR3 = clockGateValues[3];
-            CCM->CCGR4 = clockGateValues[4];
-            CCM->CCGR5 = clockGateValues[5];
-            CCM->CCGR6 = clockGateValues[6];
+            /* CCM->CCGR2 */
+            CLOCK_ControlGate(kCLOCK_OcramExsc, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Csi, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_IomuxcSnvs, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Lpi2c1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpi2c2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpi2c3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Ocotp, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Xbar3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Ipmux1, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Ipmux2, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Ipmux3, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Xbar1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Xbar2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpio3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lcd, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Pxp, kCLOCK_ClockNotNeeded);
+
+            /* CCM->CCGR3 */
+            CLOCK_ControlGate(kCLOCK_Flexio2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart5, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Semc, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Lpuart6, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Aoi1, kCLOCK_ClockNotNeeded); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_LcdPixel, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Gpio4, kCLOCK_ClockNotNeeded);   // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Ewm0, kCLOCK_ClockNotNeeded);    // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Wdog1, kCLOCK_ClockNotNeeded);   // TODO not sure
+            CLOCK_ControlGate(kCLOCK_FlexRam, kCLOCK_ClockNeededRun); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Acmp1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Acmp2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Acmp3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Acmp4, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Ocram, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_IomuxcSnvsGpr, kCLOCK_ClockNeededRun);
+
+            /* CCM->CCGR4 */
+            CLOCK_ControlGate(kCLOCK_Sim_m7_clk_r, kCLOCK_ClockNeededRun); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Iomuxc, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_IomuxcGpr, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Bee, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_SimM7, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Tsc, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_SimM, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_SimEms, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Pwm1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Pwm2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Pwm3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Pwm4, kCLOCK_ClockNeededRun); // Only PWM4 is used in Harmony
+            CLOCK_ControlGate(kCLOCK_Enc1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Enc2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Enc3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Enc4, kCLOCK_ClockNotNeeded);
+
+            /* CCM->CCGR5 */
+            CLOCK_ControlGate(kCLOCK_Rom, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Flexio1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Wdog3, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Dma, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Kpp, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Wdog2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Aips_tz4, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Spdif, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_SimMain, kCLOCK_ClockNeededRun); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Sai1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Sai2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Sai3, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart7, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_SnvsHp, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_SnvsLp, kCLOCK_ClockNeededRunWait);
+
+            /* CCM->CCGR6 */
+            CLOCK_ControlGate(kCLOCK_UsbOh3, kCLOCK_ClockNeededRun); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Usdhc1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Usdhc2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Dcdc, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Ipmux4, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_FlexSpi, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Trng, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Lpuart8, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Timer4, kCLOCK_ClockNotNeeded); // TODO not sure
+            CLOCK_ControlGate(kCLOCK_Aips_tz3, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_SimPer, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Anadig, kCLOCK_ClockNeededRunWait);
+            CLOCK_ControlGate(kCLOCK_Lpi2c4, kCLOCK_ClockNeededRun);
+            CLOCK_ControlGate(kCLOCK_Timer1, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Timer2, kCLOCK_ClockNotNeeded);
+            CLOCK_ControlGate(kCLOCK_Timer3, kCLOCK_ClockNeededRunWait);
         }
     } // namespace
 
@@ -200,7 +282,9 @@ namespace bsp
 
         checkAndClearPendingIrq();
 
-        setLowPowerClockGate();
+        bsp::watchdog::refresh(); // Prevent RTWDOG timeout
+
+        setLowPowerClockGate(); // In case something changed it
 
         setWaitModeConfig();
         peripheralEnterDozeMode();
@@ -209,8 +293,6 @@ namespace bsp
 
         peripheralExitDozeMode();
         setRunModeConfig();
-
-        restoreLowPowerClockGate();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */

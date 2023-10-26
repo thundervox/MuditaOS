@@ -74,7 +74,6 @@
  * (PLL) that is part of the microcontroller device.
  */
 
-#include <stdint.h>
 #include "fsl_device_registers.h"
 
 /* ----------------------------------------------------------------------------
@@ -113,7 +112,7 @@ void SystemInit(void)
     RTWDOG->CNT = 0xD928C520U;
     // Disable RTWDOG and allow configuration updates
     RTWDOG->TOVAL = 0xFFFF;
-    RTWDOG->CS    = (uint32_t)(((RTWDOG->CS) & ~RTWDOG_CS_EN_MASK) | RTWDOG_CS_UPDATE_MASK);
+    RTWDOG->CS    = ((RTWDOG->CS & ~RTWDOG_CS_EN_MASK) | RTWDOG_CS_UPDATE_MASK);
 #else
     //
     // Perform preliminary RTWDOG configuration
@@ -123,7 +122,7 @@ void SystemInit(void)
     // Set timeout value (16s, assuming 128Hz clock - 32.768kHz after 256 prescaler)
     RTWDOG->TOVAL = 2048;
     // Enable RTWDOG, set 256 clock prescaler and allow configuration updates
-    RTWDOG->CS = (uint32_t)((RTWDOG->CS) | RTWDOG_CS_EN_MASK | RTWDOG_CS_UPDATE_MASK | RTWDOG_CS_PRES_MASK);
+    RTWDOG->CS = (RTWDOG_CS_UPDATE(1U) | RTWDOG_CS_EN(1U) | RTWDOG_CS_CLK(1U) | RTWDOG_CS_PRES(1U) | RTWDOG_CS_CMD32EN(1U));
 #endif // (DISABLE_WATCHDOG)
 
     /* Disable Systick which might be enabled by bootrom */
@@ -189,7 +188,6 @@ void SystemCoreClockUpdate(void)
             break;
 
         case CCM_CBCMR_PERIPH_CLK2_SEL(3U):
-            __attribute__((fallthrough));
         default:
             freq = 0U;
             break;
