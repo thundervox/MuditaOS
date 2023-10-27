@@ -45,6 +45,11 @@ namespace bsp::watchdog
         return isWatchdogConfigSuccessful();
     }
 
+    void deinit()
+    {
+        RTWDOG_Deinit(RTWDOG);
+    }
+
     void enable()
     {
         RTWDOG_Unlock(RTWDOG);

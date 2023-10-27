@@ -11,7 +11,7 @@
 #include <task.h>
 #include <timers.h>
 #include <ticks.hpp>
-#include <watchdog/watchdog.hpp>
+//#include <watchdog/watchdog.hpp>
 
 #include <magic_enum.hpp>
 #include <log/log.hpp>
@@ -113,12 +113,8 @@ namespace bsp
             __DSB();
             __ISB();
 
-            bsp::watchdog::disable();
-
             SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
             __WFI();
-
-            bsp::watchdog::enable();
 
             EnableGlobalIRQ(savedPrimask);
             __DSB();
@@ -285,16 +281,18 @@ namespace bsp
 
         checkAndClearPendingIrq();
 
-        bsp::watchdog::refresh();
         setLowPowerClockGate(); // In case something changed it
         setWaitModeConfig();
         peripheralEnterDozeMode();
 
+        //        bsp::watchdog::refresh();
+        //        bsp::watchdog::disable();
         enterSleepMode();
+        //        bsp::watchdog::refresh();
+        //        bsp::watchdog::enable();
 
         peripheralExitDozeMode();
         setRunModeConfig();
-        bsp::watchdog::refresh();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
