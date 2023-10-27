@@ -4,6 +4,7 @@
 #include "WfiController.hpp"
 #include <fsl_common.h>
 #include <fsl_pmu.h>
+#include <fsl_rtwdog.h>
 #include <Utils.hpp>
 #include <time/time_constants.hpp>
 #include <FreeRTOS.h>
@@ -134,6 +135,7 @@ namespace bsp
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
+        RTWDOG_Refresh(RTWDOG);
         logAndClearLastSavedPendingIrq();
         checkPendingIrq();
         peripheralEnterDozeMode();
@@ -158,6 +160,9 @@ namespace bsp
         __DSB();
         __ISB();
 
+        RTWDOG_Unlock(RTWDOG);
+        RTWDOG_Disable(RTWDOG);
+
         /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
         SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
 
@@ -172,8 +177,13 @@ namespace bsp
         savePendingIrq();
         peripheralExitDozeMode();
 
+        RTWDOG_Unlock(RTWDOG);
+        RTWDOG_Enable(RTWDOG);
+
         __enable_irq();
         __NOP();
+
+        RTWDOG_Refresh(RTWDOG);
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
