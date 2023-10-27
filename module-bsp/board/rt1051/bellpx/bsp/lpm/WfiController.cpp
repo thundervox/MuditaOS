@@ -79,7 +79,7 @@ namespace bsp
             }
         }
 
-        __attribute__((optimize("O0"))) void setWaitModeConfig()
+        void setWaitModeConfig()
         {
             /*
              * ERR007265: CCM: When improper low-power sequence is used,
@@ -102,20 +102,23 @@ namespace bsp
             GPC_DisableIRQ(GPC, GPR_IRQ_IRQn);
         }
 
-        __attribute__((optimize("O0"))) void setRunModeConfig()
+        void setRunModeConfig()
         {
             CCM->CLPCR &= ~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK);
         }
 
-        __attribute__((optimize("O0"))) void enterSleepMode()
+        void enterSleepMode()
         {
             const auto savedPrimask = DisableGlobalIRQ();
             __DSB();
             __ISB();
 
-            SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
+            bsp::watchdog::disable();
 
+            SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
             __WFI();
+
+            bsp::watchdog::enable();
 
             EnableGlobalIRQ(savedPrimask);
             __DSB();
@@ -282,10 +285,8 @@ namespace bsp
 
         checkAndClearPendingIrq();
 
-        bsp::watchdog::refresh(); // Prevent RTWDOG timeout
-
+        bsp::watchdog::refresh();
         setLowPowerClockGate(); // In case something changed it
-
         setWaitModeConfig();
         peripheralEnterDozeMode();
 
@@ -293,6 +294,7 @@ namespace bsp
 
         peripheralExitDozeMode();
         setRunModeConfig();
+        bsp::watchdog::refresh();
 
         /* Block WFI mode so that OS wakes up fully and goes to sleep only after
          * frequency has dropped back to the lowest level */
