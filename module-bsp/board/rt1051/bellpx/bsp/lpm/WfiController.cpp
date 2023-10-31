@@ -61,61 +61,15 @@ namespace bsp
 
             IOMUXC_GPR->GPR12 = IOMUXC_GPR_GPR12_FLEXIO1_IPG_DOZE_MASK | IOMUXC_GPR_GPR12_FLEXIO2_IPG_DOZE_MASK;
         }
-
-        void checkPendingIrq()
-        {
-            const auto start = static_cast<std::uint8_t>(DMA0_DMA16_IRQn);
-            const auto end   = static_cast<std::uint8_t>(NMI_WAKEUP_IRQn) + 1;
-            for (auto irq = start; irq < end; ++irq) {
-                const auto name = static_cast<IRQn_Type>(irq);
-                if (NVIC_GetPendingIRQ(name)) {
-                    LOG_INFO("Pending IRQ: %s", magic_enum::enum_name(name).data());
-                }
-            }
-        }
-
-        void savePendingIrq()
-        {
-            constexpr auto registerOffset{3};
-            constexpr auto registerMaxNumber{7};
-
-            const auto start     = static_cast<std::uint8_t>(DMA0_DMA16_IRQn);
-            const auto end       = static_cast<std::uint8_t>(NMI_WAKEUP_IRQn) + 1;
-            auto pendingIrqCount = 0;
-            for (auto irq = start; irq < end; ++irq) {
-                const auto irqNr = static_cast<IRQn_Type>(irq);
-                if (NVIC_GetPendingIRQ(irqNr)) {
-                    const auto reg = pendingIrqCount + registerOffset;
-                    if (reg <= registerMaxNumber) {
-                        SNVS->LPGPR[reg] = irqNr;
-                    }
-                    pendingIrqCount++;
-                }
-            }
-        }
-
-        void logAndClearLastSavedPendingIrq()
-        {
-            for (auto reg = 3; reg < 8; ++reg) {
-                if (SNVS->LPGPR[reg] != 0) {
-                    const auto name = static_cast<IRQn_Type>(SNVS->LPGPR[reg]);
-                    LOG_INFO("Saved register LPGPR[%d]: %s", reg, magic_enum::enum_name(name).data());
-                    SNVS->LPGPR[reg] = 0;
-                }
-            }
-        }
-
     } // namespace
 
     void allowEnteringWfiMode()
     {
-        LOG_ERROR("Allowing WFI mode!");
         wfiModeAllowed = true;
     }
 
     void blockEnteringWfiMode()
     {
-        LOG_ERROR("Blocking WFI mode!");
         wfiModeAllowed = false;
     }
 
@@ -136,8 +90,6 @@ namespace bsp
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
 
         RTWDOG_Refresh(RTWDOG);
-        logAndClearLastSavedPendingIrq();
-        checkPendingIrq();
         peripheralEnterDozeMode();
 
         /*
@@ -174,7 +126,6 @@ namespace bsp
         __NOP();
         __NOP();
         __NOP();
-        savePendingIrq();
         peripheralExitDozeMode();
 
         RTWDOG_Unlock(RTWDOG);
