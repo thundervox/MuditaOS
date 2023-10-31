@@ -15,12 +15,6 @@ namespace bsp
 
     void Brownout_init()
     {
-        // Config LDO Regulators and config Brownout voltage offsets
-        // PMU_1P1EnableBrownout(PMU, true);
-        // PMU_1P1SetRegulatorOutputVoltage(PMU, OutputVoltage1P1);
-        // PMU_1P1SetBrownoutOffsetVoltage(PMU, OffsetVoltage1P1);
-        // PMU_1P1EnableOutput(PMU, true);
-
         PMU_2P5nableBrownout(PMU, true);
         PMU_2P5SetRegulatorOutputVoltage(PMU, OutputVoltage2P5);
         PMU_2P5SetBrownoutOffsetVoltage(PMU, OffsetVoltage2P5);
