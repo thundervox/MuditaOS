@@ -9,7 +9,7 @@ namespace bsp
 {
     namespace
     {
-        constexpr std::uint32_t OutputVoltage2P5 = 0x1F; // 2.875V
+        constexpr std::uint32_t OutputVoltage2P5 = 0x1C; // 2.800V
         constexpr std::uint32_t OffsetVoltage2P5 = 0x03; // 3*25mV
     }                                                    // namespace
 
