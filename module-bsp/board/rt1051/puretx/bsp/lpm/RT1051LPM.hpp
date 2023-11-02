@@ -16,7 +16,8 @@ namespace bsp
 
         void AllowEnteringWfiMode() final;
         void BlockEnteringWfiMode() final;
-        void EnterWfiModeIfAllowed() final;
+        std::uint32_t EnterWfiModeIfAllowed() final;
+        std::uint32_t GetLastTimeSpentInWfi() final;
 
       private:
         std::shared_ptr<drivers::DriverGPIO> gpio_1;

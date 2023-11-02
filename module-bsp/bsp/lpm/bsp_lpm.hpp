@@ -52,7 +52,8 @@ namespace bsp
 
         virtual void AllowEnteringWfiMode() = 0;
         virtual void BlockEnteringWfiMode() = 0;
-        virtual void EnterWfiModeIfAllowed() = 0;
+        virtual std::uint32_t EnterWfiModeIfAllowed() = 0;
+        virtual std::uint32_t GetLastTimeSpentInWfi() = 0;
 
       protected:
         CpuFrequencyMHz currentFrequency = CpuFrequencyMHz::Level_6;

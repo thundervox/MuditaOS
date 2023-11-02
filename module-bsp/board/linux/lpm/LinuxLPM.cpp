@@ -40,7 +40,14 @@ namespace bsp
     void LinuxLPM::BlockEnteringWfiMode()
     {}
 
-    void LinuxLPM::EnterWfiModeIfAllowed()
-    {}
+    std::uint32_t LinuxLPM::EnterWfiModeIfAllowed()
+    {
+        return 0;
+    }
+
+    std::uint32_t LinuxLPM::GetLastTimeSpentInWfi()
+    {
+        return 0;
+    }
 
 } // namespace bsp

@@ -149,7 +149,11 @@ namespace bsp
             onChangeDown(freq);
         }
 
-        LOG_INFO("CPU frequency changed to %lu", CLOCK_GetFreq(kCLOCK_CpuClk));
+        const std::string log = "CPU frequency changed to " + std::to_string(CLOCK_GetFreq(kCLOCK_CpuClk)) +
+                                ((currentFrequency <= CpuFrequencyMHz::Level_1)
+                                     ? (" (WFI time: " + std::to_string(GetLastTimeSpentInWfi()) + " ms)")
+                                     : "");
+        LOG_INFO(log.c_str());
         currentFrequency = freq;
     }
 

@@ -20,6 +20,7 @@ namespace sys
         constexpr auto lowestLevelName{"lowestCpuFrequency"};
         constexpr auto middleLevelName{"middleCpuFrequency"};
         constexpr auto highestLevelName{"highestCpuFrequency"};
+        constexpr auto WfiName{"WFI"};
 
         constexpr bsp::CpuFrequencyMHz logDumpFrequencyToHold{bsp::CpuFrequencyMHz::Level_4};
     } // namespace
@@ -75,6 +76,7 @@ namespace sys
         cpuFrequencyMonitor.push_back(CpuFrequencyMonitor(lowestLevelName));
         cpuFrequencyMonitor.push_back(CpuFrequencyMonitor(middleLevelName));
         cpuFrequencyMonitor.push_back(CpuFrequencyMonitor(highestLevelName));
+        cpuFrequencyMonitor.push_back(CpuFrequencyMonitor(WfiName));
     }
 
     PowerManager::~PowerManager()
@@ -219,10 +221,22 @@ namespace sys
         lastCpuFrequencyChangeTimestamp = ticks;
     }
 
+    void PowerManager::UpdateCpuFrequencyMonitor(std::string name, std::uint32_t tickIncrease)
+    {
+        for (auto &level : cpuFrequencyMonitor) {
+            if (level.GetName() == name) {
+                level.IncreaseTicks(tickIncrease);
+            }
+        }
+    }
+
     void PowerManager::EnterWfiIfReady()
     {
         if (!cpuGovernor->IsWfiBlocked()) {
-            lowPowerControl->EnterWfiModeIfAllowed();
+            const auto timeSpentInWFI = lowPowerControl->EnterWfiModeIfAllowed();
+            if (timeSpentInWFI > 0) {
+                UpdateCpuFrequencyMonitor(WfiName, timeSpentInWFI);
+            }
         }
     }
 
