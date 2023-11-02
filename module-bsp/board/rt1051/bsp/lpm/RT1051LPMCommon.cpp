@@ -4,7 +4,6 @@
 #include "RT1051LPMCommon.hpp"
 #include <log/log.hpp>
 #include <fsl_clock.h>
-#include <fsl_gpc.h>
 #include <bsp/bsp.hpp>
 #include "Oscillator.hpp"
 #include "drivers/semc/DriverSEMC.hpp"
@@ -14,12 +13,6 @@
 namespace bsp
 {
     using namespace drivers;
-
-    namespace
-    {
-        constexpr std::uint32_t CCM_CLPCR_BYPASS_LPM_HS_BITS{CCM_CLPCR_BYPASS_LPM_HS0_MASK |
-                                                             CCM_CLPCR_BYPASS_LPM_HS1_MASK};
-    } // namespace
 
     RT1051LPMCommon::RT1051LPMCommon()
     {
@@ -173,34 +166,5 @@ namespace bsp
             SwitchToExternalOscillator();
             break;
         }
-    }
-
-    void RT1051LPMCommon::SetRunModeConfig()
-    {
-        CCM->CLPCR &= ~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK);
-    }
-
-    void RT1051LPMCommon::SetWaitModeConfig()
-    {
-        uint32_t clpcr;
-
-        /*
-         * ERR050143: CCM: When improper low-power sequence is used,
-         * the SoC enters low power mode before the ARM core executes WFI.
-         *
-         * Software workaround:
-         * 1) Software should trigger IRQ #41 (GPR_IRQ) to be always pending
-         *      by setting IOMUXC_GPR_GPR1_GINT.
-         * 2) Software should then unmask IRQ #41 in GPC before setting CCM
-         *      Low-Power mode.
-         * 3) Software should mask IRQ #41 right after CCM Low-Power mode
-         *      is set (set bits 0-1 of CCM_CLPCR).
-         */
-        GPC_EnableIRQ(GPC, GPR_IRQ_IRQn);
-        clpcr      = CCM->CLPCR & (~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK));
-        CCM->CLPCR = clpcr | CCM_CLPCR_LPM(kCLOCK_ModeWait) | CCM_CLPCR_MASK_SCU_IDLE_MASK |
-                     CCM_CLPCR_MASK_L2CC_IDLE_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK | CCM_CLPCR_STBY_COUNT_MASK |
-                     CCM_CLPCR_BYPASS_LPM_HS_BITS;
-        GPC_DisableIRQ(GPC, GPR_IRQ_IRQn);
     }
 } // namespace bsp
