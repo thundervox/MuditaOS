@@ -24,10 +24,7 @@ namespace bsp
 
     std::uint32_t RT1051LPM::EnterWfiModeIfAllowed()
     {
-        RT1051LPMCommon::SetWaitModeConfig();
-        const auto timeSpentInWFI = enterWfiModeIfAllowed();
-        RT1051LPMCommon::SetRunModeConfig();
-        return timeSpentInWFI;
+        return enterWfiModeIfAllowed();
     }
 
     std::uint32_t RT1051LPM::GetLastTimeSpentInWfi()
