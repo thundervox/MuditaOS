@@ -21,6 +21,7 @@ namespace bsp
 
         void AllowEnteringWfiMode() final;
         void BlockEnteringWfiMode() final;
-        void EnterWfiModeIfAllowed() final;
+        std::uint32_t EnterWfiModeIfAllowed() final;
+        std::uint32_t GetLastTimeSpentInWfi() final;
     };
 } // namespace bsp
