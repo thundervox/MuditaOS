@@ -14,17 +14,17 @@
 #include <MIMXRT1051.h>
 
 #include <magic_enum.hpp>
-#include <log/log.hpp>
 
 namespace bsp
 {
     namespace
     {
-        bool wfiModeAllowed = false;
-
         /* RTC wakes up CPU every minute, so go to sleep only if next timer will
          * trigger after more than minute - this way no event will ever be missed */
         constexpr auto timersInactivityTimeMs{60 * utils::time::milisecondsInSecond};
+
+        bool wfiModeAllowed = false;
+        std::uint32_t timeSpentInWFI;
 
         inline constexpr std::uint32_t highFrequencyTimerTicksToMs(std::uint32_t ticks)
         {
@@ -40,6 +40,11 @@ namespace bsp
                 return (cpp_freertos::Ticks::TicksToMs(timersNextWakeUpTick - currentTick) < timersInactivityTimeMs);
             }
             return true;
+        }
+
+        bool isWfiModeAllowed()
+        {
+            return wfiModeAllowed;
         }
 
         void peripheralExitDozeMode()
@@ -73,18 +78,19 @@ namespace bsp
         wfiModeAllowed = false;
     }
 
-    bool isWfiModeAllowed()
+    std::uint32_t getLastTimeSpentInWfi()
     {
-        return wfiModeAllowed;
+        return timeSpentInWFI;
     }
 
-    void enterWfiModeIfAllowed()
+    std::uint32_t enterWfiModeIfAllowed()
     {
         if (!isWfiModeAllowed()) {
-            return;
+            return 0;
         }
+        timeSpentInWFI = 0;
         if (isTimerTaskScheduledSoon()) {
-            return;
+            return 0;
         }
 
         const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
@@ -141,9 +147,8 @@ namespace bsp
         blockEnteringWfiMode();
 
         const auto exitWfiTimerTicks = ulHighFrequencyTimerTicks();
-        const auto sleepTimeMs =
-            highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
-        xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(sleepTimeMs));
-        LOG_INFO("*** WFI OUT sleep time: %ld ***", sleepTimeMs);
+        timeSpentInWFI = highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
+        xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
+        return timeSpentInWFI;
     }
 } // namespace bsp

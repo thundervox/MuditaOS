@@ -3,10 +3,12 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace bsp
 {
     void allowEnteringWfiMode();
     void blockEnteringWfiMode();
-    bool isWfiModeAllowed();
-    void enterWfiModeIfAllowed();
+    std::uint32_t enterWfiModeIfAllowed();
+    std::uint32_t getLastTimeSpentInWfi();
 } // namespace bsp

@@ -49,7 +49,14 @@ namespace bsp
     void RT1051LPM::BlockEnteringWfiMode()
     {}
 
-    void RT1051LPM::EnterWfiModeIfAllowed()
-    {}
+    std::uint32_t RT1051LPM::EnterWfiModeIfAllowed()
+    {
+        return 0;
+    }
+
+    std::uint32_t RT1051LPM::GetLastTimeSpentInWfi()
+    {
+        return 0;
+    }
 
 } // namespace bsp
