@@ -99,6 +99,11 @@ namespace bsp
                          CCM_CLPCR_BYPASS_LPM_HS_BITS;
             GPC_DisableIRQ(GPC, GPR_IRQ_IRQn);
         }
+
+        bool isBrownoutOn2P5Output()
+        {
+            return (PMU_REG_2P5_BO_VDD2P5_MASK == (PMU_REG_2P5_BO_VDD2P5_MASK & PMU->REG_2P5));
+        }
     } // namespace
 
     void allowEnteringWfiMode()
@@ -123,6 +128,10 @@ namespace bsp
         }
         timeSpentInWFI = 0;
         if (isTimerTaskScheduledSoon()) {
+            return 0;
+        }
+        if (isBrownoutOn2P5Output()) {
+            LOG_WARN("WFI disabled - brownout detected on 2P5 VDD output");
             return 0;
         }
 
