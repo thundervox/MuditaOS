@@ -111,6 +111,8 @@ namespace bsp
         wfiModeAllowed = true;
     }
 
+    /* Block WFI mode so that OS wakes up fully and goes to sleep only after
+     * frequency has dropped back to the lowest level */
     void blockEnteringWfiMode()
     {
         wfiModeAllowed = false;
@@ -128,10 +130,12 @@ namespace bsp
         }
         timeSpentInWFI = 0;
         if (isTimerTaskScheduledSoon()) {
+            blockEnteringWfiMode();
             return 0;
         }
         if (isBrownoutOn2P5Output()) {
             LOG_WARN("WFI disabled - brownout detected on 2P5 VDD output");
+            blockEnteringWfiMode();
             return 0;
         }
 
@@ -185,8 +189,6 @@ namespace bsp
 
         RTWDOG_Refresh(RTWDOG);
 
-        /* Block WFI mode so that OS wakes up fully and goes to sleep only after
-         * frequency has dropped back to the lowest level */
         blockEnteringWfiMode();
         SetRunModeConfig();
 
