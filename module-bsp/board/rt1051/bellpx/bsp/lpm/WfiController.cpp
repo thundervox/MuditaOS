@@ -2,18 +2,14 @@
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "WfiController.hpp"
-#include <fsl_common.h>
-#include <fsl_pmu.h>
-#include <fsl_rtwdog.h>
+#include "EnterSleepMode.h"
 #include <fsl_gpc.h>
+#include <fsl_rtwdog.h>
 #include <fsl_runtimestat_gpt.h>
 #include <Utils.hpp>
 #include <time/time_constants.hpp>
-#include <FreeRTOS.h>
-#include <task.h>
 #include <ticks.hpp>
 #include <timers.h>
-#include <MIMXRT1051.h>
 
 namespace bsp
 {
@@ -22,9 +18,6 @@ namespace bsp
         /* RTC wakes up CPU every minute, so go to sleep only if next timer will
          * trigger after more than minute - this way no event will ever be missed */
         constexpr auto timersInactivityTimeMs{60 * utils::time::milisecondsInSecond};
-
-        constexpr std::uint32_t CCM_CLPCR_BYPASS_LPM_HS_BITS{CCM_CLPCR_BYPASS_LPM_HS0_MASK |
-                                                             CCM_CLPCR_BYPASS_LPM_HS1_MASK};
 
         bool wfiModeAllowed = false;
         std::uint32_t timeSpentInWFI;
@@ -45,12 +38,6 @@ namespace bsp
             return wfiModeAllowed;
         }
 
-        void peripheralExitDozeMode()
-        {
-            IOMUXC_GPR->GPR8  = 0x00000000;
-            IOMUXC_GPR->GPR12 = 0x00000000;
-        }
-
         void peripheralEnterDozeMode()
         {
             IOMUXC_GPR->GPR8 = IOMUXC_GPR_GPR8_LPI2C1_IPG_DOZE_MASK | IOMUXC_GPR_GPR8_LPI2C2_IPG_DOZE_MASK |
@@ -65,14 +52,20 @@ namespace bsp
             IOMUXC_GPR->GPR12 = IOMUXC_GPR_GPR12_FLEXIO1_IPG_DOZE_MASK | IOMUXC_GPR_GPR12_FLEXIO2_IPG_DOZE_MASK;
         }
 
-        void SetRunModeConfig()
+        void peripheralExitDozeMode()
+        {
+            IOMUXC_GPR->GPR8  = 0x00000000;
+            IOMUXC_GPR->GPR12 = 0x00000000;
+        }
+
+        void setRunModeConfig()
         {
             CCM->CLPCR &= ~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK);
         }
 
-        void SetWaitModeConfig()
+        void setWaitModeConfig()
         {
-            uint32_t clpcr;
+            std::uint32_t clpcr;
 
             /*
              * ERR050143: CCM: When improper low-power sequence is used,
@@ -90,13 +83,13 @@ namespace bsp
             clpcr      = CCM->CLPCR & (~(CCM_CLPCR_LPM_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK));
             CCM->CLPCR = clpcr | CCM_CLPCR_LPM(kCLOCK_ModeWait) | CCM_CLPCR_MASK_SCU_IDLE_MASK |
                          CCM_CLPCR_MASK_L2CC_IDLE_MASK | CCM_CLPCR_ARM_CLK_DIS_ON_LPM_MASK | CCM_CLPCR_STBY_COUNT_MASK |
-                         CCM_CLPCR_BYPASS_LPM_HS_BITS;
+                         CCM_CLPCR_BYPASS_LPM_HS0_MASK | CCM_CLPCR_BYPASS_LPM_HS1_MASK;
             GPC_DisableIRQ(GPC, GPR_IRQ_IRQn);
         }
 
         bool isBrownoutOn2P5Output()
         {
-            return (PMU_REG_2P5_BO_VDD2P5_MASK == (PMU_REG_2P5_BO_VDD2P5_MASK & PMU->REG_2P5));
+            return ((PMU_REG_2P5_BO_VDD2P5_MASK & PMU->REG_2P5) == PMU_REG_2P5_BO_VDD2P5_MASK); // TODO
         }
     } // namespace
 
@@ -134,28 +127,12 @@ namespace bsp
         }
 
         RTWDOG_Refresh(RTWDOG);
-        SetWaitModeConfig();
+        setWaitModeConfig();
         peripheralEnterDozeMode();
-
-        /*
-         * ERR006223: CCM: Failure to resuem from wait/stop mode with power gating
-         *   Configure REG_BYPASS_COUNTER to 2
-         *   Enable the RBC bypass counter here to hold off the interrupts. RBC counter
-         *  needs to be no less than 2.
-         */
-        CCM->CCR = (CCM->CCR & ~CCM_CCR_REG_BYPASS_COUNT_MASK) | CCM_CCR_REG_BYPASS_COUNT(2);
-        CCM->CCR |= (CCM_CCR_OSCNT(0xAF) | CCM_CCR_COSC_EN_MASK | CCM_CCR_RBC_EN_MASK);
-
-        /* Now delay for a short while (3usec) at this point
-         * so a short loop should be enough. This delay is required to ensure that
-         * the RBC counter can start counting in case an interrupt is already pending
-         * or in case an interrupt arrives just as ARM is about to assert DSM_request.
-         */
-        SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
         const auto enterWfiTicks = ulHighFrequencyTimerTicks();
 
-        const auto primaskValue = DisableGlobalIRQ();
+        const auto savedPrimask = DisableGlobalIRQ();
         __DSB();
         __ISB();
 
@@ -165,9 +142,8 @@ namespace bsp
         /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
         SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
 
-        __DSB();
-        __WFI();
-        __ISB();
+        /* Switch SDRAM to self-refresh and execute WFI */
+        enterSleepMode();
 
         __NOP();
         __NOP();
@@ -181,15 +157,15 @@ namespace bsp
         RTWDOG_Unlock(RTWDOG);
         RTWDOG_Enable(RTWDOG);
 
-        EnableGlobalIRQ(primaskValue);
-        __NOP();
+        EnableGlobalIRQ(savedPrimask);
 
         RTWDOG_Refresh(RTWDOG);
 
         blockEnteringWfiMode();
-        SetRunModeConfig();
+        setRunModeConfig();
 
         timeSpentInWFI = ulHighFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTicks, enterWfiTicks));
+        //        LOG_ERROR("!!! Leaving WFI after %lums!!!", timeSpentInWFI);
         return timeSpentInWFI;
     }
 } // namespace bsp
