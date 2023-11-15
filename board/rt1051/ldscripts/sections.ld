@@ -198,6 +198,12 @@ SECTIONS
         *(.intramnoncacheable.*)
     } > SRAM_OC
 
+    .ocramtext : ALIGN(4)
+    {
+        *(.ocramtext)
+        *(.ocramtext.*)
+    } > SRAM_OC
+
     /* Place system stack at the very end of DTCM */
     _StackSize = 0x1000;
     .stack ORIGIN(SRAM_DTC) + LENGTH(SRAM_DTC) - _StackSize - 0 : ALIGN(4)

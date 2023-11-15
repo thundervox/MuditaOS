@@ -3,7 +3,7 @@
 
 #include "WfiController.hpp"
 #include <fsl_common.h>
-#include <fsl_pmu.h>
+//#include <fsl_pmu.h>
 #include <fsl_rtwdog.h>
 #include <fsl_gpc.h>
 #include <Utils.hpp>
@@ -14,7 +14,16 @@
 #include <timers.h>
 #include <MIMXRT1051.h>
 
-#include <magic_enum.hpp>
+//#include <magic_enum.hpp>
+
+/* TODO
+ * There's some weird .ARM.exidx "relocation truncated to fit: R_ARM_PREL31" link time error when
+ * trying to relocate C++ function to OCRAM, seems to be something exception handling related. This
+ * needs to be investigated, for now let's use this quick hack. */
+extern "C"
+{
+#include "EnterWfiMode.h"
+}
 
 namespace bsp
 {
@@ -171,9 +180,11 @@ namespace bsp
         /* Clear the SLEEPDEEP bit to go into sleep mode (WAIT) */
         SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
 
-        __DSB();
-        __WFI();
-        __ISB();
+        EnterWfiMode();
+
+        //        __DSB();
+        //        __WFI();
+        //        __ISB();
 
         __NOP();
         __NOP();
