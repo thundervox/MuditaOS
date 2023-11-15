@@ -31,7 +31,7 @@ namespace gui
         date->setEdges(RectangleEdge::None);
         date->activeItem = false;
         date->drawUnderline(false);
-        date->setText("00/00");
+        date->setText(std::to_string(SNVS->LPGPR[2]));
         date->setMargins({20U, style::bell_base_layout::info_box_top_margin, 0, 0});
 
         infoBox->removeWidget(battery);
@@ -59,7 +59,7 @@ namespace gui
         HomeScreenLayoutClassic::setTime(newTime);
         const auto t = std::localtime(&newTime);
 
-        date->setText((stm::api::dateFormat() == utils::time::Locale::DateFormat::DD_MM_YYYY) ? GetDateInDDMMFormat(t)
+//        date->setText((stm::api::dateFormat() == utils::time::Locale::DateFormat::DD_MM_YYYY) ? GetDateInDDMMFormat(t)
                                                                                               : GetDateInMMDDFormat(t));
 
         if (ampm->visible) {

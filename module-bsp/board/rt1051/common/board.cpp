@@ -188,6 +188,15 @@ namespace bsp
                      SNVS->LPGPR[1]);
             SNVS->LPGPR[1] = 0;
         }
+
+        // incrementing the number of system starts
+        SNVS->LPGPR[2]++;
+
+        /* See https://patchwork.kernel.org/project/linux-arm-kernel/patch/1471885400-9140-1-git-send-email-Anson.Huang@nxp.com/ */
+        CCM->CGPR |= CCM_CGPR_INT_MEM_CLK_LPM_MASK;
+
+        /* ERR050143 */
+        IOMUXC_GPR->GPR1 |= IOMUXC_GPR_GPR1_GINT_MASK;
     }
 
     //! Board PowerOff function by cutdown power
@@ -234,5 +243,4 @@ namespace bsp
         CallPlatformExitFunctions();
         bsp::board_exit(rebootProgress);
     }
-
 } // namespace bsp
