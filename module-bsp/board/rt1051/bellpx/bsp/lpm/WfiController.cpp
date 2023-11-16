@@ -6,6 +6,7 @@
 #include <fsl_pmu.h>
 #include <fsl_rtwdog.h>
 #include <fsl_gpc.h>
+#include <fsl_runtimestat_gpt.h>
 #include <Utils.hpp>
 #include <time/time_constants.hpp>
 #include <FreeRTOS.h>
@@ -13,8 +14,6 @@
 #include <ticks.hpp>
 #include <timers.h>
 #include <MIMXRT1051.h>
-
-#include <magic_enum.hpp>
 
 namespace bsp
 {
@@ -29,11 +28,6 @@ namespace bsp
 
         bool wfiModeAllowed = false;
         std::uint32_t timeSpentInWFI;
-
-        inline constexpr std::uint32_t highFrequencyTimerTicksToMs(std::uint32_t ticks)
-        {
-            return ticks / (configRUN_TIME_STATS_CLOCK_HZ / utils::time::milisecondsInSecond);
-        }
 
         bool isTimerTaskScheduledSoon()
         {
@@ -139,8 +133,6 @@ namespace bsp
             return 0;
         }
 
-        const auto enterWfiTimerTicks = ulHighFrequencyTimerTicks();
-
         RTWDOG_Refresh(RTWDOG);
         SetWaitModeConfig();
         peripheralEnterDozeMode();
@@ -161,6 +153,8 @@ namespace bsp
          */
         SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
+        const auto enterWfiTimeMs = ulHighFrequencyTimerMs();
+
         __disable_irq();
         __DSB();
         __ISB();
@@ -179,6 +173,9 @@ namespace bsp
         __NOP();
         __NOP();
         __NOP();
+
+        const auto exitWfiTimeMs = ulHighFrequencyTimerMs();
+
         peripheralExitDozeMode();
 
         RTWDOG_Unlock(RTWDOG);
@@ -192,9 +189,7 @@ namespace bsp
         blockEnteringWfiMode();
         SetRunModeConfig();
 
-        const auto exitWfiTimerTicks = ulHighFrequencyTimerTicks();
-        timeSpentInWFI = highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
-        xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
+        timeSpentInWFI = utils::computeIncrease(exitWfiTimeMs, enterWfiTimeMs);
         return timeSpentInWFI;
     }
 } // namespace bsp

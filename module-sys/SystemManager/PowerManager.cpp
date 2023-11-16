@@ -12,6 +12,8 @@
 #include <log/log.hpp>
 #include <Logger.hpp>
 #include <Utils.hpp>
+#include <FreeRTOS.h>
+#include <ticks.hpp>
 
 namespace sys
 {
@@ -235,6 +237,10 @@ namespace sys
         if (!cpuGovernor->IsWfiBlocked()) {
             const auto timeSpentInWFI = lowPowerControl->EnterWfiModeIfAllowed();
             if (timeSpentInWFI > 0) {
+                /* We increase the frequency immediately after exiting WFI so that the xTaskCatchUpTicks procedure has
+                 * time to execute and does not block the button press detection mechanism. */
+                SetCpuFrequency(bsp::CpuFrequencyMHz::Level_4);
+                xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
                 UpdateCpuFrequencyMonitor(WfiName, timeSpentInWFI);
             }
         }
