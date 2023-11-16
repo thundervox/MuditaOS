@@ -170,7 +170,8 @@ namespace bsp
          */
         SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
-        __disable_irq();
+        const auto primask = DisableGlobalIRQ();
+        //        __disable_irq();
         __DSB();
         __ISB();
 
@@ -195,7 +196,8 @@ namespace bsp
         RTWDOG_Unlock(RTWDOG);
         RTWDOG_Enable(RTWDOG);
 
-        __enable_irq();
+        EnableGlobalIRQ(primask);
+        //        __enable_irq();
         __NOP();
 
         RTWDOG_Refresh(RTWDOG);
@@ -206,6 +208,7 @@ namespace bsp
         const auto exitWfiTimerTicks = ulHighFrequencyTimerTicks();
         timeSpentInWFI = highFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTimerTicks, enterWfiTimerTicks));
         xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
+        LOG_ERROR("!!! Leaving WFI after %lums!!!", timeSpentInWFI);
         return timeSpentInWFI;
     }
 } // namespace bsp

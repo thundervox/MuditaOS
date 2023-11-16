@@ -212,7 +212,7 @@ static status_t SEMC_ConfigureIPCommand(SEMC_Type *base, uint8_t size_bytes)
     return kStatus_Success;
 }
 
-__attribute__ ((section(".ocramtext"), used)) static status_t SEMC_IsIPCommandDone(SEMC_Type *base)
+__attribute__ ((section(".ocramtext"))) static status_t SEMC_IsIPCommandDone(SEMC_Type *base)
 {
     /* Poll status bit till command is done*/
     while (!(base->INTR & SEMC_INTR_IPCMDDONE_MASK)) {};
@@ -690,7 +690,7 @@ status_t SEMC_ConfigureDBI(SEMC_Type *base, semc_dbi_config_t *config, uint32_t 
     return SEMC_ConfigureIPCommand(base, (config->portSize + 1));
 }
 
-__attribute__ ((section(".ocramtext"), used)) status_t SEMC_SendIPCommand(
+__attribute__ ((section(".ocramtext"))) status_t SEMC_SendIPCommand(
     SEMC_Type *base, semc_mem_type_t type, uint32_t address, uint16_t command, uint32_t write, uint32_t *read)
 {
     uint32_t cmdMode;
