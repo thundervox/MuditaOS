@@ -178,7 +178,6 @@ standard names. */
 
 extern void vConfigureTimerForRunTimeStats(void);
 extern uint32_t ulHighFrequencyTimerTicks(void);
-#define configRUN_TIME_STATS_CLOCK_HZ            (10000U)
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() vConfigureTimerForRunTimeStats()
 #define portGET_RUN_TIME_COUNTER_VALUE()         ulHighFrequencyTimerTicks()
 
