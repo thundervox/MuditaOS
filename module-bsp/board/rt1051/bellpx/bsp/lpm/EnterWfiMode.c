@@ -7,8 +7,6 @@
 
 __attribute__((section(".ocramtext"))) void EnterWfiMode(void)
 {
-    __asm__ __volatile__("nop\n"); // These nops are just hooks to put breakpoints on
-
     __DSB();
     __ISB();
 
@@ -19,6 +17,4 @@ __attribute__((section(".ocramtext"))) void EnterWfiMode(void)
     __DSB();
     __WFI();
     __ISB();
-
-    __asm__ __volatile__("nop\n");
 }

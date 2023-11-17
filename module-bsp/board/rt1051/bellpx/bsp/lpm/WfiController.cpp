@@ -170,8 +170,11 @@ namespace bsp
          */
         SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
-        const auto primask = DisableGlobalIRQ();
-        //        __disable_irq();
+        //        for (size_t irq = DMA0_DMA16_IRQn; irq <= NMI_WAKEUP_IRQn; ++irq) {
+        //            NVIC_ClearPendingIRQ((IRQn_Type)irq);
+        //        }
+
+        __disable_irq();
         __DSB();
         __ISB();
 
@@ -183,10 +186,6 @@ namespace bsp
 
         EnterWfiMode();
 
-        //        __DSB();
-        //        __WFI();
-        //        __ISB();
-
         __NOP();
         __NOP();
         __NOP();
@@ -196,9 +195,7 @@ namespace bsp
         RTWDOG_Unlock(RTWDOG);
         RTWDOG_Enable(RTWDOG);
 
-        EnableGlobalIRQ(primask);
-        //        __enable_irq();
-        __NOP();
+        __enable_irq();
 
         RTWDOG_Refresh(RTWDOG);
 

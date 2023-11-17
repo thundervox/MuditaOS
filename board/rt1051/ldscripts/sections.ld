@@ -64,6 +64,13 @@ SECTIONS
         LONG(    ADDR(.data));
         LONG(  SIZEOF(.data));
         __data_section_table_end = .;
+
+        __ocramtext_section_table = .;
+        LONG(LOADADDR(.ocramtext)); /* LMA */
+        LONG(ADDR(.ocramtext));     /* VMA */
+        LONG(SIZEOF(.ocramtext));   /* Section size */
+        __ocramtext_section_table_end = .;
+
         __bss_section_table = .;
         /* System bss */
         LONG(    ADDR(.sysbss));
@@ -200,9 +207,11 @@ SECTIONS
 
     .ocramtext : ALIGN(4)
     {
+        _ocramtext_start = .;
         *(.ocramtext)
         *(.ocramtext.*)
-    } > SRAM_OC
+        _ocramtext_end = .;
+    } > SRAM_OC AT > BOARD_SDRAM_TEXT
 
     /* Place system stack at the very end of DTCM */
     _StackSize = 0x1000;
