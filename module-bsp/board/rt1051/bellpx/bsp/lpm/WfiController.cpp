@@ -155,7 +155,7 @@ namespace bsp
 
         const auto enterWfiTimeMs = ulHighFrequencyTimerMs();
 
-        __disable_irq();
+        const auto primaskValue = DisableGlobalIRQ();
         __DSB();
         __ISB();
 
@@ -181,7 +181,7 @@ namespace bsp
         RTWDOG_Unlock(RTWDOG);
         RTWDOG_Enable(RTWDOG);
 
-        __enable_irq();
+        EnableGlobalIRQ(primaskValue);
         __NOP();
 
         RTWDOG_Refresh(RTWDOG);
