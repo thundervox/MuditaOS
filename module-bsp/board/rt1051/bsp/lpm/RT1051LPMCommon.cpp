@@ -3,6 +3,7 @@
 
 #include "RT1051LPMCommon.hpp"
 #include <log/log.hpp>
+#include <fsl_device_registers.h>
 #include <fsl_clock.h>
 #include <bsp/bsp.hpp>
 #include "Oscillator.hpp"
@@ -166,5 +167,15 @@ namespace bsp
             SwitchToExternalOscillator();
             break;
         }
+    }
+
+    void RT1051LPMCommon::DisableSysTick()
+    {
+        SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+    }
+
+    void RT1051LPMCommon::EnableSysTick()
+    {
+        SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
     }
 } // namespace bsp
