@@ -50,4 +50,10 @@ namespace bsp
         return 0;
     }
 
+    void LinuxLPM::DisableSysTick()
+    {}
+
+    void LinuxLPM::EnableSysTick()
+    {}
+
 } // namespace bsp

@@ -23,5 +23,8 @@ namespace bsp
         void BlockEnteringWfiMode() final;
         std::uint32_t EnterWfiModeIfAllowed() final;
         std::uint32_t GetLastTimeSpentInWfi() final;
+
+        void DisableSysTick() final;
+        void EnableSysTick() final;
     };
 } // namespace bsp
