@@ -245,7 +245,11 @@ namespace sys
                 /* We increase the frequency immediately after exiting WFI so that the xTaskCatchUpTicks procedure has
                  * time to execute and does not block the button press detection mechanism. */
                 SetCpuFrequency(bsp::CpuFrequencyMHz::Level_4);
+                portENTER_CRITICAL();
+                lowPowerControl->DisableSysTick();
                 xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
+                lowPowerControl->EnableSysTick();
+                portEXIT_CRITICAL();
                 UpdateCpuFrequencyMonitor(WfiName, timeSpentInWFI);
             }
         }
