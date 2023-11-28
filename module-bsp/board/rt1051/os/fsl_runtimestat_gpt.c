@@ -12,11 +12,6 @@ static inline GPT_Type *vPortGetGptBase(void)
     return GPT1;
 }
 
-static inline uint32_t highFrequencyTimerTicksToMs(uint32_t ticks)
-{
-    return ticks / (runTimeStatsClockHz / milisecondsInSecond);
-}
-
 void vConfigureTimerForRunTimeStats(void)
 {
     const gpt_config_t GPT1_config = {.clockSource = kGPT_ClockSource_Periph,
@@ -40,6 +35,11 @@ void vConfigureTimerForRunTimeStats(void)
     GPT_StartTimer(pxGptBase);
 }
 
+uint32_t ulHighFrequencyTimerTicksToMs(uint32_t ticks)
+{
+    return (ticks / (runTimeStatsClockHz / milisecondsInSecond));
+}
+
 uint32_t ulHighFrequencyTimerTicks(void)
 {
     return GPT_GetCurrentTimerCount(vPortGetGptBase());
@@ -47,5 +47,5 @@ uint32_t ulHighFrequencyTimerTicks(void)
 
 uint32_t ulHighFrequencyTimerMs(void)
 {
-    return highFrequencyTimerTicksToMs(ulHighFrequencyTimerTicks());
+    return ulHighFrequencyTimerTicksToMs(ulHighFrequencyTimerTicks());
 }

@@ -153,7 +153,7 @@ namespace bsp
          */
         SDK_DelayAtLeastUs(3, CLOCK_GetCpuClkFreq());
 
-        const auto enterWfiTimeMs = ulHighFrequencyTimerMs();
+        const auto enterWfiTicks = ulHighFrequencyTimerTicks();
 
         const auto primaskValue = DisableGlobalIRQ();
         __DSB();
@@ -174,7 +174,7 @@ namespace bsp
         __NOP();
         __NOP();
 
-        const auto exitWfiTimeMs = ulHighFrequencyTimerMs();
+        const auto exitWfiTicks = ulHighFrequencyTimerTicks();
 
         peripheralExitDozeMode();
 
@@ -189,7 +189,7 @@ namespace bsp
         blockEnteringWfiMode();
         SetRunModeConfig();
 
-        timeSpentInWFI = utils::computeIncrease(exitWfiTimeMs, enterWfiTimeMs);
+        timeSpentInWFI = ulHighFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTicks, enterWfiTicks));
         return timeSpentInWFI;
     }
 } // namespace bsp
