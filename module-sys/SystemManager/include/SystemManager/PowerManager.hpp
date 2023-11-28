@@ -75,7 +75,7 @@ namespace sys
       private:
         void SetCpuFrequency(bsp::CpuFrequencyMHz freq);
         void UpdateCpuFrequencyMonitor(bsp::CpuFrequencyMHz currentFreq);
-        void UpdateCpuFrequencyMonitor(std::string name, std::uint32_t tickIncrease);
+        void UpdateCpuFrequencyMonitor(const std::string &name, std::uint32_t tickIncrease);
         [[nodiscard]] auto GetMinimumCpuFrequencyRequested() const noexcept -> sentinel::View;
 
         TickType_t lastCpuFrequencyChangeTimestamp{0};
@@ -93,5 +93,4 @@ namespace sys
         CpuStatistics &cpuStatistics;
         TaskStatistics &taskStatistics;
     };
-
 } // namespace sys
