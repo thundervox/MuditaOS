@@ -228,7 +228,7 @@ namespace sys
         lastCpuFrequencyChangeTimestamp = ticks;
     }
 
-    void PowerManager::UpdateCpuFrequencyMonitor(std::string name, std::uint32_t tickIncrease)
+    void PowerManager::UpdateCpuFrequencyMonitor(const std::string &name, std::uint32_t tickIncrease)
     {
         for (auto &level : cpuFrequencyMonitor) {
             if (level.GetName() == name) {
@@ -239,19 +239,21 @@ namespace sys
 
     void PowerManager::EnterWfiIfReady()
     {
-        if (!cpuGovernor->IsWfiBlocked()) {
-            const auto timeSpentInWFI = lowPowerControl->EnterWfiModeIfAllowed();
-            if (timeSpentInWFI > 0) {
-                /* We increase the frequency immediately after exiting WFI so that the xTaskCatchUpTicks procedure has
-                 * time to execute and does not block the button press detection mechanism. */
-                SetCpuFrequency(bsp::CpuFrequencyMHz::Level_4);
-                portENTER_CRITICAL();
-                lowPowerControl->DisableSysTick();
-                xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
-                lowPowerControl->EnableSysTick();
-                portEXIT_CRITICAL();
-                UpdateCpuFrequencyMonitor(WfiName, timeSpentInWFI);
-            }
+        if (cpuGovernor->IsWfiBlocked()) {
+            return;
+        }
+
+        const auto timeSpentInWFI = lowPowerControl->EnterWfiModeIfAllowed();
+        if (timeSpentInWFI > 0) {
+            /* We increase the frequency immediately after exiting WFI so that the xTaskCatchUpTicks procedure has
+             * time to execute and does not block the button press detection mechanism. */
+            SetCpuFrequency(bsp::CpuFrequencyMHz::Level_4);
+            portENTER_CRITICAL();
+            lowPowerControl->DisableSysTick();
+            xTaskCatchUpTicks(cpp_freertos::Ticks::MsToTicks(timeSpentInWFI));
+            lowPowerControl->EnableSysTick();
+            portEXIT_CRITICAL();
+            UpdateCpuFrequencyMonitor(WfiName, timeSpentInWFI);
         }
     }
 
