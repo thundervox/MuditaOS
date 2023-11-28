@@ -12,6 +12,7 @@ extern "C"
     void vConfigureTimerForRunTimeStats(void);
     uint32_t ulHighFrequencyTimerTicks(void);
     uint32_t ulHighFrequencyTimerMs(void);
+    uint32_t ulHighFrequencyTimerTicksToMs(uint32_t ticks);
 
 #ifdef __cplusplus
 }
