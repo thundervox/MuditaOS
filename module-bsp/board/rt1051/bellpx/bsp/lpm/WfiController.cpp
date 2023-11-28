@@ -89,7 +89,7 @@ namespace bsp
 
         bool isBrownoutOn2P5Output()
         {
-            return ((PMU_REG_2P5_BO_VDD2P5_MASK & PMU->REG_2P5) == PMU_REG_2P5_BO_VDD2P5_MASK); // TODO
+            return ((PMU->REG_2P5 & PMU_REG_2P5_BO_VDD2P5_MASK) != 0);
         }
     } // namespace
 
