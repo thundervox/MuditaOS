@@ -165,7 +165,6 @@ namespace bsp
         setRunModeConfig();
 
         timeSpentInWFI = ulHighFrequencyTimerTicksToMs(utils::computeIncrease(exitWfiTicks, enterWfiTicks));
-        //        LOG_ERROR("!!! Leaving WFI after %lums!!!", timeSpentInWFI);
         return timeSpentInWFI;
     }
 } // namespace bsp
