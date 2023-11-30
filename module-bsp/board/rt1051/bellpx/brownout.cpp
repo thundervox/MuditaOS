@@ -20,5 +20,4 @@ namespace bsp
         PMU_2P5SetBrownoutOffsetVoltage(PMU, OffsetVoltage2P5);
         PMU_2P5EnableOutput(PMU, true);
     }
-
 } // namespace bsp
