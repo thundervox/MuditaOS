@@ -59,8 +59,8 @@ namespace gui
         HomeScreenLayoutClassic::setTime(newTime);
         const auto t = std::localtime(&newTime);
 
-//        date->setText((stm::api::dateFormat() == utils::time::Locale::DateFormat::DD_MM_YYYY) ? GetDateInDDMMFormat(t)
-                                                                                              : GetDateInMMDDFormat(t));
+        //        date->setText((stm::api::dateFormat() == utils::time::Locale::DateFormat::DD_MM_YYYY) ?
+        //        GetDateInDDMMFormat(t) : GetDateInMMDDFormat(t));
 
         if (ampm->visible) {
             const auto hours = std::chrono::hours{t->tm_hour};

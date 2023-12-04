@@ -58,7 +58,7 @@ namespace app
 
         cpuSentinel                  = std::make_shared<sys::CpuSentinel>(defaultName, this);
         auto sentinelRegistrationMsg = std::make_shared<sys::SentinelRegistrationMessage>(cpuSentinel);
-        bus.sendUnicast(sentinelRegistrationMsg, service::name::system_manager);
+        bus.sendUnicast(std::move(sentinelRegistrationMsg), service::name::system_manager);
         cpuSentinel->BlockWfiMode(true);
 
         audioModel         = std::make_unique<AudioModel>(this);
