@@ -80,5 +80,4 @@ namespace gui::factory
     {
         return gui::layout::ClassicWithDate;
     }
-
 } // namespace gui::factory

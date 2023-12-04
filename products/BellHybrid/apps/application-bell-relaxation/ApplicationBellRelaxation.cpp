@@ -67,11 +67,9 @@ namespace app
 
         cpuSentinel                  = std::make_shared<sys::CpuSentinel>(applicationBellRelaxationName, this);
         auto sentinelRegistrationMsg = std::make_shared<sys::SentinelRegistrationMessage>(cpuSentinel);
-        bus.sendUnicast(sentinelRegistrationMsg, service::name::system_manager);
+        bus.sendUnicast(std::move(sentinelRegistrationMsg), service::name::system_manager);
         cpuSentinel->BlockWfiMode(true);
 
-        batteryModel = std::make_unique<app::BatteryModel>(this);
-        player       = std::make_unique<relaxation::RelaxationPlayer>(*audioModel);
         batteryModel                 = std::make_unique<app::BatteryModel>(this);
         player                       = std::make_unique<relaxation::RelaxationPlayer>(*audioModel);
         relaxationRebuildTimerHandle = sys::TimerFactory::createSingleShotTimer(
@@ -122,12 +120,11 @@ namespace app
                                   return std::make_unique<gui::RelaxationRunningLoopWindow>(app, std::move(presenter));
                               });
 
-        windowsFactory.attach(
-            gui::window::name::relaxationPaused, [this](ApplicationCommon *app, const std::string &name) {
-                auto timeModel = std::make_unique<app::TimeModel>();
-                auto presenter = std::make_unique<relaxation::RelaxationPausedPresenter>(std::move(timeModel));
-                return std::make_unique<gui::RelaxationPausedWindow>(app, std::move(presenter));
-            });
+        windowsFactory.attach(gui::window::name::relaxationPaused, [](ApplicationCommon *app, const std::string &name) {
+            auto timeModel = std::make_unique<app::TimeModel>();
+            auto presenter = std::make_unique<relaxation::RelaxationPausedPresenter>(std::move(timeModel));
+            return std::make_unique<gui::RelaxationPausedWindow>(app, std::move(presenter));
+        });
 
         windowsFactory.attach(gui::popup::window::volume_window,
                               [this](ApplicationCommon *app, const std::string &name) {
