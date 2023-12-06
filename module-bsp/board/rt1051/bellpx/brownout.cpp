@@ -4,14 +4,28 @@
 #include <cstdint>
 #include <fsl_common.h>
 #include <fsl_pmu.h>
+#include <log/log.hpp>
 
 namespace bsp
 {
     namespace
     {
-        constexpr std::uint32_t OutputVoltage2P5 = 0x1C; // 2.800V
-        constexpr std::uint32_t OffsetVoltage2P5 = 0x03; // 3*25mV
-    }                                                    // namespace
+        constexpr auto OutputVoltage2P5 = 0x1BU; // 2.775V
+        constexpr auto OffsetVoltage2P5 = 0x03U; // 3*25mV
+
+        constexpr auto mVPerStep = 25U;
+
+        std::uint32_t ldoValueToVoltage(std::uint32_t value)
+        {
+            constexpr auto mVMin = 2100U;
+            return mVMin + mVPerStep * value;
+        }
+
+        std::uint32_t brownoutOffsetValueToVoltage(std::uint32_t value)
+        {
+            return mVPerStep * value;
+        }
+    } // namespace
 
     void Brownout_init()
     {
@@ -19,5 +33,9 @@ namespace bsp
         PMU_2P5SetRegulatorOutputVoltage(PMU, OutputVoltage2P5);
         PMU_2P5SetBrownoutOffsetVoltage(PMU, OffsetVoltage2P5);
         PMU_2P5EnableOutput(PMU, true);
+
+        LOG_PRINTF("[Brownout]: 2P5 LDO output voltage: %" PRIu32 "mV", ldoValueToVoltage(OutputVoltage2P5));
+        LOG_PRINTF("[Brownout]: 2P5 brownout offset voltage: %" PRIu32 "mV",
+                   brownoutOffsetValueToVoltage(OffsetVoltage2P5));
     }
 } // namespace bsp
