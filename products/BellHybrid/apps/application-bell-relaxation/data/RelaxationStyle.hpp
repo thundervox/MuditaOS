@@ -4,6 +4,7 @@
 #pragma once
 
 #include <Style.hpp>
+#include "common/data/ListItemBarStyle.hpp"
 
 namespace gui::relaxationStyle
 {
@@ -40,12 +41,19 @@ namespace gui::relaxationStyle
 
     namespace relStyle
     {
-        namespace progress
+        namespace progressTime
         {
             constexpr inline auto radius                   = 192U;
             constexpr inline auto penWidth                 = 3U;
             constexpr inline auto verticalDeviationDegrees = 38U;
-        } // namespace progress
+        } // namespace progressTime
+
+        namespace progressVolume
+        {
+            constexpr inline auto radius                   = 192U;
+            constexpr inline auto penWidth                 = 3U;
+            constexpr inline auto verticalDeviationDegrees = listItemBarStyle::progress::verticalDeviationDegrees;
+        } // namespace progressVolume
 
         namespace timer
         {

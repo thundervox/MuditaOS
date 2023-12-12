@@ -1,9 +1,10 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "SnoozeListItemProvider.hpp"
 #include <common/widgets/list_items/NumberWithSuffix.hpp>
 #include <common/widgets/list_items/Numeric.hpp>
+#include <common/widgets/list_items/NumericWithBar.hpp>
 #include <common/widgets/list_items/Text.hpp>
 #include <common/widgets/ListItems.hpp>
 #include <common/LanguageUtils.hpp>
@@ -144,10 +145,11 @@ namespace app::bell_settings
         constexpr auto volumeStep = 1U;
         constexpr auto volumeMin  = 1U;
         constexpr auto volumeMax  = 10U;
-        auto snoozeChimeVolume =
-            new list_items::Numeric(list_items::Numeric::spinner_type::range{volumeMin, volumeMax, volumeStep},
-                                    model.getSnoozeChimeVolume(),
-                                    utils::translate("app_bell_settings_alarm_settings_snooze_chime_volume"));
+        auto snoozeChimeVolume    = new list_items::NumericWithBar(
+            list_items::NumericWithBar::spinner_type::range{volumeMin, volumeMax, volumeStep},
+            model.getSnoozeChimeVolume(),
+            volumeMax,
+            utils::translate("app_bell_settings_alarm_settings_snooze_chime_volume"));
         snoozeChimeVolume->set_on_value_change_cb([this](const auto &val) {
             if (onVolumeChange) {
                 onVolumeChange(val);
