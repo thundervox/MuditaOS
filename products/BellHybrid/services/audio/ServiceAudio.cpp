@@ -16,7 +16,7 @@ namespace
     constexpr auto defaultVolume        = "5";
     constexpr auto defaultSnoozeVolume  = "4";
     constexpr auto defaultBedtimeVolume = "6";
-    constexpr audio::Volume maxInVolume = 10;
+    constexpr audio::Volume maxInVolume = 15;
     constexpr audio::Volume minVolume   = 0;
     constexpr auto profileType          = audio::Profile::Type::PlaybackLoudspeaker;
     namespace initializer

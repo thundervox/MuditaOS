@@ -26,7 +26,7 @@ namespace audio
     inline constexpr Volume defaultVolume     = 5;
     inline constexpr Gain defaultGain         = 5;
 
-    inline constexpr Volume maxVolume = 10;
+    inline constexpr Volume maxVolume = 15;
     inline constexpr Volume minVolume = 0;
 
     inline constexpr Gain maxGain = 100;

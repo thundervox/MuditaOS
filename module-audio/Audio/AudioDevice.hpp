@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -17,7 +17,7 @@ namespace audio
 
       public:
         static constexpr auto minVolume = .0f;
-        static constexpr auto maxVolume = 10.0f;
+        static constexpr auto maxVolume = 15.0f;
 
         enum class RetCode
         {

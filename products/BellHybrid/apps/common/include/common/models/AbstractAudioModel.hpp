@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -16,7 +16,7 @@ namespace app
       public:
         /// 0-10 range
         static constexpr auto minVolume  = 1;
-        static constexpr auto maxVolume  = 10;
+        static constexpr auto maxVolume  = 15;
         using Volume                     = std::uint32_t;
         using OnStateChangeCallback      = std::function<void(const audio::RetCode code)>;
         using OnGetValueCallback         = std::function<void(const audio::RetCode, Volume)>;

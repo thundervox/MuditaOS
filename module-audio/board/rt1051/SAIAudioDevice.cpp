@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "SAIAudioDevice.hpp"
@@ -101,14 +101,24 @@ void SAIAudioDevice::disableOutput()
 {
     txEnabled = false;
 }
+
 AudioDevice::RetCode SAIAudioDevice::setOutputVolume(float vol)
 {
-    vol = std::clamp(vol, minVolume, maxVolume);
     /// Using y=x^2 function as an approximation seems very natural and has the most useful range
     /// For more info check: https://www.dr-lex.be/info-stuff/volumecontrols.html
-    volumeFactor = std::pow(1.0f * (vol / maxVolume), 2);
+
+    vol        = std::clamp(vol, minVolume, maxVolume);
+    auto ratio = std::pow(10.0f, 52.0f / 20.0f);
+    auto a     = 1.0f / ratio;
+    auto b     = std::log(ratio);
+    LOG_ERROR("a: %f, b: %f", a, b);
+
+    volumeFactor = a * std::exp(b * (vol / maxVolume));
+    auto prev    = std::pow(1.0f * (vol / (maxVolume - 5)), 2);
+    LOG_ERROR("Current volume level: %f, current volume factor: %f, previously would be %f", vol, volumeFactor, prev);
     return AudioDevice::RetCode::Success;
 }
+
 void SAIAudioDevice::scaleOutputVolume(audio::Stream::Span &span)
 {
     if (volumeFactor < 1.0) {
