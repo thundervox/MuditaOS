@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "BellBatteryStatusWindow.hpp"
@@ -53,7 +53,6 @@ namespace gui
         topDescription->setEdges(RectangleEdge::None);
         topDescription->activeItem = false;
         topDescription->drawUnderline(false);
-        topDescription->setText(utils::translate("app_settings_tech_info_battery"));
 
         hbox = new HBox(body->lastBox);
         hbox->setMinimumSize(style::bell_base_layout::outer_layouts_w, style::bell_base_layout::outer_layouts_h);
@@ -113,9 +112,18 @@ namespace gui
         if (data != nullptr) {
             const auto &switchData = static_cast<Data &>(*data);
             const auto image       = battery_utils::getBatteryLevelImage(batteryEntries, switchData.chargeLevel);
+            if (switchData.isItLowBatteryWaring) {
+                topDescription->setText(utils::translate("battery_low"));
+                std::string tempBotDesc = utils::translate("battery_remaining");
+                auto tokenMap = text::RichTextParser::TokenMap({{"$BATTERY", std::to_string(switchData.chargeLevel)}});
+                bottomDescription->setRichText(tempBotDesc, std::move(tokenMap));
+            }
+            else {
+                topDescription->setText(utils::translate("app_settings_tech_info_battery"));
+                bottomDescription->setText(std::to_string(switchData.chargeLevel) + "%");
+            }
             if (image) {
                 center->setImage(image->data(), imageType);
-                bottomDescription->setText(std::to_string(switchData.chargeLevel) + "%");
                 chargingIcon->setVisible(switchData.isCharging);
                 hbox->resizeItems();
                 body->resize();

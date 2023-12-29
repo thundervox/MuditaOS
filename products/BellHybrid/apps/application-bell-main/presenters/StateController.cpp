@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "StateController.hpp"
@@ -65,9 +65,12 @@ namespace app::home_screen
                 return true;
             };
 
-            auto switchToMenu          = [](AbstractPresenter &presenter) { presenter.switchToMenu(); };
-            auto switchToBatteryStatus = [](AbstractPresenter &presenter) { presenter.switchToBatteryStatus(); };
-            auto updateTemperature     = [](AbstractView &view, AbstractTemperatureModel &temperatureModel) {
+            auto switchToMenu            = [](AbstractPresenter &presenter) { presenter.switchToMenu(); };
+            auto switchToBatteryStatus   = [](AbstractPresenter &presenter) { presenter.switchToBatteryStatus(); };
+            auto endUserSessionWithDelay = [](AbstractUserSessionModel &userSession) {
+                userSession.deactivateUserSessionWithDelay();
+            };
+            auto updateTemperature = [](AbstractView &view, AbstractTemperatureModel &temperatureModel) {
                 view.setTemperature(temperatureModel.getTemperature());
             };
             auto setNewAlarmTime = [](AbstractView &view, AbstractAlarmModel &alarmModel) {
@@ -290,6 +293,7 @@ namespace app::home_screen
                                              "Deactivated"_s + event<Events::RotateRightPress> = "DeactivatedEdit"_s,
                                              "Deactivated"_s + event<Events::DeepUpPress> = "ActivatedWait"_s,
                                              "Deactivated"_s + event<Events::TimeUpdate> / Helpers::updateTemperature,
+                                             "Deactivated"_s + event<Events::BackPress>  / Helpers::endUserSessionWithDelay,
                                              "Deactivated"_s + event<Events::LongBackPress>  / Helpers::switchToBatteryStatus,
                                              "Deactivated"_s + event<Events::BatteryUpdate>  / Helpers::updateBatteryStatus,
 
@@ -340,6 +344,7 @@ namespace app::home_screen
                                              "Activated"_s + event<Events::TimeUpdate> / Helpers::updateTemperature,
                                              "Activated"_s + event<Events::DeepDownPress>  = "DeactivatedWait"_s,
                                              "Activated"_s + event<Events::AlarmRinging>  = "AlarmRinging"_s,
+                                             "Activated"_s + event<Events::BackPress>  / Helpers::endUserSessionWithDelay,
                                              "Activated"_s + event<Events::LongBackPress>  / Helpers::switchToBatteryStatus,
                                              "Activated"_s + event<Events::BatteryUpdate>  / Helpers::updateBatteryStatus,
 
@@ -416,9 +421,11 @@ namespace app::home_screen
              AbstractBatteryModel &batteryModel,
              AbstractTemperatureModel &temperatureModel,
              AbstractAlarmModel &alarmModel,
-             AbstractTimeModel &timeModel)
+             AbstractTimeModel &timeModel,
+             AbstractUserSessionModel &userSessionModel)
             : controller{controller}, view{view}, presenter{presenter}, batteryModel{batteryModel},
-              temperatureModel{temperatureModel}, alarmModel{alarmModel}, timeModel{timeModel}
+              temperatureModel{temperatureModel}, alarmModel{alarmModel}, timeModel{timeModel}, userSessionModel{
+                                                                                                    userSessionModel}
         {
             resetSM();
         }
@@ -445,7 +452,8 @@ namespace app::home_screen
                 batteryModel,
                 temperatureModel,
                 alarmModel,
-                timeModel};
+                timeModel,
+                userSessionModel};
         }
 
         AbstractController &controller;
@@ -455,6 +463,7 @@ namespace app::home_screen
         AbstractTemperatureModel &temperatureModel;
         AbstractAlarmModel &alarmModel;
         AbstractTimeModel &timeModel;
+        AbstractUserSessionModel &userSessionModel;
     };
 
     StateController::StateController(AbstractView &view,
@@ -462,9 +471,10 @@ namespace app::home_screen
                                      AbstractBatteryModel &batteryModel,
                                      AbstractTemperatureModel &temperatureModel,
                                      AbstractAlarmModel &alarmModel,
-                                     AbstractTimeModel &timeModel)
+                                     AbstractTimeModel &timeModel,
+                                     AbstractUserSessionModel &userSessionModel)
         : pimpl{std::make_unique<StateController::Impl>(
-              *this, view, presenter, batteryModel, temperatureModel, alarmModel, timeModel)},
+              *this, view, presenter, batteryModel, temperatureModel, alarmModel, timeModel, userSessionModel)},
           presenter{presenter}
     {}
 
@@ -474,6 +484,15 @@ namespace app::home_screen
     {
         using namespace sml;
         const auto key = mapKey(inputEvent.getKeyCode());
+
+        presenter.refreshUserSession();
+        if (key != KeyMap::DeepPressUp && key != KeyMap::DeepPressDown && presenter.isLowBatteryWarningNeeded()) {
+            LOG_WARN("-----> Handling Battery Warning");
+            presenter.handleLowBatteryWarning();
+            return true;
+        }
+        // TODO: what if alarm ringing?
+
         switch (key) {
         case KeyMap::Back:
             if (inputEvent.getState() == gui::InputEvent::State::keyReleasedLong) {

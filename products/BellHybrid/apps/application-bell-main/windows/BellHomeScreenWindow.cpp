@@ -149,6 +149,7 @@ namespace gui
 
     void BellHomeScreenWindow::onBeforeShow(ShowMode, SwitchData *data)
     {
+        LOG_WARN("----------------------------------------------------------------------HOME"); // TODO: remove log
         presenter->onBeforeShow();
         // Show the screen only on state change
         // to avoid inital state homescreen display on powerup
