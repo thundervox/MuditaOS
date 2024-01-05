@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RT1051LPMCommon.hpp"
@@ -150,7 +150,7 @@ namespace bsp
                                 ((currentFrequency <= CpuFrequencyMHz::Level_1)
                                      ? (" (WFI time: " + std::to_string(GetLastTimeSpentInWfi()) + " ms)")
                                      : "");
-        LOG_INFO(log.c_str());
+        LOG_INFO("%s", log.c_str());
         currentFrequency = freq;
     }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "WfiController.hpp"
@@ -91,6 +91,17 @@ namespace bsp
         {
             return ((PMU->REG_2P5 & PMU_REG_2P5_BO_VDD2P5_MASK) != 0);
         }
+
+        void disableSystick()
+        {
+            SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+            NVIC_ClearPendingIRQ(SysTick_IRQn);
+        }
+
+        void enableSystick()
+        {
+            SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+        }
     } // namespace
 
     void allowEnteringWfiMode()
@@ -117,6 +128,7 @@ namespace bsp
         }
         timeSpentInWFI = 0;
         if (isTimerTaskScheduledSoon()) {
+            LOG_INFO("WFI disabled - timer task scheduled soon");
             blockEnteringWfiMode();
             return 0;
         }
@@ -130,6 +142,7 @@ namespace bsp
         setWaitModeConfig();
         peripheralEnterDozeMode();
 
+        disableSystick();
         const auto enterWfiTicks = ulHighFrequencyTimerTicks();
 
         const auto savedPrimask = DisableGlobalIRQ();
@@ -151,6 +164,7 @@ namespace bsp
         __NOP();
 
         const auto exitWfiTicks = ulHighFrequencyTimerTicks();
+        enableSystick();
 
         peripheralExitDozeMode();
 
