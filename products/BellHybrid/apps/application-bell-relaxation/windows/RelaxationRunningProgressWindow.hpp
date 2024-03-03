@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -7,13 +7,14 @@
 #include <data/RelaxationAudioData.hpp>
 
 #include <AppWindow.hpp>
-#include <apps-common/widgets/BarGraph.hpp>
-#include <apps-common/widgets/TimeFixedWidget.hpp>
-#include <common/widgets/BellStatusClock.hpp>
-#include <gui/widgets/Icon.hpp>
 
 namespace gui
 {
+    class Icon;
+    class ArcProgressBar;
+    class TimeFixedWidget;
+    class BellStatusClock;
+
     class RelaxationRunningProgressWindow : public AppWindow,
                                             public app::relaxation::RelaxationRunningProgressContract::View
     {

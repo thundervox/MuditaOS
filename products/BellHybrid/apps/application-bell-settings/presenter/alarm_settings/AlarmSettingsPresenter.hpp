@@ -1,10 +1,9 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
 
 #include <apps-common/BasePresenter.hpp>
-#include <apps-common/AudioOperations.hpp>
 #include <common/models/AbstractAudioModel.hpp>
 #include <common/models/FrontlightModel.hpp>
 #include <common/SoundsRepository.hpp>
@@ -54,7 +53,7 @@ namespace app::bell_settings
 
         auto getPagesProvider() const -> std::shared_ptr<gui::ListItemProvider> override;
         auto loadData() -> void override;
-        auto saveData() -> void;
+        auto saveData() -> void override;
         auto eraseProviderData() -> void override;
         auto exitWithSave() -> void override;
         auto exitWithRollback() -> void override;

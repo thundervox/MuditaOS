@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationRunningProgressWindow.hpp"
@@ -9,6 +9,9 @@
 #include <ApplicationBellRelaxation.hpp>
 #include <apps-common/widgets/BellBaseLayout.hpp>
 #include <apps-common/widgets/ProgressTimerWithBarGraphAndCounter.hpp>
+#include <common/widgets/BellStatusClock.hpp>
+#include <gui/widgets/ProgressBar.hpp>
+#include <gui/widgets/Icon.hpp>
 
 namespace
 {

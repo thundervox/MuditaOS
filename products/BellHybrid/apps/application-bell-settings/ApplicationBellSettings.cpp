@@ -32,19 +32,16 @@
 #include "windows/BellSettingsWindow.hpp"
 
 #include <Paths.hpp>
-#include <apps-common/windows/Dialog.hpp>
 #include <common/BellPowerOffPresenter.hpp>
 #include <common/models/BedtimeModel.hpp>
 #include <common/models/LayoutModel.hpp>
 #include <common/windows/BellFinishedWindow.hpp>
 #include <common/windows/BellTurnOffWindow.hpp>
 #include <common/windows/ShortcutsWindow.hpp>
-#include <common/windows/BellFactoryReset.hpp>
 #include <common/popups/BellTurnOffOptionWindow.hpp>
 #include <common/models/AudioModel.hpp>
 #include <common/models/TimeModel.hpp>
 #include <common/models/AlarmSettingsModel.hpp>
-#include <service-evtmgr/EventManagerServiceAPI.hpp>
 #include <service-appmgr/messages/GetCurrentDisplayLanguageResponse.hpp>
 
 namespace app

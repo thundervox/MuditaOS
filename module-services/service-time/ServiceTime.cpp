@@ -8,6 +8,7 @@
 #include <service-time/TimeMessage.hpp>
 #include <service-time/TimeSettings.hpp>
 #include <service-time/TimezoneHandler.hpp>
+#include <service-time/AlarmEventsDBRepository.hpp>
 #include <service-audio/AudioServiceName.hpp>
 #include <service-audio/AudioMessage.hpp>
 
@@ -107,9 +108,7 @@ namespace stm
             alarmMessageHandler->handleTimeUpdate(TimePointNow());
             return std::make_shared<sys::ResponseMessage>();
         }
-        else {
-            return std::make_shared<sys::ResponseMessage>(sys::ReturnCodes::Unresolved);
-        }
+        return std::make_shared<sys::ResponseMessage>(sys::ReturnCodes::Unresolved);
     }
 
     void ServiceTime::registerMessageHandlers()

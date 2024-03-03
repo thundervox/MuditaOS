@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "BluetoothDriverImpl.hpp"
@@ -11,7 +11,6 @@ extern "C"
 #include <btstack_memory.h>
 #include <btstack_run_loop.h>
 #include <hci.h>
-#include <hci_dump.h>
 
 #include <btstack_chipset_cc256x.h>
 #include <btstack_link_key_db_memory.h>

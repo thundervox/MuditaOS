@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <service-fileindexer/ServiceFileIndexer.hpp>
@@ -10,12 +10,11 @@
 
 namespace
 {
-    inline constexpr auto fileIndexerServiceStackSize = 1024 * 5;
+    constexpr auto fileIndexerServiceStackSize = 1024 * 5;
 } // namespace
 
 namespace service
 {
-
     ServiceFileIndexer::ServiceFileIndexer(const std::vector<std::string> &paths)
         : sys::Service{service::name::file_indexer, "", fileIndexerServiceStackSize}, mStartupIndexer{paths}
     {

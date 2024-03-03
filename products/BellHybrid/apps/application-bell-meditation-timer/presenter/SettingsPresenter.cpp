@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "SettingsPresenter.hpp"
@@ -10,7 +10,6 @@
 
 #include <ApplicationCommon.hpp>
 #include <common/widgets/list_items/Fraction.hpp>
-#include <common/widgets/list_items/Numeric.hpp>
 #include <common/widgets/list_items/NumericWithBar.hpp>
 #include <common/LanguageUtils.hpp>
 #include <apps-common/InternalModel.hpp>
@@ -61,8 +60,7 @@ namespace app::meditation
                                          models::ChimeVolume &chimeVolumeModel,
                                          models::StartDelay &startDelayModel,
                                          AbstractAudioModel &audioModel)
-        : chimeIntervalModel{chimeIntervalModel}, chimeVolumeModel{chimeVolumeModel}, startDelayModel{startDelayModel},
-          audioModel{audioModel}
+        : chimeVolumeModel{chimeVolumeModel}, audioModel{audioModel}
     {
 
         auto chimeInterval =
@@ -142,5 +140,4 @@ namespace app::meditation
         chimeVolumeModel.restoreDefault();
         eraseProviderData();
     }
-
 } // namespace app::meditation

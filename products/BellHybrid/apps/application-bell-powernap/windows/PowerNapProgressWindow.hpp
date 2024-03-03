@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -39,8 +39,8 @@ namespace gui
         gui::Icon *iconPause          = nullptr;
         gui::Icon *iconRing           = nullptr;
 
-        void setTime(std::time_t newTime);
-        void setTimeFormat(utils::time::Locale::TimeFormat fmt);
+        void setTime(std::time_t newTime) override;
+        void setTimeFormat(utils::time::Locale::TimeFormat fmt) override;
         RefreshModes updateTime() override;
         void buildLayout();
         void configureTimer();

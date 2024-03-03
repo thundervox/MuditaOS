@@ -1,11 +1,12 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
 
 #include "data/RelaxationCommon.hpp"
 #include "ListItem.hpp"
-#include "widgets/TextWithIconsWidget.hpp"
+#include <utf8/UTF8.hpp>
+
 namespace gui
 {
     class RelaxationItem : public ListItem

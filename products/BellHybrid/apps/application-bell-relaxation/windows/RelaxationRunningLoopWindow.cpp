@@ -3,13 +3,13 @@
 
 #include "RelaxationRunningLoopWindow.hpp"
 #include <data/RelaxationStyle.hpp>
-#include <data/RelaxationSwitchData.hpp>
 #include <data/RelaxationErrorData.hpp>
 
 #include <ApplicationBellRelaxation.hpp>
+#include <common/widgets/BellStatusClock.hpp>
+#include <common/widgets/BellBattery.hpp>
 #include <apps-common/widgets/BellBaseLayout.hpp>
 #include <apps-common/widgets/ProgressTimer.hpp>
-#include <Units.hpp>
 
 namespace
 {

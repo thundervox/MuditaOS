@@ -5,10 +5,9 @@
 
 #include "data/RelaxationCommon.hpp"
 #include <apps-common/models/SongsRepository.hpp>
-#include <memory>
+
 namespace app::relaxation
 {
-
     class RelaxationSongsRepository : public app::AsyncCallbackReceiver
     {
       public:

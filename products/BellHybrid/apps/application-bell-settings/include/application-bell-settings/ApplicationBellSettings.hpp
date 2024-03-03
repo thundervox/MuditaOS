@@ -1,20 +1,15 @@
-﻿// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
 
 #include <Application.hpp>
 #include <apps-common/windows/AppWindow.hpp>
-#include <common/models/AbstractAudioModel.hpp>
-#include <service-evtmgr/screen-light-control/ScreenLightControl.hpp>
 
 namespace gui::window::name
 {
     inline constexpr auto bellSettings             = gui::name::window::main_window;
     inline constexpr auto bellSettingsTimeUnits    = "BellSettingsTimeUnits";
-    inline constexpr auto bellSettingsDialog       = "BellSettingsDialog";
-    inline constexpr auto bellSettingsFinished     = "BellSettingsFinished";
-    inline constexpr auto bellSettingsFrontlight   = "BellSettingsFrontlight";
     inline constexpr auto bellSettingsHomeView     = "BellSettingsHomeView";
     inline constexpr auto bellSettingsLanguage     = "BellSettingsLanguage";
     inline constexpr auto bellSettingsLayout       = "BellSettingsLayout";
@@ -25,6 +20,8 @@ namespace gui::window::name
 namespace app
 {
     inline constexpr auto applicationBellSettingsName = "ApplicationBellSettings";
+
+    class AbstractAudioModel;
 
     class ApplicationBellSettings : public Application
     {
@@ -37,7 +34,7 @@ namespace app
                                 std::string parent                  = "",
                                 StatusIndicators statusIndicators   = StatusIndicators{},
                                 StartInBackground startInBackground = {false},
-                                uint32_t stackDepth                 = 4096 * 2);
+                                uint32_t stackDepth                 = 1024 * 8);
 
         sys::ReturnCodes InitHandler() override;
 

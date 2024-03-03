@@ -4,10 +4,6 @@
 #pragma once
 
 #include <Application.hpp>
-#include <common/models/AbstractAudioModel.hpp>
-#include <common/models/BatteryModel.hpp>
-#include <common/models/LowBatteryInfoModel.hpp>
-#include <purefs/filesystem_paths.hpp>
 
 namespace gui::window::name
 {
@@ -19,8 +15,12 @@ namespace gui::window::name
     inline constexpr auto relaxationLowBattery      = "RelaxationLowBatteryWindow";
     inline constexpr auto relaxationError           = "RelaxationError";
 } // namespace gui::window::name
+
 namespace app
 {
+    class AbstractAudioModel;
+    class AbstractLowBatteryInfoModel;
+
     namespace relaxation
     {
         class RelaxationPlayer;

@@ -1,10 +1,11 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationPausedWindow.hpp"
 #include <data/RelaxationStyle.hpp>
 #include <ApplicationBellRelaxation.hpp>
 
+#include <common/widgets/BellStatusClock.hpp>
 #include <apps-common/widgets/BellBaseLayout.hpp>
 #include <i18n/i18n.hpp>
 

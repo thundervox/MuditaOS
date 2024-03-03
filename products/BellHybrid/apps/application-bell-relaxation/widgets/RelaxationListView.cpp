@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationListView.hpp"
@@ -9,7 +9,6 @@
 
 namespace
 {
-
     constexpr auto maxItemDisplayed{4U};
 
     const std::map<app::relaxation::MusicType, std::string> typeToLabel{
@@ -22,7 +21,6 @@ namespace
         const auto label = UTF8(utils::translate(typeToLabel.at(musicType)));
         return new gui::RelaxationMarkerItem(label);
     }
-
 } // namespace
 
 namespace gui

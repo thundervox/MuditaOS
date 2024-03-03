@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationMainWindow.hpp"
@@ -9,7 +9,6 @@
 
 #include <common/options/OptionBellMenu.hpp>
 #include <i18n/i18n.hpp>
-
 
 namespace gui
 {
@@ -74,5 +73,4 @@ namespace gui
         songList->reset();
         songList->rebuildList(gui::listview::RebuildType::Full);
     }
-
 } // namespace gui

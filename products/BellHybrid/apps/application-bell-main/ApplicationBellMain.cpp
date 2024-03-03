@@ -10,7 +10,6 @@
 #include "windows/BellMainMenuWindow.hpp"
 
 #include <apps-common/messages/AppMessage.hpp>
-#include <common/BellPowerOffPresenter.hpp>
 #include <common/layouts/HomeScreenLayouts.hpp>
 #include <common/models/TimeModel.hpp>
 #include <common/models/BatteryModel.hpp>
@@ -22,17 +21,12 @@
 #include <service-db/DBNotificationMessage.hpp>
 #include <windows/Dialog.hpp>
 #include <appmgr/messages/ChangeHomescreenLayoutMessage.hpp>
-#include <appmgr/messages/ChangeHomescreenLayoutParams.hpp>
-#include <system/messages/SystemManagerMessage.hpp>
 #include <apps-common/WindowsPopupFilter.hpp>
-#include <WindowsStack.hpp>
-#include <popups/Popups.hpp>
 #include <service-desktop/DesktopMessages.hpp>
 #include <appmgr/messages/AlarmMessage.hpp>
 
 namespace app
 {
-
     ApplicationBellMain::ApplicationBellMain(std::string name,
                                              std::string parent,
                                              StatusIndicators statusIndicators,

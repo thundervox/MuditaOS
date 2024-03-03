@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "service-desktop/DesktopMessages.hpp"
@@ -12,7 +12,6 @@ namespace sdesktop
 
     namespace developerMode
     {
-
         AppFocusChangeEvent::AppFocusChangeEvent(std::string appName)
         {
             context.setResponseStatus(http::Code::OK);

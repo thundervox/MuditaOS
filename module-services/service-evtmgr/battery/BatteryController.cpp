@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "BatteryController.hpp"
@@ -8,6 +8,7 @@
 #include "CurrentMeasurementScope.hpp"
 #endif
 
+#include <Service/Service.hpp>
 #include <service-evtmgr/BatteryMessages.hpp>
 #include <service-evtmgr/ServiceEventManagerName.hpp>
 #include <service-appmgr/ServiceApplicationManagerName.hpp>

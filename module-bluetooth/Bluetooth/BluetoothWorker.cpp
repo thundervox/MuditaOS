@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include <service-bluetooth/ServiceBluetooth.hpp>
@@ -26,12 +26,12 @@
 
 namespace queues
 {
-    constexpr inline auto io      = "qBtIO";
-    constexpr inline auto cmd     = "qBtCmds";
-    constexpr inline auto btstack = "qBtStack";
+    constexpr auto io      = "qBtIO";
+    constexpr auto cmd     = "qBtCmds";
+    constexpr auto btstack = "qBtStack";
 
-    constexpr inline auto queueLength        = 10;
-    constexpr inline auto triggerQueueLength = 3;
+    constexpr auto queueLength        = 10;
+    constexpr auto triggerQueueLength = 3;
 } // namespace queues
 
 namespace

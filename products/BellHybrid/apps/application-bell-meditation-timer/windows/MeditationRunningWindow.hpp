@@ -1,21 +1,20 @@
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
 
 #include <Application.hpp>
 #include <AppWindow.hpp>
-#include <InputEvent.hpp>
-#include <Text.hpp>
-#include <apps-common/widgets/BarGraph.hpp>
-#include <apps-common/widgets/TimeFixedWidget.hpp>
-#include <common/widgets/BellStatusClock.hpp>
-#include <gui/widgets/Icon.hpp>
 
 #include "MeditationProgressPresenter.hpp"
 
 namespace gui
 {
+    class Icon;
+    class ArcProgressBar;
+    class TimeFixedWidget;
+    class BellStatusClock;
+
     class MeditationRunningWindow : public AppWindow, public app::meditation::MeditationProgressContract::View
     {
       public:

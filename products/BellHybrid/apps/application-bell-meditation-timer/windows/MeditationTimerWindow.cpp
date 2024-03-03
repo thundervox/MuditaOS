@@ -1,10 +1,12 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "MeditationTimer.hpp"
 #include "MeditationCommon.hpp"
 #include "MeditationStyle.hpp"
 #include "MeditationTimerWindow.hpp"
+
+#include <widgets/BellBaseLayout.hpp>
 
 namespace app::meditation
 {

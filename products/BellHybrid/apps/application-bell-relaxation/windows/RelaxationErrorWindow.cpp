@@ -1,10 +1,11 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationErrorWindow.hpp"
 #include <data/RelaxationStyle.hpp>
 #include <ApplicationBellRelaxation.hpp>
 
+#include <gui/widgets/Icon.hpp>
 #include <apps-common/widgets/BellBaseLayout.hpp>
 
 namespace
@@ -13,7 +14,6 @@ namespace
     constexpr auto exceededFilesLimitMessage = "app_bell_relaxation_limit_error_message";
     constexpr auto fileDeletedMessage        = "app_bell_relaxation_file_deleted_message";
     constexpr auto emptyErrorMessage         = "";
-
 } // namespace
 
 namespace gui

@@ -1,5 +1,5 @@
 
-// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -7,7 +7,6 @@
 #include <apps-common/BasePresenter.hpp>
 #include <common/models/AbstractAlarmModel.hpp>
 #include <common/models/TimeModel.hpp>
-#include <time/dateCommon.hpp>
 
 namespace app::bell_alarm
 {
@@ -18,8 +17,8 @@ namespace app::bell_alarm
         {
           public:
             virtual ~View() noexcept                                        = default;
-            virtual void setAlarmTime(time_t time)                          = 0;
-            virtual time_t getAlarmTime() const                             = 0;
+            virtual void setAlarmTime(std::time_t time)                     = 0;
+            virtual std::time_t getAlarmTime() const                        = 0;
             virtual void setTimeFormat(utils::time::Locale::TimeFormat fmt) = 0;
         };
 

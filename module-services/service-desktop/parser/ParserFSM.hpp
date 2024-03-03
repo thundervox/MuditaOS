@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2021, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -8,7 +8,6 @@
 #include <Timers/TimerHandle.hpp>
 
 #include <json11.hpp>
-#include <magic_enum.hpp>
 #include <string>
 
 namespace sdesktop::endpoints
@@ -56,5 +55,4 @@ namespace sdesktop::endpoints
         void parsePartialMessage();
         void parsePayload();
     };
-
 } // namespace sdesktop::endpoints

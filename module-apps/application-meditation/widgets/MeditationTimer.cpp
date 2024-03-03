@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017-2022, Mudita Sp. z.o.o. All rights reserved.
+﻿// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "MeditationTimer.hpp"
@@ -13,16 +13,12 @@
 
 namespace
 {
-    inline constexpr auto meditationTimerName = "MeditationTimer";
-    inline constexpr std::chrono::seconds timerTick{1};
+    constexpr auto meditationTimerName = "MeditationTimer";
+    constexpr std::chrono::seconds timerTick{1};
 } // namespace
+
 namespace gui
 {
-    namespace
-    {
-        constexpr auto TimerInterval = std::chrono::milliseconds{1000};
-    } // namespace
-
     MeditationTimer::MeditationTimer(std::uint32_t x,
                                      std::uint32_t y,
                                      std::uint32_t width,

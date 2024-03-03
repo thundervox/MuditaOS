@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "MeditationTimer.hpp"
@@ -30,8 +30,7 @@ namespace app::meditation
                                                              std::unique_ptr<AbstractTimeModel> timeModel,
                                                              models::ChimeInterval &chimeIntervalModel,
                                                              models::Statistics &statisticsModel)
-        : app{app}, settings{settings}, timeModel{std::move(timeModel)}, chimeIntervalModel{chimeIntervalModel},
-          statisticsModel{statisticsModel}
+        : app{app}, settings{settings}, timeModel{std::move(timeModel)}, statisticsModel{statisticsModel}
     {
         duration = std::chrono::minutes{
             utils::getNumericValue<int>(settings->getValue(meditationDBRecordName, settings::SettingsScope::AppLocal))};

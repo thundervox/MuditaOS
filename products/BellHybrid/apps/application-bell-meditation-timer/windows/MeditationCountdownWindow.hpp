@@ -1,19 +1,16 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
 
-#include <Application.hpp>
-#include <AppWindow.hpp>
-#include <InputEvent.hpp>
-#include <Text.hpp>
-#include <apps-common/widgets/TimeFixedWidget.hpp>
-
 #include "MeditationCountdownPresenter.hpp"
+
+#include <AppWindow.hpp>
 
 namespace gui
 {
     class Arc;
+    class TimeFixedWidget;
 
     class MeditationCountdownWindow : public AppWindow, public app::meditation::MeditationCountdownContract::View
     {

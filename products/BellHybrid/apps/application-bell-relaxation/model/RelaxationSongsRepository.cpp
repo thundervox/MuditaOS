@@ -1,5 +1,6 @@
 // Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
+
 #include "RelaxationSongsRepository.hpp"
 #include <module-db/queries/multimedia_files/QueryMultimediaFilesGetLimited.hpp>
 #include <module-db/queries/multimedia_files/QueryMultimediaFilesCount.hpp>
@@ -15,6 +16,7 @@ namespace
         }
         return offset;
     }
+
     std::pair<std::uint32_t, std::uint32_t> calculateNewOffsetAndLimit(std::uint32_t offset,
                                                                        std::uint32_t limit,
                                                                        std::uint32_t loadedFiles)
@@ -24,9 +26,9 @@ namespace
         return {newOffset, newLimit};
     }
 } // namespace
+
 namespace app::relaxation
 {
-
     RelaxationSongsRepository::RelaxationSongsRepository(ApplicationCommon *application,
                                                          const std::map<MusicType, std::string> &pathPrefixes)
         : app::AsyncCallbackReceiver{application}, application{application}, pathPrefixes{pathPrefixes}
@@ -137,9 +139,9 @@ namespace app::relaxation
             }
         }
     }
+
     std::map<MusicType, std::string> &RelaxationSongsRepository::getPathPrefixes()
     {
         return pathPrefixes;
     }
-
 } // namespace app::relaxation

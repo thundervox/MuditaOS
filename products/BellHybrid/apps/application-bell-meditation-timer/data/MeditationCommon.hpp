@@ -5,7 +5,6 @@
 
 #include <Paths.hpp>
 #include <filesystem>
-#include <string>
 
 namespace app::meditation
 {
@@ -16,11 +15,10 @@ namespace app::meditation
         inline constexpr auto meditationLowBattery = "MeditationLowBatteryWindow";
     }; // namespace windows
 
-    constexpr auto meditationDBRecordName = "MeditationTimer";
+    inline constexpr auto meditationDBRecordName = "MeditationTimer";
 
     inline std::filesystem::path getMeditationAudioPath()
     {
         return paths::audio::proprietary() / paths::audio::meditation() / "Meditation_Gong.mp3";
     }
-
 } // namespace app::meditation

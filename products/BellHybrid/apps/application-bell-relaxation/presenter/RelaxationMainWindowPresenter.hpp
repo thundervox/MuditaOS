@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -6,12 +6,12 @@
 #include "model/RelaxationSongsModel.hpp"
 #include <apps-common/BasePresenter.hpp>
 #include <module-db/Interface/MultimediaFilesRecord.hpp>
-#include <vector>
 
 namespace app::music
 {
     class AbstractSongsRepository;
 }
+
 namespace app::relaxation
 {
 
@@ -50,5 +50,4 @@ namespace app::relaxation
       public:
         explicit RelaxationMainWindowPresenter(std::unique_ptr<RelaxationSongsModel> songsModel);
     };
-
 } // namespace app::relaxation

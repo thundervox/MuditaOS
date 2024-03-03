@@ -54,7 +54,6 @@ target_sources(application-bell-settings
         widgets/DateSetListItem.cpp
         widgets/TimeSetListItem.cpp
         widgets/AboutYourBellListItem.cpp
-        widgets/DialogYesNo.cpp
 
         windows/BellSettingsBedtimeToneWindow.cpp
         windows/BellSettingsTimeUnitsWindow.cpp
@@ -97,7 +96,6 @@ target_sources(application-bell-settings
         widgets/DateFormatSetListItem.hpp
         widgets/TimeSetListItem.hpp
         widgets/AboutYourBellListItem.hpp
-        widgets/DialogYesNo.hpp
 
         windows/alarm_settings/BellSettingsAlarmSettingsSnoozeWindow.hpp
         windows/alarm_settings/BellSettingsAlarmSettingsWindow.hpp
@@ -112,8 +110,6 @@ target_sources(application-bell-settings
         windows/alarm_settings/BellSettingsAlarmSettingsMenuWindow.hpp
         windows/alarm_settings/BellSettingsAlarmSettingsWindow.hpp
         windows/alarm_settings/BellSettingsPrewakeUpWindow.hpp
-
-        data/FinishedWindowMessageData.hpp
 
     PUBLIC
         include/application-bell-settings/models/DateTimeUnitsModel.hpp

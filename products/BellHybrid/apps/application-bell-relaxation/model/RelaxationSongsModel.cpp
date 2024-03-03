@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #include "RelaxationSongsModel.hpp"
@@ -18,6 +18,7 @@ namespace
         return app::relaxation::MusicType::Relaxation;
     }
 } // namespace
+
 namespace app::relaxation
 {
     RelaxationSongsProvider::RelaxationSongsProvider(ApplicationCommon *app) : DatabaseModel(app)
@@ -44,10 +45,12 @@ namespace app::relaxation
     {
         return songsRepository->getRecordsCount();
     }
+
     unsigned int RelaxationSongsModel::getMinimalItemSpaceRequired() const
     {
         return style::bell_options::h + 2 * style::bell_options::option_margin;
     }
+
     bool RelaxationSongsModel::nextRecordExist(gui::Order order)
     {
         const auto getOppositeOrder = [order]() {
@@ -58,6 +61,7 @@ namespace app::relaxation
         getRecord(getOppositeOrder());
         return exist;
     }
+
     gui::ListItem *RelaxationSongsModel::getItem(gui::Order order)
     {
         const auto sound = getRecord(order);
@@ -76,6 +80,7 @@ namespace app::relaxation
 
         return item.build();
     }
+
     void RelaxationSongsModel::requestRecords(std::uint32_t offset, std::uint32_t limit)
     {
         songsRepository->getMusicFiles(
@@ -84,6 +89,7 @@ namespace app::relaxation
             [this](const std::vector<db::multimedia_files::MultimediaFilesRecord> &records,
                    unsigned int repoRecordsCount) { return onMusicListRetrieved(records, repoRecordsCount); });
     }
+
     bool RelaxationSongsModel::onMusicListRetrieved(
         const std::vector<db::multimedia_files::MultimediaFilesRecord> &records, unsigned int repoRecordsCount)
     {
@@ -94,6 +100,7 @@ namespace app::relaxation
         }
         return updateRecords(records);
     }
+
     bool RelaxationSongsModel::updateRecords(std::vector<db::multimedia_files::MultimediaFilesRecord> records)
     {
         DatabaseModel::updateRecords(std::move(records));

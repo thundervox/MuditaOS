@@ -7,7 +7,6 @@
 #include <common/LanguageUtils.hpp>
 #include <common/data/BatteryStatusSwitchData.hpp>
 #include <service-db/Settings.hpp>
-#include <Units.hpp>
 
 namespace
 {

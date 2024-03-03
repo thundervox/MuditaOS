@@ -25,6 +25,7 @@
 #include <common/models/TimeModel.hpp>
 #include <common/models/BatteryModel.hpp>
 #include <common/models/AudioModel.hpp>
+#include <common/models/LowBatteryInfoModel.hpp>
 #include <common/windows/AppsBatteryStatusWindow.hpp>
 #include <service-db/DBNotificationMessage.hpp>
 #include <system/messages/SentinelRegistrationMessage.hpp>

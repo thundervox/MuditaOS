@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2023, Mudita Sp. z.o.o. All rights reserved.
+// Copyright (c) 2017-2024, Mudita Sp. z.o.o. All rights reserved.
 // For licensing, see https://github.com/mudita/MuditaOS/LICENSE.md
 
 #pragma once
@@ -7,12 +7,12 @@
 
 #include <apps-common/popups/WindowWithTimer.hpp>
 #include <apps-common/widgets/spinners/Spinners.hpp>
-#include <common/models/AbstractAudioModel.hpp>
-#include <apps-common/widgets/BarGraph.hpp>
 
 namespace gui
 {
     class BellBaseLayout;
+    class ArcProgressBar;
+
     class RelaxationVolumeWindow : public WindowWithTimer
     {
       public:
