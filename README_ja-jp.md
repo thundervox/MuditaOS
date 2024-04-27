@@ -19,7 +19,7 @@ There are two released products based on MuditaOS:
 * [Contributing](#Contributing)
    * [Discussions](#Discussions)
    * [Reporting issues and feature requests (不具合の報告と機能改善要望)](#Reporting-bugs-and-feature-requests)
-   * [Internationalization](#Internationalization)
+   * [Internationalization (国際化)](#Internationalization)
    * [Development environment setup (開発環境の構築)](#development-envioronment-setup)
    * [Development workflow](#Development-workflow)
 * [Documentation](#documentation)
