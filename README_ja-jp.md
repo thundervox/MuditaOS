@@ -14,7 +14,7 @@ There are two released products based on MuditaOS:
 
 MuditaOS を採用した商用製品は、
 
-1. [PurePhone](https://store.mudita.com/mudita-pure-minimalist-phone) (ピュアフォン) - low distraction phone with rich [key features](products/PurePhone/ProductKeyFeatures.md)
+1. [PurePhone](https://store.mudita.com/mudita-pure-minimalist-phone) (ピュアフォン) - low distraction phone with rich [key features](products/PurePhone/ProductKeyFeatures.md) (作業を妨げることが少ないリッチな基本機能を備えた携帯電話)
 2. [Mudita Harmony](https://store.mudita.com/mudita-harmony-your-healthy-bedtime-habits) (ムディター・ハーモニー) - eink based distraction free alarm clock.(電子ペーパー搭載の作業に集中できるアラーム置き時計)
 
 ## Table of contents (目次)
