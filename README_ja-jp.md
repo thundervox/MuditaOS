@@ -16,13 +16,13 @@ There are two released products based on MuditaOS:
 
 ## Table of contents (目次)
 
-* [Contributing](#Contributing)
-   * [Discussions](#Discussions)
+* [Contributing (開発貢献)](#Contributing)
+   * [Discussions (議論)](#Discussions)
    * [Reporting issues and feature requests (不具合の報告と機能改善要望)](#Reporting-bugs-and-feature-requests)
    * [Internationalization (国際化)](#Internationalization)
    * [Development environment setup (開発環境の構築)](#development-envioronment-setup)
-   * [Development workflow](#Development-workflow)
-* [Documentation](#documentation)
+   * [Development workflow (開発作業の流れ)](#Development-workflow)
+* [Documentation (開発資料)](#documentation)
 * [License (ライセンス)](#license)
 
 
