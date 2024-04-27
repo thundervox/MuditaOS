@@ -8,11 +8,14 @@ MuditaOS (ムディター・オーエス) は電子ペーパーディスプレ�
 
 ![MuditaOS interface screenshots](doc/Images/readme_header.jpg)
 
-## Product
+## Product (製品)
 
 There are two released products based on MuditaOS:
+
+MuditaOS を採用した商用製品は、
+
 1. [PurePhone](https://store.mudita.com/mudita-pure-minimalist-phone) (ピュアフォン) - low distraction phone with rich [key features](products/PurePhone/ProductKeyFeatures.md)
-2. [Mudita Harmony](https://store.mudita.com/mudita-harmony-your-healthy-bedtime-habits) (ムディター・ハーモニー) - eink based distraction free alarm clock.
+2. [Mudita Harmony](https://store.mudita.com/mudita-harmony-your-healthy-bedtime-habits) (ムディター・ハーモニー) - eink based distraction free alarm clock.(電子ペーパー搭載の作業に集中できるアラーム置き時計)
 
 ## Table of contents (目次)
 
