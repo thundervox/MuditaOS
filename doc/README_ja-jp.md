@@ -19,7 +19,7 @@ MuditaOS 開発資料
 
 ## システム関連資料
 
-Documentation listed below is system documentation listed depending on where it is.
+以下は機能別によるシステム関連の開発資料です。
 
 - システムアーキテクチャ
 - モジュール
