@@ -12,12 +12,12 @@ MuditaOS 開発資料
 - [Mudita Pure シミュレーターの用法](howto_simulator.md)
 - [Linux のキーバインド](host_keyboard_bindings.md)
 - [MuditaOS 実機動作](running_on_phone.md)
-- [Windows and macOS - flashing Pure with image](flashing_win_macos.md)
+- [Windows または macOS で Pure の実機にシステムイメージを書き込むには](flashing_win_macos.md)
 - [テストハーネス](../test/README.md)
 - [テザリング](tethering.md)
 - [コーディング規約](MuditaCppCodingGuidelines.md)
 
-## システム解説資料
+## システム関連資料
 
 Documentation listed below is system documentation listed depending on where it is.
 
@@ -53,5 +53,5 @@ Documentation listed below is system documentation listed depending on where it 
 - [国際化](i18n.md)
 
 ## 更新履歴
-- [HOWTO](changelog_howto.md)
+- [記載方法について](changelog_howto.md)
 - [最新の更新履歴](../changelog.md)
