@@ -14,7 +14,7 @@ MuditaOS 開発資料
 - [MuditaOS 実機動作](running_on_phone.md)
 - [Windows または macOS で Pure の実機にシステムイメージを書き込むには](flashing_win_macos.md)
 - [テストハーネス](../test/README.md)
-- [テザリング](tethering.md)
+- [テザリング](tethering_ja-jp.md)
 - [コーディング規約](MuditaCppCodingGuidelines.md)
 
 ## システム関連資料
