@@ -1,7 +1,7 @@
-MuditaOS 解説資料
+MuditaOS 開発資料
 ================
 
-This folder contains the documentation of the MuditaOS.
+このフォルダには MuditaOS に関する開発資料があります。
 
 ## 開発者ガイド
 
@@ -10,14 +10,14 @@ This folder contains the documentation of the MuditaOS.
 - [MuditaOS の起動と更新](boot_and_update.md)
 - [統合開発環境のセットアップ](setup_ide.md)
 - [Mudita Pure シミュレーターの用法](howto_simulator.md)
-- [Keybindings on Linux](host_keyboard_bindings.md)
-- [Running MuditaOS on a phone](running_on_phone.md)
+- [Linux のキーバインド](host_keyboard_bindings.md)
+- [MuditaOS 実機動作](running_on_phone.md)
 - [Windows and macOS - flashing Pure with image](flashing_win_macos.md)
 - [テストハーネス](../test/README.md)
 - [テザリング](tethering.md)
 - [コーディング規約](MuditaCppCodingGuidelines.md)
 
-## System documentation
+## システム解説資料
 
 Documentation listed below is system documentation listed depending on where it is.
 
@@ -47,7 +47,7 @@ Documentation listed below is system documentation listed depending on where it 
 - ツール
     - [MapParser](https://github.com/mudita/misc-tools/blob/master/mapparser/README.md)
     - [PureGDB](https://github.com/mudita/misc-tools/blob/master/puregdb/README.md)
-- [System cmake configuration](ProjectConfig.md)
+- [システムの cmake 設定](ProjectConfig.md)
 - [開発作業の流れ](development_workflow.md)
 - [開発協力](../CONTRIBUTING.md)
 - [国際化](i18n.md)
@@ -55,4 +55,3 @@ Documentation listed below is system documentation listed depending on where it 
 ## 更新履歴
 - [HOWTO](changelog_howto.md)
 - [最新の更新履歴](../changelog.md)
-
