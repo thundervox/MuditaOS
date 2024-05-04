@@ -1,13 +1,9 @@
 # 目次
 
 - [Linux 版 Pure シミュレータ](#keyboard-binding-on-linux-pure-simulator)
-
   - [機能ボタン](#functional-buttons)
-
   - [12キー](#numeric-buttons)
-
   - [バッテリ制御ボタン](#battery-buttons)
-
 - [Linux 版 Bell シミュレータ](#keyboard-binding-on-linux-bell-simulator)
 
 ## Linux 版 Pure シミュレータのキーボード割り当て
