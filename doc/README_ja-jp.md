@@ -10,7 +10,7 @@ MuditaOS 開発資料
 - [MuditaOS の起動と更新](boot_and_update.md)
 - [統合開発環境のセットアップ](setup_ide.md)
 - [Mudita Pure シミュレーターの用法](howto_simulator.md)
-- [Linux のキーバインド](host_keyboard_bindings.md)
+- [Linux 版のキーバインド](host_keyboard_bindings_ja-jp.md)
 - [MuditaOS 実機動作](running_on_phone.md)
 - [Windows または macOS で Pure の実機にシステムイメージを書き込むには](flashing_win_macos.md)
 - [テストハーネス](../test/README.md)
