@@ -5,7 +5,7 @@ MuditaOS 開発資料
 
 ## 開発者ガイド
 
-- [開発環境](quickstart.md)
+- [開発環境](quickstart_ja-jp.md)
 - [MuditaOS で対応しているビルドターゲット](build_targets.md)
 - [MuditaOS の起動と更新](boot_and_update.md)
 - [統合開発環境のセットアップ](setup_ide.md)
