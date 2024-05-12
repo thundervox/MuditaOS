@@ -50,7 +50,7 @@ MuditaOS 開発資料
 - [システムの cmake 設定](ProjectConfig.md)
 - [開発作業の流れ](development_workflow.md)
 - [開発協力](../CONTRIBUTING.md)
-- [国際化](i18n.md)
+- [国際化](i18n_ja-jp.md)
 
 ## 更新履歴
 - [記載方法について](changelog_howto.md)
