@@ -36,11 +36,24 @@
 
 ### リポジトリと関連モジュールのダウンロード
 
-MuditaOS では関連モジュールを使用しますので、リポジトリのクローンを行ってください。
+MuditaOS では関連モジュールを使用しますので、リポジトリのクローンを行ってください。この作業は数十GBの通信容量を消費します。通信回線の契約内容によっては高額請求の恐れがありますので、ご注意ください。
 ```
 git clone --recurse-submodules git@github.com:mudita/MuditaOS.git
 ```
- `--recurse-submodules` を使わないか関連モジュールの更新を行う場合は、
+
+GitHub関連の登録が正常にされていないなどの理由で正常にクローンできない場合は https 接続をお試しください。
+
+```
+git clone --recurse-submodules https://github.com/mudita/MuditaOS.git
+```
+
+通信容量を節約したい場合は以下をお試しください。通信容量は約2.0GBです。最新のコミットの master ブランチのみ取得します。
+
+```
+git clone -b master --depth=1 --single-branch --recurse-submodules https://github.com/mudita/MuditaOS.git
+```
+
+`--recurse-submodules` を使わないか関連モジュールの更新を行う場合は、
 ```
 git submodule update --init --recursive
 ```
